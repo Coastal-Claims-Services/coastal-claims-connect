@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -48,8 +47,8 @@ export const AIStatusHeader: React.FC<AIStatusHeaderProps> = ({
           </div>
 
           {/* Right: Available Assistants Box */}
-          <div className="flex items-center justify-between p-2 bg-slate-700 rounded-lg border border-slate-600 flex-shrink-0">
-            <span className="text-sm text-slate-200 font-medium mr-2">
+          <div className="flex items-center justify-between p-2 bg-slate-700 rounded-lg border border-slate-600 min-w-fit whitespace-nowrap">
+            <span className="text-xs text-slate-200 font-medium mr-2">
               Available AI Assistants ({availableAssistants.length})
             </span>
             <Button
