@@ -8,6 +8,7 @@ import { AIStatusHeader } from './AIStatusHeader';
 import { useNavigate } from 'react-router-dom';
 import { AIManagement } from './AIManagement';
 import { UserRole } from '@/types/user';
+import { AIAssistant, aiAssistantsData } from '@/data/aiAssistants';
 
 interface Message {
   id: string;
