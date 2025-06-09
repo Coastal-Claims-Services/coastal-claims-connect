@@ -9,19 +9,23 @@ import {
   Bot,
   Settings,
   HelpCircle,
-  Building2
+  Building2,
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const sidebarItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: false },
-  { icon: MessageCircle, label: 'AI Switchboard', active: false },
-  { icon: Users, label: 'Team Directory', active: false },
+  { icon: LayoutDashboard, label: 'Dashboard', active: true },
+  { icon: LayoutDashboard, label: 'Applications', active: false },
+  { icon: MessageCircle, label: 'Messenger', active: false },
   { icon: Calendar, label: 'Calendar', active: false },
+  { icon: FileText, label: 'Coastal U', active: false },
+  { icon: Users, label: 'Directory', active: false },
   { icon: FileText, label: 'Documents', active: false },
-  { icon: Bot, label: 'AI Tools', active: true },
-  { icon: Settings, label: 'Settings', active: false },
-  { icon: HelpCircle, label: 'Help & Support', active: false },
+  { icon: Bot, label: 'Coastal AI', active: false },
+  { icon: FileText, label: 'HR', active: false },
+  { icon: Settings, label: 'Admin', active: false },
+  { icon: User, label: 'Talent', active: false },
 ];
 
 export const Sidebar = () => {
@@ -30,12 +34,11 @@ export const Sidebar = () => {
       {/* Header */}
       <div className="p-4 border-b border-slate-700">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-            <Building2 size={20} />
+          <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+            <LayoutDashboard size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="font-semibold text-sm">CCS Portal</h1>
-            <p className="text-xs text-slate-400">Coastal Claims Services</p>
+            <h1 className="font-semibold text-lg text-white">CCS Portal</h1>
           </div>
         </div>
       </div>
@@ -43,35 +46,22 @@ export const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex-1 p-2">
         <div className="space-y-1">
-          {sidebarItems.map((item) => (
+          {sidebarItems.map((item, index) => (
             <Button
               key={item.label}
               variant="ghost"
-              className={`w-full justify-start text-left ${
-                item.active 
-                  ? 'bg-green-500 text-white hover:bg-green-600' 
+              className={`w-full justify-start text-left h-12 ${
+                index === 0 
+                  ? 'bg-green-500 text-white hover:bg-green-600 rounded-lg' 
                   : 'text-slate-300 hover:bg-slate-700 hover:text-white'
               }`}
             >
-              <item.icon size={16} className="mr-3" />
-              {item.label}
+              <item.icon size={20} className="mr-4" />
+              <span className="text-base">{item.label}</span>
             </Button>
           ))}
         </div>
       </nav>
-
-      {/* User Info */}
-      <div className="p-4 border-t border-slate-700">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center">
-            <Users size={16} />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium">Public Adjuster</p>
-            <p className="text-xs text-slate-400">Online</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
