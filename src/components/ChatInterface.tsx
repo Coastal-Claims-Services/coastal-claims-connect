@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -70,15 +71,16 @@ export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hello! I\'m your AI Switchboard Operator. I\'ll route your questions to the most appropriate specialist. How can I assist you today?',
+      content: 'Hello! I\'m Coastal AI - consider me your AI Switchboard Operator. I\'ll route your questions to the most appropriate specialist. How can I assist you today?',
       sender: 'ai',
       timestamp: new Date(),
-      aiAssistant: 'Switchboard Operator'
+      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedAI, setSelectedAI] = useState<string | null>(null);
+  const [showSpecialists, setShowSpecialists] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -126,6 +128,11 @@ export const ChatInterface = () => {
     setInputValue('');
     setIsProcessing(true);
 
+    // Show specialists sidebar after first user message
+    if (!showSpecialists) {
+      setShowSpecialists(true);
+    }
+
     // Simulate AI routing
     setTimeout(() => {
       const routedAI = determineAI(inputValue);
@@ -136,7 +143,7 @@ export const ChatInterface = () => {
         content: `Routing your question to ${routedAI.name} (${routedAI.specialty})...`,
         sender: 'ai',
         timestamp: new Date(),
-        aiAssistant: 'Switchboard Operator'
+        aiAssistant: 'Coastal AI'
       };
 
       setMessages(prev => [...prev, routingMessage]);
@@ -166,29 +173,31 @@ export const ChatInterface = () => {
 
   return (
     <div className="flex h-full bg-slate-900">
-      {/* AI Assistants Sidebar */}
-      <div className="w-80 bg-slate-800 border-r border-slate-700 p-4 overflow-y-auto">
-        <h3 className="text-lg font-semibold text-slate-100 mb-4">AI Specialists</h3>
-        <div className="space-y-3">
-          {aiAssistants.map((ai) => (
-            <Card key={ai.id} className={`p-3 transition-all cursor-pointer bg-slate-700 border-slate-600 ${selectedAI === ai.id ? 'ring-2 ring-blue-400 bg-slate-600' : 'hover:bg-slate-600'}`}>
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${ai.color} ${!ai.available ? 'opacity-50' : ''}`}></div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-sm text-slate-100">{ai.name}</h4>
-                    <Badge variant={ai.available ? "default" : "secondary"} className="text-xs">
-                      {ai.available ? 'Online' : 'Offline'}
-                    </Badge>
+      {/* AI Assistants Sidebar - Only shown after first interaction */}
+      {showSpecialists && (
+        <div className="w-80 bg-slate-800 border-r border-slate-700 p-4 overflow-y-auto">
+          <h3 className="text-lg font-semibold text-slate-100 mb-4">AI Specialists</h3>
+          <div className="space-y-3">
+            {aiAssistants.map((ai) => (
+              <Card key={ai.id} className={`p-3 transition-all cursor-pointer bg-slate-700 border-slate-600 ${selectedAI === ai.id ? 'ring-2 ring-blue-400 bg-slate-600' : 'hover:bg-slate-600'}`}>
+                <div className="flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full ${ai.color} ${!ai.available ? 'opacity-50' : ''}`}></div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-sm text-slate-100">{ai.name}</h4>
+                      <Badge variant={ai.available ? "default" : "secondary"} className="text-xs">
+                        {ai.available ? 'Online' : 'Offline'}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1">{ai.specialty}</p>
+                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">{ai.description}</p>
                   </div>
-                  <p className="text-xs text-slate-300 mt-1">{ai.specialty}</p>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">{ai.description}</p>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
@@ -240,7 +249,7 @@ export const ChatInterface = () => {
               <div className="bg-slate-700 border border-slate-600 text-slate-100 max-w-lg p-3 rounded-lg mr-12">
                 <div className="flex items-center gap-2">
                   <Bot size={16} />
-                  <span className="text-xs font-medium">AI Switchboard</span>
+                  <span className="text-xs font-medium">Coastal AI</span>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
                   <div className="flex space-x-1">
