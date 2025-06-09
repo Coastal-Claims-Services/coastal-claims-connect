@@ -86,6 +86,13 @@ May I first ask: is your question today procedural related or is it about claims
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
+    },
+    {
+      id: '2',
+      content: 'I have a question on how to do a policy review',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
