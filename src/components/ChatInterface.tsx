@@ -96,7 +96,7 @@ May I first ask: is your question today procedural related or is it about claims
     },
     {
       id: '3',
-      content: 'John your PDF is protected so I can not read do you know how to convert to readable? or do you need instructions for that?',
+      content: `I cannot read your PDF, it's likely because the PDF is either an image-based PDF or the PDF has been set to prevent copying and pasting. If you need to be able to copy and paste the text, you'll need to convert the PDF into a format that allows text extraction, do you know how to convert it? or do you need instructions for that?`,
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
