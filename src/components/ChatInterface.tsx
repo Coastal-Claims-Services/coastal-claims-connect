@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Clock, CheckCircle, Paperclip, Download } from 'lucide-react';
+import { Send, Bot, User, Clock, CheckCircle, Paperclip, Download, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AIStatusHeader } from './AIStatusHeader';
+import { useNavigate } from 'react-router-dom';
 
 interface Message {
   id: string;
@@ -24,6 +25,7 @@ const mockUser = {
 };
 
 export const ChatInterface = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -249,6 +251,11 @@ Note: If the manager feels that the peer review is not necessary, they will note
     }
   };
 
+  const simulateTrainingAssignment = (courseName: string) => {
+    console.log(`Training assigned: ${courseName}`);
+    // In real implementation, this would make an API call to assign the course
+  };
+
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
@@ -261,14 +268,31 @@ Note: If the manager feels that the peer review is not necessary, they will note
     };
 
     setMessages(prev => [...prev, userMessage]);
+    
+    // Check if user is asking about PDF issues or training
+    const isPdfRelated = inputValue.toLowerCase().includes('pdf') || 
+                        inputValue.toLowerCase().includes('document') ||
+                        inputValue.toLowerCase().includes('file');
+    
     setInputValue('');
     setIsProcessing(true);
 
-    // Simulate AI response
+    // Simulate AI response with training assignment logic
     setTimeout(() => {
+      let aiResponseContent = `Thank you for your question, ${mockUser.name}. As a ${mockUser.role} in ${mockUser.department}, I'll provide you with the appropriate guidance.`;
+      
+      if (isPdfRelated) {
+        aiResponseContent = `I see you're having issues with PDF processing. I've assigned the "PDF Converter Training" course to your Coastal U account. This 15-minute course will teach you how to convert image-based PDFs to readable text format.
+
+Please complete this training and then return to continue with your PDF processing task.`;
+        
+        // Simulate training assignment
+        simulateTrainingAssignment('PDF Converter Training');
+      }
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: `Thank you for your question, ${mockUser.name}. As a ${mockUser.role} in ${mockUser.department}, I'll provide you with the appropriate guidance. [This is a placeholder response - the actual AI would provide specific help based on the user's question and access level]`,
+        content: aiResponseContent,
         sender: 'ai',
         timestamp: new Date(),
         aiAssistant: 'Coastal AI'
@@ -391,22 +415,32 @@ Role: ${mockUser.role}`;
     <div className="flex h-full bg-slate-900">
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* AI Status Header - NEW */}
+        {/* AI Status Header */}
         <AIStatusHeader 
           currentAI={getCurrentAI()} 
           userDepartment={mockUser.department}
         />
 
-        {/* Original Chat Header - Updated to remove redundant info */}
+        {/* Original Chat Header */}
         <div className="bg-slate-800 border-b border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold text-slate-100">Coastal AI</h2>
               <p className="text-sm text-slate-300">Logged in as: {mockUser.name} | {mockUser.department} | {mockUser.role}</p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              All systems operational
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={() => navigate('/coastal-u')}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2"
+                size="sm"
+              >
+                <BookOpen size={14} className="mr-2" />
+                View Coastal U
+              </Button>
+              <div className="flex items-center gap-2 text-sm text-slate-300">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                All systems operational
+              </div>
             </div>
           </div>
         </div>
