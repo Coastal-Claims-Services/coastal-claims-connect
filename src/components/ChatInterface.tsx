@@ -166,24 +166,24 @@ export const ChatInterface = () => {
   };
 
   return (
-    <div className="flex h-full bg-slate-50">
+    <div className="flex h-full bg-slate-900">
       {/* AI Assistants Sidebar */}
-      <div className="w-80 bg-white border-r border-slate-200 p-4 overflow-y-auto">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">AI Specialists</h3>
+      <div className="w-80 bg-slate-800 border-r border-slate-700 p-4 overflow-y-auto">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">AI Specialists</h3>
         <div className="space-y-3">
           {aiAssistants.map((ai) => (
-            <Card key={ai.id} className={`p-3 transition-all cursor-pointer ${selectedAI === ai.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-slate-50'}`}>
+            <Card key={ai.id} className={`p-3 transition-all cursor-pointer bg-slate-700 border-slate-600 ${selectedAI === ai.id ? 'ring-2 ring-blue-400 bg-slate-600' : 'hover:bg-slate-600'}`}>
               <div className="flex items-center gap-3">
                 <div className={`w-3 h-3 rounded-full ${ai.color} ${!ai.available ? 'opacity-50' : ''}`}></div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-sm text-slate-800">{ai.name}</h4>
+                    <h4 className="font-medium text-sm text-slate-100">{ai.name}</h4>
                     <Badge variant={ai.available ? "default" : "secondary"} className="text-xs">
                       {ai.available ? 'Online' : 'Offline'}
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-600 mt-1">{ai.specialty}</p>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2">{ai.description}</p>
+                  <p className="text-xs text-slate-300 mt-1">{ai.specialty}</p>
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">{ai.description}</p>
                 </div>
               </div>
             </Card>
@@ -194,13 +194,13 @@ export const ChatInterface = () => {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Chat Header */}
-        <div className="bg-white border-b border-slate-200 p-4">
+        <div className="bg-slate-800 border-b border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-slate-800">AI Switchboard</h2>
-              <p className="text-sm text-slate-600">Coastal Claims Services - Insurance Adjuster Support</p>
+              <h2 className="text-xl font-semibold text-slate-100">AI Switchboard</h2>
+              <p className="text-sm text-slate-300">Coastal Claims Services - Insurance Adjuster Support</p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-600">
+            <div className="flex items-center gap-2 text-sm text-slate-300">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               All systems operational
             </div>
@@ -208,13 +208,13 @@ export const ChatInterface = () => {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-lg p-3 rounded-lg ${
                 message.sender === 'user' 
-                  ? 'bg-blue-500 text-white ml-12' 
-                  : 'bg-white border border-slate-200 text-slate-800 mr-12'
+                  ? 'bg-blue-600 text-white ml-12' 
+                  : 'bg-slate-700 border border-slate-600 text-slate-100 mr-12'
               }`}>
                 <div className="flex items-center gap-2 mb-1">
                   {message.sender === 'ai' ? <Bot size={16} /> : <User size={16} />}
@@ -238,7 +238,7 @@ export const ChatInterface = () => {
           
           {isProcessing && (
             <div className="flex justify-start">
-              <div className="bg-white border border-slate-200 text-slate-800 max-w-lg p-3 rounded-lg mr-12">
+              <div className="bg-slate-700 border border-slate-600 text-slate-100 max-w-lg p-3 rounded-lg mr-12">
                 <div className="flex items-center gap-2">
                   <Bot size={16} />
                   <span className="text-xs font-medium">AI Switchboard</span>
@@ -249,7 +249,7 @@ export const ChatInterface = () => {
                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
-                  <span className="text-xs text-slate-600">Analyzing and routing...</span>
+                  <span className="text-xs text-slate-400">Analyzing and routing...</span>
                 </div>
               </div>
             </div>
@@ -258,25 +258,25 @@ export const ChatInterface = () => {
         </div>
 
         {/* Input Area */}
-        <div className="bg-white border-t border-slate-200 p-4">
+        <div className="bg-slate-800 border-t border-slate-700 p-4">
           <div className="flex gap-2">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask your insurance-related question..."
-              className="flex-1"
+              className="flex-1 bg-slate-700 border-slate-600 text-slate-100 placeholder:text-slate-400"
               disabled={isProcessing}
             />
             <Button 
               onClick={handleSendMessage} 
               disabled={!inputValue.trim() || isProcessing}
-              className="bg-blue-500 hover:bg-blue-600"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               <Send size={16} />
             </Button>
           </div>
-          <p className="text-xs text-slate-500 mt-2">
+          <p className="text-xs text-slate-400 mt-2">
             The AI will automatically route your question to the most appropriate specialist.
           </p>
         </div>
