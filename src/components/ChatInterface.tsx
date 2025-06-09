@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -197,7 +196,7 @@ export const ChatInterface = () => {
         <div className="bg-slate-800 border-b border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-slate-100">AI Switchboard</h2>
+              <h2 className="text-xl font-semibold text-slate-100">Coastal AI</h2>
               <p className="text-sm text-slate-300">Coastal Claims Services - Insurance Adjuster Support</p>
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-300">
