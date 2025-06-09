@@ -469,14 +469,6 @@ Role: ${mockUser.role}`;
               <p className="text-sm text-slate-300">Logged in as: {mockUser.name} | {mockUser.department} | {mockUser.role}</p>
             </div>
             <div className="flex items-center gap-4">
-              <Button
-                onClick={() => navigate('/coastal-u')}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2"
-                size="sm"
-              >
-                <BookOpen size={14} className="mr-2" />
-                View Coastal U
-              </Button>
               {canManageAIs && (
                 <Button
                   onClick={() => setShowAIManagement(!showAIManagement)}
