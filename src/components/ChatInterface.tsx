@@ -102,6 +102,13 @@ To extract the text, you'll need to convert it to a readable format. Do you know
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
+    },
+    {
+      id: '4',
+      content: 'no i do not know how',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
