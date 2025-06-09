@@ -123,6 +123,13 @@ Once the estimate is returned, please come back and let me know, and I will help
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
+    },
+    {
+      id: '12',
+      content: 'I\'ve received the estimate back from estimating what are my next steps',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
