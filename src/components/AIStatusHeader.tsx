@@ -36,29 +36,31 @@ export const AIStatusHeader: React.FC<AIStatusHeaderProps> = ({
 
   return (
     <>
-      {/* Two Status Boxes */}
-      <div className="bg-slate-800 border-b border-slate-700 p-3 space-y-2">
-        {/* Current AI Status Box */}
-        <div className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg border border-slate-600">
-          <div className={`w-3 h-3 rounded-full ${currentAIData.color}`}></div>
-          <span className="text-sm text-slate-200 font-medium">
-            Currently speaking with: <span className="text-white">{currentAIData.name}</span>
-          </span>
-        </div>
+      {/* Single Horizontal Row with Two Side-by-Side Boxes */}
+      <div className="bg-slate-800 border-b border-slate-700 p-3">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left: Current AI Status Box */}
+          <div className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg border border-slate-600 flex-1">
+            <div className={`w-3 h-3 rounded-full ${currentAIData.color}`}></div>
+            <span className="text-sm text-slate-200 font-medium">
+              Currently speaking with: <span className="text-white">{currentAIData.name}</span>
+            </span>
+          </div>
 
-        {/* Available Assistants Box */}
-        <div className="flex items-center justify-between p-2 bg-slate-700 rounded-lg border border-slate-600">
-          <span className="text-sm text-slate-200 font-medium">
-            Available AI Assistants ({availableAssistants.length})
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowAssistantsPopup(true)}
-            className="text-slate-300 hover:text-white hover:bg-slate-600 p-1 h-auto"
-          >
-            <ChevronDown size={16} />
-          </Button>
+          {/* Right: Available Assistants Box */}
+          <div className="flex items-center justify-between p-2 bg-slate-700 rounded-lg border border-slate-600 min-w-fit">
+            <span className="text-sm text-slate-200 font-medium mr-2">
+              Available AI Assistants ({availableAssistants.length})
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAssistantsPopup(true)}
+              className="text-slate-300 hover:text-white hover:bg-slate-600 p-1 h-auto"
+            >
+              <ChevronDown size={16} />
+            </Button>
+          </div>
         </div>
       </div>
 
