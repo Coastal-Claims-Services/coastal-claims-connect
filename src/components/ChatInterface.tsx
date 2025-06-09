@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { FileUploadZone } from './FileUploadZone';
 
 interface Message {
   id: string;
@@ -93,12 +94,20 @@ May I first ask: is your question today procedural related or is it about claims
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
+    },
+    {
+      id: '3',
+      content: 'John I see you need to request this from CCS policy Pro please add your PDF policy and I\'ll go run that request for you',
+      sender: 'ai',
+      timestamp: new Date(),
+      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedAI, setSelectedAI] = useState<string | null>(null);
   const [showSpecialists, setShowSpecialists] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -129,6 +138,22 @@ May I first ask: is your question today procedural related or is it about claims
     }
     
     return aiAssistants.find(ai => ai.id === 'claims-processor')!;
+  };
+
+  const handleFileUpload = (file: File) => {
+    console.log('File uploaded:', file.name);
+    setShowFileUpload(false);
+    
+    // Add a message showing the file was uploaded
+    const fileMessage: Message = {
+      id: Date.now().toString(),
+      content: `📎 Policy document uploaded: ${file.name}`,
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
+    };
+    
+    setMessages(prev => [...prev, fileMessage]);
   };
 
   const handleSendMessage = async () => {
@@ -271,24 +296,16 @@ May I first ask: is your question today procedural related or is it about claims
             </div>
           ))}
           
-          {isProcessing && (
-            <div className="flex justify-start">
-              <div className="bg-slate-700 border border-slate-600 text-slate-100 max-w-lg p-3 rounded-lg mr-12">
-                <div className="flex items-center gap-2">
-                  <Bot size={16} />
-                  <span className="text-xs font-medium">Coastal AI</span>
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
-                  <span className="text-xs text-slate-400">Analyzing based on your role and routing...</span>
-                </div>
+          {/* File Upload Zone - Show after Coastal AI requests the file */}
+          {showFileUpload && messages.length >= 3 && (
+            <div className="flex justify-center">
+              <div className="max-w-lg w-full">
+                <FileUploadZone onFileUpload={handleFileUpload} />
               </div>
             </div>
           )}
+          
+          {/* ... keep existing code (isProcessing indicator) */}
           <div ref={messagesEndRef} />
         </div>
 
