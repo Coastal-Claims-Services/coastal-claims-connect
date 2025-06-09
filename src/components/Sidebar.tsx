@@ -15,14 +15,14 @@ import {
 import { Button } from '@/components/ui/button';
 
 const sidebarItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: true },
+  { icon: LayoutDashboard, label: 'Dashboard', active: false },
   { icon: LayoutDashboard, label: 'Applications', active: false },
   { icon: MessageCircle, label: 'Messenger', active: false },
   { icon: Calendar, label: 'Calendar', active: false },
   { icon: FileText, label: 'Coastal U', active: false },
   { icon: Users, label: 'Directory', active: false },
   { icon: FileText, label: 'Documents', active: false },
-  { icon: Bot, label: 'Coastal AI', active: false },
+  { icon: Bot, label: 'Coastal AI', active: true },
   { icon: FileText, label: 'HR', active: false },
   { icon: Settings, label: 'Admin', active: false },
   { icon: User, label: 'Talent', active: false },
@@ -51,7 +51,7 @@ export const Sidebar = () => {
               key={item.label}
               variant="ghost"
               className={`w-full justify-start text-left h-12 ${
-                index === 0 
+                item.active 
                   ? 'bg-green-500 text-white hover:bg-green-600 rounded-lg' 
                   : 'text-slate-300 hover:bg-slate-700 hover:text-white'
               }`}
