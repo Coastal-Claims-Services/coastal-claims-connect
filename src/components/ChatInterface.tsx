@@ -422,10 +422,17 @@ Role: ${mockUser.role}`;
               }`}>
                 <div className="flex items-center gap-2 mb-1">
                   {message.sender === 'ai' ? <Bot size={16} /> : <User size={16} />}
-                  <span className="text-xs font-medium">
-                    {message.sender === 'user' ? mockUser.name : message.aiAssistant || 'AI Assistant'}
-                  </span>
-                  <span className="text-xs opacity-70">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium">
+                      {message.sender === 'user' ? mockUser.name : (message.aiAssistant || 'AI Assistant')}
+                    </span>
+                    {message.sender === 'ai' && message.aiAssistant && message.aiAssistant !== 'Coastal AI' && (
+                      <span className="text-xs opacity-60">
+                        via Coastal AI
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs opacity-70 ml-auto">
                     {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
