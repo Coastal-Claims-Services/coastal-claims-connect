@@ -253,7 +253,7 @@ May I first ask: is your question today procedural related or is it about claims
                     {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <p className="text-sm">{message.content}</p>
+                <div className="text-sm whitespace-pre-line">{message.content}</div>
                 {message.status === 'processing' && (
                   <div className="flex items-center gap-1 mt-2 text-xs opacity-70">
                     <Clock size={12} />
