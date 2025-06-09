@@ -145,39 +145,12 @@ The complete detailed report is available for download below.`,
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
-    },
-    {
-      id: '9',
-      content: `Absolutely, ${mockUser.name}! As a seasoned adjuster new to Coastal, here are your next steps for the Frank J. Hawkins policy review:
-
-**IMMEDIATE NEXT STEPS:**
-
-1. **Document the Policy Gaps** - Note the missing matching endorsement and cosmetic coverage in your file notes
-2. **Clarify Ensuing Loss Coverage** - Contact underwriting to clarify the "sand" damage coverage language
-3. **Update Coastal's Internal Systems** - Log this policy review in our claims management system with the key findings
-
-**IF A CLAIM COMES IN:**
-
-4. **Hurricane Deductible Alert** - Remember the $10,018 hurricane deductible (2% of Coverage A) applies to wind/storm claims
-5. **Right to Repair Clause** - The unclear language will need legal review if repairs are involved
-6. **EUO Authority** - You have the authority to require the insured to submit to examination under oath if needed
-
-**COASTAL-SPECIFIC PROCEDURES:**
-
-7. **Upload to Coastal Drive** - Save the policy report to the shared Claims folder for future reference
-8. **Notify Your Supervisor** - Send a brief email to your supervisor about the policy gaps identified
-9. **Update Training Records** - Mark the PDF converter training as completed in Coastal U
-
-Would you like me to connect you with our Claims Processor AI to walk through our specific internal workflows, or do you have questions about any of these steps?`,
-      sender: 'ai',
-      timestamp: new Date(),
-      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedAI, setSelectedAI] = useState<string | null>(null);
-  const [showSpecialists, setShowSpecialists] = useState(true);
+  const [showSpecialists, setShowSpecialists] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
