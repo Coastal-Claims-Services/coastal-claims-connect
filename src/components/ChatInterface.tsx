@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { AIStatusHeader } from './AIStatusHeader';
 
 interface Message {
   id: string;
@@ -14,15 +15,6 @@ interface Message {
   status?: 'sending' | 'sent' | 'processing';
 }
 
-interface AIAssistant {
-  id: string;
-  name: string;
-  specialty: string;
-  description: string;
-  color: string;
-  available: boolean;
-}
-
 // Mock user data - in real implementation this would come from the portal login
 const mockUser = {
   name: 'John Smith',
@@ -30,49 +22,6 @@ const mockUser = {
   role: 'Public Adjuster',
   accessLevel: 'Senior'
 };
-
-const aiAssistants: AIAssistant[] = [
-  {
-    id: 'claims-processor',
-    name: 'Claims Processor AI',
-    specialty: 'Claims Processing',
-    description: 'Handles claim submissions, documentation, and processing workflows',
-    color: 'bg-blue-500',
-    available: true
-  },
-  {
-    id: 'policy-expert',
-    name: 'Policy Expert AI',
-    specialty: 'Policy Analysis',
-    description: 'Interprets insurance policies, coverage details, and exclusions',
-    color: 'bg-green-500',
-    available: true
-  },
-  {
-    id: 'damage-assessor',
-    name: 'Damage Assessment AI',
-    specialty: 'Damage Assessment',
-    description: 'Analyzes property damage reports and assessment methodologies',
-    color: 'bg-purple-500',
-    available: true
-  },
-  {
-    id: 'legal-advisor',
-    name: 'Legal Advisor AI',
-    specialty: 'Legal Compliance',
-    description: 'Provides guidance on legal requirements and compliance issues',
-    color: 'bg-amber-500',
-    available: false
-  },
-  {
-    id: 'customer-service',
-    name: 'Customer Service AI',
-    specialty: 'Customer Relations',
-    description: 'Handles customer communications and service inquiries',
-    color: 'bg-teal-500',
-    available: true
-  }
-];
 
 export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -151,7 +100,7 @@ Key highlights from the review:
 The complete detailed report is available for download below.`,
       sender: 'ai',
       timestamp: new Date(),
-      aiAssistant: 'Policy Expert AI'
+      aiAssistant: 'CCS Policy Pro'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -159,6 +108,12 @@ The complete detailed report is available for download below.`,
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Get current AI from the last AI message
+  const getCurrentAI = (): string => {
+    const lastAIMessage = [...messages].reverse().find(msg => msg.sender === 'ai');
+    return lastAIMessage?.aiAssistant || 'Coastal AI';
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -374,7 +329,13 @@ Role: ${mockUser.role}`;
     <div className="flex h-full bg-slate-900">
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
+        {/* AI Status Header - NEW */}
+        <AIStatusHeader 
+          currentAI={getCurrentAI()} 
+          userDepartment={mockUser.department}
+        />
+
+        {/* Original Chat Header - Updated to remove redundant info */}
         <div className="bg-slate-800 border-b border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <div>
