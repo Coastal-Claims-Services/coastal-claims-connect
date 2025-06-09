@@ -109,6 +109,13 @@ To extract the text, you'll need to convert it to a readable format. Do you know
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
+    },
+    {
+      id: '5',
+      content: 'I have added the PDF converter training to your Coastal U account. After you watch the video and have converted the PDF, please come back and drop the policy in so I can complete this policy review for you.',
+      sender: 'ai',
+      timestamp: new Date(),
+      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
