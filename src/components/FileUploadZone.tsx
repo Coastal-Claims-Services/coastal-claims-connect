@@ -75,7 +75,7 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({ onFileUpload }) 
 
   return (
     <Card className={`
-      p-6 border-2 border-dashed transition-all cursor-pointer
+      p-4 border-2 border-dashed transition-all cursor-pointer
       ${isDragOver 
         ? 'border-blue-400 bg-blue-50/10' 
         : 'border-slate-600 bg-slate-700/50'
@@ -89,17 +89,17 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({ onFileUpload }) 
         onDrop={handleDrop}
         className="text-center"
       >
-        <div className="flex flex-col items-center gap-4">
-          <div className={`p-3 rounded-full ${isDragOver ? 'bg-blue-500/20' : 'bg-slate-600'}`}>
-            <Upload size={24} className={isDragOver ? 'text-blue-400' : 'text-slate-300'} />
+        <div className="flex flex-col items-center gap-3">
+          <div className={`p-2 rounded-full ${isDragOver ? 'bg-blue-500/20' : 'bg-slate-600'}`}>
+            <Upload size={20} className={isDragOver ? 'text-blue-400' : 'text-slate-300'} />
           </div>
           
           <div>
-            <h3 className="text-lg font-medium text-slate-100 mb-2">
+            <h3 className="text-base font-medium text-slate-100 mb-1">
               Upload Policy Document
             </h3>
-            <p className="text-sm text-slate-300 mb-4">
-              Drag and drop your PDF policy document here, or click to browse
+            <p className="text-xs text-slate-300 mb-3">
+              Drag and drop your PDF here, or click to browse
             </p>
             
             <input
@@ -110,25 +110,25 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({ onFileUpload }) 
               id="file-upload"
             />
             <label htmlFor="file-upload">
-              <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                <span className="flex items-center gap-2">
-                  <FileText size={16} />
-                  Choose PDF File
+              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <span className="flex items-center gap-1">
+                  <FileText size={14} />
+                  Choose PDF
                 </span>
               </Button>
             </label>
           </div>
           
           <p className="text-xs text-slate-400">
-            Supported: PDF files up to 10MB
+            PDF files up to 10MB
           </p>
         </div>
         
         {uploadError && (
-          <div className="mt-4 p-3 bg-red-900/20 border border-red-700 rounded-lg">
+          <div className="mt-3 p-2 bg-red-900/20 border border-red-700 rounded-lg">
             <div className="flex items-center gap-2 text-red-400">
-              <X size={16} />
-              <span className="text-sm">{uploadError}</span>
+              <X size={14} />
+              <span className="text-xs">{uploadError}</span>
             </div>
           </div>
         )}
