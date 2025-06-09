@@ -130,6 +130,39 @@ Once the estimate is returned, please come back and let me know, and I will help
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
+    },
+    {
+      id: '13',
+      content: `Great news John! Glad to hear you received the estimate back. Here are your next few steps according to the SOPs:
+
+**Creating a Claims Demand**
+
+Your next few steps are to create a claims demand. Listed below are the bullet point items you'll need for that:
+
+• **Step 1:** Claims demand will be compiled of but not limited to:
+  - The Coastal Claims estimate
+  - Photo report
+  - Aerial roof measurements (such as Eagle View)
+  - A demand letter
+
+• **Step 2:** Add any supporting information that the insured may have provided you (like cost invoices for example)
+
+• **Step 3:** Access demand templates in the company's CRM under "Templates" - you can populate it and save it as draft
+
+• **Step 4:** Load all of these documents into the PA folder subfolder "Demand"
+
+• **Step 5:** Send all these documents to the insurance carrier along with CC: the insured and contractor of record
+
+**Required Peer Review Process:**
+
+If you have any questions about this process, please set a PR with your manager and explain the questions you have.
+
+If you do not have any questions on this process, it is still necessary for you to set a PR with your manager at a minimum of every 15 days with an explanation of claim status.
+
+Note: If the manager feels that the peer review is not necessary, they will note the file, cancel the peer review, and advise on any direction needed.`,
+      sender: 'ai',
+      timestamp: new Date(),
+      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
