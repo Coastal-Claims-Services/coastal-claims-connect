@@ -156,8 +156,6 @@ The complete detailed report is available for download below.`,
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedAI, setSelectedAI] = useState<string | null>(null);
-  const [showSpecialists, setShowSpecialists] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -169,28 +167,6 @@ The complete detailed report is available for download below.`,
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const determineAI = (message: string): AIAssistant => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('claim') || lowerMessage.includes('submission') || lowerMessage.includes('process')) {
-      return aiAssistants.find(ai => ai.id === 'claims-processor')!;
-    }
-    if (lowerMessage.includes('policy') || lowerMessage.includes('coverage') || lowerMessage.includes('exclusion')) {
-      return aiAssistants.find(ai => ai.id === 'policy-expert')!;
-    }
-    if (lowerMessage.includes('damage') || lowerMessage.includes('assessment') || lowerMessage.includes('property')) {
-      return aiAssistants.find(ai => ai.id === 'damage-assessor')!;
-    }
-    if (lowerMessage.includes('legal') || lowerMessage.includes('compliance') || lowerMessage.includes('regulation')) {
-      return aiAssistants.find(ai => ai.id === 'legal-advisor')!;
-    }
-    if (lowerMessage.includes('customer') || lowerMessage.includes('client') || lowerMessage.includes('service')) {
-      return aiAssistants.find(ai => ai.id === 'customer-service')!;
-    }
-    
-    return aiAssistants.find(ai => ai.id === 'claims-processor')!;
-  };
 
   const validateFile = (file: File): string | null => {
     if (file.type !== 'application/pdf') {
@@ -271,40 +247,19 @@ The complete detailed report is available for download below.`,
     setInputValue('');
     setIsProcessing(true);
 
-    // Show specialists sidebar after first user message
-    if (!showSpecialists) {
-      setShowSpecialists(true);
-    }
-
-    // Simulate AI routing
+    // Simulate AI response
     setTimeout(() => {
-      const routedAI = determineAI(inputValue);
-      setSelectedAI(routedAI.id);
-
-      const routingMessage: Message = {
+      const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: `Perfect! Based on your question and your role as a ${mockUser.role}, I'm routing this to ${routedAI.name} (${routedAI.specialty}). They have the right expertise for your access level...`,
+        content: `Thank you for your question, ${mockUser.name}. As a ${mockUser.role} in ${mockUser.department}, I'll provide you with the appropriate guidance. [This is a placeholder response - the actual AI would provide specific help based on the user's question and access level]`,
         sender: 'ai',
         timestamp: new Date(),
         aiAssistant: 'Coastal AI'
       };
 
-      setMessages(prev => [...prev, routingMessage]);
-
-      // Simulate AI response
-      setTimeout(() => {
-        const aiResponse: Message = {
-          id: (Date.now() + 2).toString(),
-          content: `Hello John Smith! I'm the ${routedAI.name}. I can see you're a ${mockUser.role} in ${mockUser.department}, so I'll tailor my response to your experience level. Based on your inquiry about ${routedAI.specialty.toLowerCase()}, let me provide you with the detailed guidance you need. [This is a placeholder response - the actual AI would provide specific help based on the user's question and access level]`,
-          sender: 'ai',
-          timestamp: new Date(),
-          aiAssistant: routedAI.name
-        };
-
-        setMessages(prev => [...prev, aiResponse]);
-        setIsProcessing(false);
-      }, 2000);
-    }, 1000);
+      setMessages(prev => [...prev, aiResponse]);
+      setIsProcessing(false);
+    }, 2000);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -417,41 +372,6 @@ Role: ${mockUser.role}`;
 
   return (
     <div className="flex h-full bg-slate-900">
-      {/* AI Assistants Sidebar - Only shown after first interaction */}
-      {showSpecialists && (
-        <div className="w-80 bg-slate-800 border-r border-slate-700 p-4 overflow-y-auto">
-          <h3 className="text-lg font-semibold text-slate-100 mb-2">AI Specialists</h3>
-          <p className="text-sm text-slate-400 mb-4">Available to {mockUser.role}s in {mockUser.department}</p>
-          <div className="space-y-3">
-            {aiAssistants.map((ai) => (
-              <Card key={ai.id} className={`p-3 transition-all cursor-pointer bg-slate-700 border-slate-600 ${selectedAI === ai.id ? 'ring-2 ring-blue-400 bg-slate-600' : 'hover:bg-slate-600'}`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${ai.color} ${!ai.available ? 'opacity-50' : ''}`}></div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-sm text-slate-100">{ai.name}</h4>
-                      <Badge variant={ai.available ? "default" : "secondary"} className="text-xs">
-                        {ai.available ? 'Online' : 'Offline'}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-slate-300 mt-1">{ai.specialty}</p>
-                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">{ai.description}</p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-          
-          {/* Development Note */}
-          <div className="mt-6 p-3 bg-slate-700/50 rounded-lg border border-slate-600">
-            <h4 className="text-sm font-medium text-amber-400 mb-2">🚧 Development Note</h4>
-            <p className="text-xs text-slate-300">
-              This interface demonstrates role-based AI routing. In production, user data will come from portal authentication, and AI responses will be filtered by department access levels and user roles.
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Chat Header */}
@@ -518,7 +438,7 @@ Role: ${mockUser.role}`;
                 </div>
                 <div className="flex items-center gap-1 text-xs opacity-70">
                   <Clock size={12} />
-                  Routing your question...
+                  Processing...
                 </div>
               </div>
             </div>
