@@ -15,11 +15,11 @@ import { Button } from '@/components/ui/button';
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', active: false },
-  { icon: MessageCircle, label: 'AI Switchboard', active: true },
+  { icon: MessageCircle, label: 'AI Switchboard', active: false },
   { icon: Users, label: 'Team Directory', active: false },
   { icon: Calendar, label: 'Calendar', active: false },
   { icon: FileText, label: 'Documents', active: false },
-  { icon: Bot, label: 'AI Tools', active: false },
+  { icon: Bot, label: 'AI Tools', active: true },
   { icon: Settings, label: 'Settings', active: false },
   { icon: HelpCircle, label: 'Help & Support', active: false },
 ];
