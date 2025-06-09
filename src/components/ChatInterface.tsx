@@ -78,7 +78,11 @@ export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: `Hello ${mockUser.name}! I can see from your login that you work in the ${mockUser.department} department as a ${mockUser.role}. Perfect! I'm Coastal AI - your AI Switchboard Operator. I'll route your questions to the most appropriate specialist based on your role and access level. Listed below are the AI assistants I can direct you to. May I first ask: is your question today procedural related or is it about claims specifically, as this will affect the list of AI assistants I can provide for you?`,
+      content: `Hello ${mockUser.name}! I can see from your login that you work in the ${mockUser.department} department as a ${mockUser.role}. Perfect! I'm Coastal AI - your AI Switchboard Operator.
+
+I'll route your questions to the most appropriate specialist based on your role and access level. Listed below are the AI assistants I can direct you to.
+
+May I first ask: is your question today procedural related or is it about claims specifically, as this will affect the list of AI assistants I can provide for you?`,
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
