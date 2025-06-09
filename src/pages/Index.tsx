@@ -1,16 +1,19 @@
 
 import React from 'react';
-import { Sidebar } from '@/components/Sidebar';
+import { AppSidebar } from '@/components/Sidebar';
 import { ChatInterface } from '@/components/ChatInterface';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 
 const Index = () => {
   return (
-    <div className="h-screen flex bg-slate-100">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <ChatInterface />
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-slate-100">
+        <AppSidebar />
+        <SidebarInset>
+          <ChatInterface />
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
