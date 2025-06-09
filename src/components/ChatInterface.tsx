@@ -26,8 +26,8 @@ interface AIAssistant {
 // Mock user data - in real implementation this would come from the portal login
 const mockUser = {
   name: 'John Smith',
-  department: 'Claims Processing',
-  role: 'Senior Claims Adjuster',
+  department: 'CAN program',
+  role: 'Public Adjuster',
   accessLevel: 'Senior'
 };
 
@@ -78,9 +78,9 @@ export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: `Hello ${mockUser.name}! I can see from your login that you work in the ${mockUser.department} department as a ${mockUser.role}. Perfect! I'm Coastal AI - your AI Switchboard Operator.
+      content: `Hello John Smith! I can see from your login that you work in the CAN program as a Public Adjuster. Perfect! I'm Coastal AI - your AI Switchboard Operator.
 
-I'll route your questions to the most appropriate specialist based on your role and access level. Listed below are the AI assistants I can direct you to.
+I'll route your questions to the most appropriate specialist based on your role and access level.
 
 May I first ask: is your question today procedural related or is it about claims specifically, as this will affect the list of AI assistants I can provide for you?`,
       sender: 'ai',
@@ -288,7 +288,7 @@ The complete detailed report is available for download below.`,
       setTimeout(() => {
         const aiResponse: Message = {
           id: (Date.now() + 2).toString(),
-          content: `Hello ${mockUser.name}! I'm the ${routedAI.name}. I can see you're a ${mockUser.role} in ${mockUser.department}, so I'll tailor my response to your experience level. Based on your inquiry about ${routedAI.specialty.toLowerCase()}, let me provide you with the detailed guidance you need. [This is a placeholder response - the actual AI would provide specific help based on the user's question and access level]`,
+          content: `Hello John Smith! I'm the ${routedAI.name}. I can see you're a ${mockUser.role} in ${mockUser.department}, so I'll tailor my response to your experience level. Based on your inquiry about ${routedAI.specialty.toLowerCase()}, let me provide you with the detailed guidance you need. [This is a placeholder response - the actual AI would provide specific help based on the user's question and access level]`,
           sender: 'ai',
           timestamp: new Date(),
           aiAssistant: routedAI.name
