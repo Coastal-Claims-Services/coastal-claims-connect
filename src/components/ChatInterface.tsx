@@ -116,6 +116,13 @@ To extract the text, you'll need to convert it to a readable format. Do you know
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
+    },
+    {
+      id: '6',
+      content: '📎 Policy document uploaded: Policy_Review_Document.pdf',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
