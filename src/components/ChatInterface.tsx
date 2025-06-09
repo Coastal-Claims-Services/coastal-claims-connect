@@ -101,6 +101,20 @@ May I first ask: is your question today procedural related or is it about claims
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
+    },
+    {
+      id: '4',
+      content: '📎 Policy document uploaded: sample-policy.pdf',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
+    },
+    {
+      id: '5',
+      content: 'John your PDF is protected so I can not read do you know how to convert to readable? or do you need instructions for that?',
+      sender: 'ai',
+      timestamp: new Date(),
+      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
