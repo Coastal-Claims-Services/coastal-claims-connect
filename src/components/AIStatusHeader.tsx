@@ -38,9 +38,9 @@ export const AIStatusHeader: React.FC<AIStatusHeaderProps> = ({
     <>
       {/* Single Horizontal Row with Two Side-by-Side Boxes */}
       <div className="bg-slate-800 border-b border-slate-700 p-3">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
           {/* Left: Current AI Status Box */}
-          <div className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg border border-slate-600 flex-1">
+          <div className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg border border-slate-600 flex-1 min-w-0">
             <div className={`w-3 h-3 rounded-full ${currentAIData.color}`}></div>
             <span className="text-sm text-slate-200 font-medium">
               Currently speaking with: <span className="text-white">{currentAIData.name}</span>
@@ -48,7 +48,7 @@ export const AIStatusHeader: React.FC<AIStatusHeaderProps> = ({
           </div>
 
           {/* Right: Available Assistants Box */}
-          <div className="flex items-center justify-between p-2 bg-slate-700 rounded-lg border border-slate-600 min-w-fit">
+          <div className="flex items-center justify-between p-2 bg-slate-700 rounded-lg border border-slate-600 flex-shrink-0">
             <span className="text-sm text-slate-200 font-medium mr-2">
               Available AI Assistants ({availableAssistants.length})
             </span>
