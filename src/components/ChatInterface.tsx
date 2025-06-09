@@ -96,6 +96,20 @@ May I first ask: is your question today procedural related or is it about claims
     },
     {
       id: '3',
+      content: 'Perfect! For a policy review, I\'ll need you to upload the PDF policy document. Please upload the policy PDF below and I\'ll have our Policy Expert AI analyze it for you.',
+      sender: 'ai',
+      timestamp: new Date(),
+      aiAssistant: 'Coastal AI'
+    },
+    {
+      id: '4',
+      content: '📎 Policy document uploaded: Policy_Review_Document.pdf',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
+    },
+    {
+      id: '5',
       content: `I cannot read your PDF. It's likely an image-based PDF or has copy protection enabled. 
 
 To extract the text, you'll need to convert it to a readable format. Do you know how to convert it, or would you like instructions?`,
@@ -104,28 +118,28 @@ To extract the text, you'll need to convert it to a readable format. Do you know
       aiAssistant: 'Coastal AI'
     },
     {
-      id: '4',
+      id: '6',
       content: 'no i do not know how',
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
     },
     {
-      id: '5',
+      id: '7',
       content: 'I have added the PDF converter training to your Coastal U account. After you watch the video and have converted the PDF, please come back and drop the policy in so I can complete this policy review for you.',
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Coastal AI'
     },
     {
-      id: '6',
+      id: '8',
       content: '📎 Policy document uploaded: Policy_Review_Document.pdf',
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
     },
     {
-      id: '7',
+      id: '9',
       content: `Perfect! I've completed your policy review. Based on your role as a ${mockUser.role}, I've generated a comprehensive analysis of the Frank J. Hawkins policy. The report includes all critical details including coverage limits, deductibles, exclusions, and potential gaps that may affect claim handling.
 
 Key highlights from the review:
@@ -138,13 +152,6 @@ The complete detailed report is available for download below.`,
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'Policy Expert AI'
-    },
-    {
-      id: '8',
-      content: 'Could you please advise my next steps? I\'m a seasoned adjuster but new at Coastal and I don\'t really know or remember what I\'m to do next.',
-      sender: 'user',
-      timestamp: new Date(),
-      status: 'sent'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -480,7 +487,7 @@ Role: ${mockUser.role}`;
                   </span>
                 </div>
                 <div className="text-sm whitespace-pre-line">{message.content}</div>
-                {message.id === '7' && message.sender === 'ai' && (
+                {message.id === '9' && message.sender === 'ai' && (
                   <div className="mt-3 pt-3 border-t border-slate-600">
                     <Button 
                       onClick={downloadPolicyReport}
