@@ -101,6 +101,13 @@ The complete detailed report is available for download below.`,
       sender: 'ai',
       timestamp: new Date(),
       aiAssistant: 'CCS Policy Pro'
+    },
+    {
+      id: '10',
+      content: 'This is only my second claim with coastal please advise on my next steps if you can',
+      sender: 'user',
+      timestamp: new Date(),
+      status: 'sent'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
