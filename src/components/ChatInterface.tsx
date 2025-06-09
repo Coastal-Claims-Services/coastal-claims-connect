@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Clock, CheckCircle, Paperclip, Download, BookOpen } from 'lucide-react';
+import { Send, Bot, User, Clock, CheckCircle, Paperclip, Download, BookOpen, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AIStatusHeader } from './AIStatusHeader';
 import { useNavigate } from 'react-router-dom';
+import { AIManagement } from './AIManagement';
+import { UserRole } from '@/types/user';
 
 interface Message {
   id: string;
@@ -21,7 +23,16 @@ const mockUser = {
   name: 'John Smith',
   department: 'CAN program',
   role: 'Public Adjuster',
-  accessLevel: 'Senior'
+  accessLevel: 'Senior',
+  userType: {
+    type: 'developer' as const,
+    permissions: {
+      manageUsers: false,
+      manageAIs: true,
+      editAIPrompts: true,
+      systemSettings: false
+    }
+  } as UserRole
 };
 
 export const ChatInterface = () => {
@@ -171,6 +182,8 @@ Note: If the manager feels that the peer review is not necessary, they will note
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [showAIManagement, setShowAIManagement] = useState(false);
+  const [aiAssistants, setAiAssistants] = useState(aiAssistantsData);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Get current AI from the last AI message
@@ -255,6 +268,32 @@ Note: If the manager feels that the peer review is not necessary, they will note
     console.log(`Training assigned: ${courseName}`);
     // In real implementation, this would make an API call to assign the course
   };
+
+  const handleAddAI = (aiData: Omit<AIAssistant, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newAI: AIAssistant = {
+      ...aiData,
+      id: `ai-${Date.now()}`,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: mockUser.name
+    };
+    setAiAssistants(prev => [...prev, newAI]);
+  };
+
+  const handleUpdateAI = (id: string, updates: Partial<AIAssistant>) => {
+    setAiAssistants(prev => prev.map(ai => 
+      ai.id === id 
+        ? { ...ai, ...updates, updatedAt: new Date() }
+        : ai
+    ));
+  };
+
+  const handleDeleteAI = (id: string) => {
+    setAiAssistants(prev => prev.filter(ai => ai.id !== id));
+  };
+
+  const canManageAIs = mockUser.userType.permissions.manageAIs;
+  const isDeveloper = mockUser.userType.type === 'developer' || mockUser.userType.type === 'admin';
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -437,6 +476,16 @@ Role: ${mockUser.role}`;
                 <BookOpen size={14} className="mr-2" />
                 View Coastal U
               </Button>
+              {canManageAIs && (
+                <Button
+                  onClick={() => setShowAIManagement(!showAIManagement)}
+                  className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2"
+                  size="sm"
+                >
+                  <Settings size={14} className="mr-2" />
+                  Manage AIs
+                </Button>
+              )}
               <div className="flex items-center gap-2 text-sm text-slate-300">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 All systems operational
@@ -444,6 +493,19 @@ Role: ${mockUser.role}`;
             </div>
           </div>
         </div>
+
+        {/* AI Management Panel */}
+        {showAIManagement && canManageAIs && (
+          <div className="bg-slate-800 border-b border-slate-700 p-4">
+            <AIManagement
+              aiAssistants={aiAssistants}
+              onAddAI={handleAddAI}
+              onUpdateAI={handleUpdateAI}
+              onDeleteAI={handleDeleteAI}
+              isDeveloper={isDeveloper}
+            />
+          </div>
+        )}
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900">
