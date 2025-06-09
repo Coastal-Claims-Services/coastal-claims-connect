@@ -3,7 +3,7 @@ export interface UserRole {
   type: 'user' | 'admin' | 'developer';
   permissions: {
     manageUsers?: boolean;
-    manageAIs?: boolean;
+    manageAIs: boolean;
     editAIPrompts?: boolean;
     systemSettings?: boolean;
   };

@@ -1,11 +1,11 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AIStatusHeader } from './AIStatusHeader';
 import { ChatHeader } from './chat/ChatHeader';
 import { MessagesList } from './chat/MessagesList';
 import { ChatInput } from './chat/ChatInput';
 import { AIManagement } from './AIManagement';
 import { AIAssistant, aiAssistantsData } from '@/data/aiAssistants';
+import { MemoryManager } from '@/utils/memoryManager';
 import { 
   Message, 
   mockUser, 
@@ -23,6 +23,21 @@ export const ChatInterface = () => {
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [showAIManagement, setShowAIManagement] = useState(false);
   const [aiAssistants, setAiAssistants] = useState(aiAssistantsData);
+  const [sessionId] = useState(() => MemoryManager.generateSessionId());
+
+  // Initialize memory session on component mount
+  useEffect(() => {
+    MemoryManager.create({
+      sessionId,
+      userId: mockUser.name,
+      claimId: undefined // Can be set later if working on specific claims
+    });
+
+    return () => {
+      // Optional: Clean up memory on unmount
+      // MemoryManager.reset(sessionId);
+    };
+  }, [sessionId]);
 
   // Get current AI from the last AI message
   const getCurrentAI = (): string => {
@@ -128,12 +143,24 @@ export const ChatInterface = () => {
                         inputValue.toLowerCase().includes('document') ||
                         inputValue.toLowerCase().includes('file');
     
+    // Determine which AI should respond and get memory context
+    const targetAI = getCurrentAI();
+    const memoryContext = MemoryManager.injectToPrompt(sessionId, targetAI);
+    
     setInputValue('');
     setIsProcessing(true);
 
-    // Simulate AI response with training assignment logic
+    // Add to AI history
+    MemoryManager.addToHistory(sessionId, targetAI, inputValue, 'automatic');
+
+    // Simulate AI response with memory context and training assignment logic
     setTimeout(() => {
       let aiResponseContent = `Thank you for your question, ${mockUser.name}. As a ${mockUser.role} in ${mockUser.department}, I'll provide you with the appropriate guidance.`;
+      
+      // Include memory context in response if available
+      if (memoryContext) {
+        console.log('Using memory context:', memoryContext);
+      }
       
       if (isPdfRelated) {
         aiResponseContent = `I see you're having issues with PDF processing. I've assigned the "PDF Converter Training" course to your Coastal U account. This 15-minute course will teach you how to convert image-based PDFs to readable text format.
@@ -144,12 +171,19 @@ Please complete this training and then return to continue with your PDF processi
         simulateTrainingAssignment('PDF Converter Training');
       }
 
+      // Example: Update memory based on AI response
+      if (targetAI === 'CCS Policy Pro') {
+        MemoryManager.update(sessionId, {
+          policyReviewSummary: 'Policy reviewed - Coverage A: $500,900, Hurricane Deductible: $10,018'
+        });
+      }
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         content: aiResponseContent,
         sender: 'ai',
         timestamp: new Date(),
-        aiAssistant: 'Coastal AI'
+        aiAssistant: targetAI
       };
 
       setMessages(prev => [...prev, aiResponse]);
