@@ -108,6 +108,21 @@ The complete detailed report is available for download below.`,
       sender: 'user',
       timestamp: new Date(),
       status: 'sent'
+    },
+    {
+      id: '11',
+      content: `John, I've checked the SOP procedures for what to do after completing a Policy Pro review. Here's a bullet point list of your next few steps:
+
+• **Step 1:** Load the Policy Pro review into the Public Adjuster folder files and documents in the CRM
+
+• **Step 2:** Complete the CCS Scope Pro template and load that into the Public Adjuster files in the Docs folder and the company's CRM
+
+• **Step 3:** Click "Action Item Ready for Estimating"
+
+Once the estimate is returned, please come back and let me know, and I will help you with the next few steps.`,
+      sender: 'ai',
+      timestamp: new Date(),
+      aiAssistant: 'Coastal AI'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
