@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Clock, CheckCircle } from 'lucide-react';
+import { Send, Bot, User, Clock, CheckCircle, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileUploadZone } from './FileUploadZone';
 
 interface Message {
   id: string;
@@ -97,20 +96,6 @@ May I first ask: is your question today procedural related or is it about claims
     },
     {
       id: '3',
-      content: 'John I see you need to request this from CCS policy Pro please add your PDF policy and I\'ll go run that request for you',
-      sender: 'ai',
-      timestamp: new Date(),
-      aiAssistant: 'Coastal AI'
-    },
-    {
-      id: '4',
-      content: '📎 Policy document uploaded: sample-policy.pdf',
-      sender: 'user',
-      timestamp: new Date(),
-      status: 'sent'
-    },
-    {
-      id: '5',
       content: 'John your PDF is protected so I can not read do you know how to convert to readable? or do you need instructions for that?',
       sender: 'ai',
       timestamp: new Date(),
@@ -121,7 +106,8 @@ May I first ask: is your question today procedural related or is it about claims
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedAI, setSelectedAI] = useState<string | null>(null);
   const [showSpecialists, setShowSpecialists] = useState(false);
-  const [showFileUpload, setShowFileUpload] = useState(true);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -154,9 +140,25 @@ May I first ask: is your question today procedural related or is it about claims
     return aiAssistants.find(ai => ai.id === 'claims-processor')!;
   };
 
+  const validateFile = (file: File): string | null => {
+    if (file.type !== 'application/pdf') {
+      return 'Please upload a PDF file only.';
+    }
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      return 'File size must be less than 10MB.';
+    }
+    return null;
+  };
+
   const handleFileUpload = (file: File) => {
     console.log('File uploaded:', file.name);
-    setShowFileUpload(false);
+    
+    const error = validateFile(file);
+    if (error) {
+      setUploadStatus(error);
+      setTimeout(() => setUploadStatus(null), 3000);
+      return;
+    }
     
     // Add a message showing the file was uploaded
     const fileMessage: Message = {
@@ -168,6 +170,38 @@ May I first ask: is your question today procedural related or is it about claims
     };
     
     setMessages(prev => [...prev, fileMessage]);
+    setUploadStatus(`${file.name} uploaded successfully`);
+    setTimeout(() => setUploadStatus(null), 2000);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target) {
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleFileUpload(files[0]);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -310,28 +344,49 @@ May I first ask: is your question today procedural related or is it about claims
             </div>
           ))}
           
-          {/* File Upload Zone - Show after Coastal AI requests the file */}
-          {showFileUpload && messages.length >= 3 && (
-            <div className="flex justify-center">
-              <div className="max-w-lg w-full">
-                <FileUploadZone onFileUpload={handleFileUpload} />
+          {isProcessing && (
+            <div className="flex justify-start">
+              <div className="max-w-lg p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-100 mr-12">
+                <div className="flex items-center gap-2 mb-1">
+                  <Bot size={16} />
+                  <span className="text-xs font-medium">Coastal AI</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs opacity-70">
+                  <Clock size={12} />
+                  Routing your question...
+                </div>
               </div>
             </div>
           )}
           
-          {/* ... keep existing code (isProcessing indicator) */}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
-        <div className="bg-slate-800 border-t border-slate-700 p-4">
+        {/* Input Area with Drag and Drop */}
+        <div 
+          className={`bg-slate-800 border-t border-slate-700 p-4 transition-all ${
+            isDragOver ? 'bg-slate-700 border-blue-400' : ''
+          }`}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          {uploadStatus && (
+            <div className="mb-2 text-xs text-slate-300 flex items-center gap-1">
+              <Paperclip size={12} />
+              {uploadStatus}
+            </div>
+          )}
           <div className="flex gap-2">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={`Ask your question, ${mockUser.name}...`}
-              className="flex-1 bg-slate-700 border-slate-600 text-slate-100 placeholder:text-slate-400"
+              placeholder={`Ask your question, ${mockUser.name}... ${isDragOver ? '(Drop PDF here)' : '(or drag PDF here)'}`}
+              className={`flex-1 bg-slate-700 border-slate-600 text-slate-100 placeholder:text-slate-400 transition-all ${
+                isDragOver ? 'border-blue-400 bg-slate-600' : ''
+              }`}
               disabled={isProcessing}
             />
             <Button 
@@ -343,7 +398,7 @@ May I first ask: is your question today procedural related or is it about claims
             </Button>
           </div>
           <p className="text-xs text-slate-400 mt-2">
-            Questions will be routed to specialists based on your department access and role level.
+            Questions will be routed to specialists based on your department access and role level. {isDragOver ? 'Release to upload PDF.' : 'Drag PDF files here to upload.'}
           </p>
         </div>
       </div>
