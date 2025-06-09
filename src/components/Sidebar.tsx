@@ -37,7 +37,7 @@ const sidebarItems = [
 
 export const AppSidebar = () => {
   return (
-    <Sidebar className="bg-slate-800 text-white border-r border-slate-700">
+    <Sidebar className="bg-slate-900 text-white border-r border-slate-700">
       <SidebarHeader className="p-4 border-b border-slate-700">
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
@@ -57,7 +57,7 @@ export const AppSidebar = () => {
                 className={`w-full justify-start text-left h-12 ${
                   item.active
                     ? 'bg-green-500 text-white hover:bg-green-600 rounded-lg' 
-                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg'
                 }`}
               >
                 <item.icon size={20} className="mr-4" />
