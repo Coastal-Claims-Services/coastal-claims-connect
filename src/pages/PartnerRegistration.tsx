@@ -10,6 +10,7 @@ import { ExpertiseStep } from '@/components/registration/ExpertiseStep';
 import { CredentialsStep } from '@/components/registration/CredentialsStep';
 import { BillingStep } from '@/components/registration/BillingStep';
 import { CommunicationStep } from '@/components/registration/CommunicationStep';
+import { ReviewStep } from '@/components/registration/ReviewStep';
 
 const steps = [
   { id: 'basic-info', label: 'Basic Info', icon: 'basic-info' },
@@ -126,6 +127,8 @@ const PartnerRegistration = () => {
         return <BillingStep formData={formData} updateFormData={updateFormData} />;
       case 'communication':
         return <CommunicationStep formData={formData} updateFormData={updateFormData} />;
+      case 'review':
+        return <ReviewStep formData={formData} onEditStep={setCurrentStep} />;
       default:
         return (
           <div className="text-center py-12">
