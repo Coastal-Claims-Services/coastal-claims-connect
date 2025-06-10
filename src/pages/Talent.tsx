@@ -170,6 +170,7 @@ const Talent = () => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [adjusterSearchQuery, setAdjusterSearchQuery] = useState('');
   const [selectedProfessionalType, setSelectedProfessionalType] = useState('all');
+  const [partnerSearchQuery, setPartnerSearchQuery] = useState('');
 
   const filteredStates = statesData.filter(state =>
     state.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -188,11 +189,18 @@ const Talent = () => {
   const handleStateClick = (stateName: string) => {
     console.log(`Clicked state: ${stateName} in ${activeTab} context`);
     setSelectedState(stateName);
+    // Reset search queries when selecting a new state
+    if (activeTab === 'adjusters') {
+      setAdjusterSearchQuery('');
+    } else if (activeTab === 'partners') {
+      setPartnerSearchQuery('');
+    }
   };
 
   const handleBackToStates = () => {
     setSelectedState(null);
     setAdjusterSearchQuery('');
+    setPartnerSearchQuery('');
   };
 
   const getStatusColor = (status: string) => {
@@ -203,6 +211,31 @@ const Talent = () => {
       default: return 'bg-gray-500';
     }
   };
+
+  // Determine which search query to use and placeholder text
+  const getSearchConfig = () => {
+    if (selectedState && activeTab === 'adjusters') {
+      return {
+        value: adjusterSearchQuery,
+        onChange: setAdjusterSearchQuery,
+        placeholder: "Search by name, role, or specialty..."
+      };
+    } else if (selectedState && activeTab === 'partners') {
+      return {
+        value: partnerSearchQuery,
+        onChange: setPartnerSearchQuery,
+        placeholder: "Search partners by company, contact, or specialty..."
+      };
+    } else {
+      return {
+        value: searchQuery,
+        onChange: setSearchQuery,
+        placeholder: "Search states and territories..."
+      };
+    }
+  };
+
+  const searchConfig = getSearchConfig();
 
   return (
     <div className="h-screen flex bg-slate-900">
@@ -226,13 +259,9 @@ const Talent = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
                 <Input
-                  placeholder={
-                    selectedState ? "Search by name, role, or specialty..." : 
-                    activeTab === 'partners' ? "Search partners by company, contact, or specialty..." :
-                    "Search states and territories..."
-                  }
-                  value={selectedState ? adjusterSearchQuery : searchQuery}
-                  onChange={(e) => selectedState ? setAdjusterSearchQuery(e.target.value) : setSearchQuery(e.target.value)}
+                  placeholder={searchConfig.placeholder}
+                  value={searchConfig.value}
+                  onChange={(e) => searchConfig.onChange(e.target.value)}
                   className="pl-10 w-80 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
                 />
               </div>
@@ -243,7 +272,10 @@ const Talent = () => {
           <div className="flex items-center gap-1 mt-6">
             <Button
               variant={activeTab === 'states' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('states')}
+              onClick={() => {
+                setActiveTab('states');
+                setSelectedState(null);
+              }}
               className={`${
                 activeTab === 'states' 
                   ? 'bg-green-500 text-white hover:bg-green-600' 
@@ -255,7 +287,10 @@ const Talent = () => {
             </Button>
             <Button
               variant={activeTab === 'adjusters' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('adjusters')}
+              onClick={() => {
+                setActiveTab('adjusters');
+                setSelectedState(null);
+              }}
               className={`${
                 activeTab === 'adjusters' 
                   ? 'bg-green-500 text-white hover:bg-green-600' 
@@ -267,7 +302,10 @@ const Talent = () => {
             </Button>
             <Button
               variant={activeTab === 'partners' ? 'default' : 'ghost'}
-              onClick={() => setActiveTab('partners')}
+              onClick={() => {
+                setActiveTab('partners');
+                setSelectedState(null);
+              }}
               className={`${
                 activeTab === 'partners' 
                   ? 'bg-green-500 text-white hover:bg-green-600' 
@@ -282,7 +320,7 @@ const Talent = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-6 bg-slate-900 overflow-auto">
-          {/* Professional Detail View for Selected State */}
+          {/* Professional Detail View for Selected State (Adjusters) */}
           {selectedState && activeTab === 'adjusters' && (
             <div className="space-y-6">
               {/* Back Button and Header with Filter */}
@@ -297,7 +335,7 @@ const Talent = () => {
                     Back to States
                   </Button>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">{selectedState}</h2>
+                    <h2 className="text-xl font-semibold text-white">{selectedState} - Adjusters</h2>
                   </div>
                 </div>
                 
@@ -367,8 +405,31 @@ const Talent = () => {
             </div>
           )}
 
+          {/* External Partners Detail View for Selected State */}
+          {selectedState && activeTab === 'partners' && (
+            <div className="space-y-6">
+              {/* Back Button and Header */}
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  onClick={handleBackToStates}
+                  className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                >
+                  <ArrowLeft size={16} className="mr-2" />
+                  Back to States
+                </Button>
+                <div>
+                  <h2 className="text-xl font-semibold text-white">{selectedState} - External Partners</h2>
+                </div>
+              </div>
+
+              {/* External Partners Component */}
+              <ExternalPartners searchQuery={partnerSearchQuery} selectedState={selectedState} />
+            </div>
+          )}
+
           {/* States Grid View */}
-          {!selectedState && (activeTab === 'states' || activeTab === 'adjusters') && (
+          {!selectedState && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredStates.map((state) => (
                 <Card 
@@ -382,22 +443,16 @@ const Talent = () => {
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
                     <div className="space-y-2">
-                      {activeTab === 'states' && (
-                        <>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-slate-400">Adjusters</span>
-                            <span className="text-white font-medium">{state.adjusters}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-slate-400">Partners</span>
-                            <span className="text-white font-medium">{state.partners}</span>
-                          </div>
-                        </>
-                      )}
-                      {activeTab === 'adjusters' && (
+                      {(activeTab === 'states' || activeTab === 'adjusters') && (
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-slate-400">Licensed Adjusters</span>
+                          <span className="text-slate-400">Adjusters</span>
                           <span className="text-white font-medium">{state.adjusters}</span>
+                        </div>
+                      )}
+                      {(activeTab === 'states' || activeTab === 'partners') && (
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-slate-400">Partners</span>
+                          <span className="text-white font-medium">{state.partners}</span>
                         </div>
                       )}
                     </div>
@@ -406,11 +461,6 @@ const Talent = () => {
               ))}
             </div>
           )}
-
-          {/* External Partners */}
-          {!selectedState && activeTab === 'partners' && (
-            <ExternalPartners searchQuery={searchQuery} />
-          )}
         </div>
       </div>
     </div>
@@ -418,3 +468,5 @@ const Talent = () => {
 };
 
 export default Talent;
+
+}
