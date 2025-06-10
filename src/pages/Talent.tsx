@@ -4,7 +4,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, MapPin, Users, Building2 } from 'lucide-react';
+import { Search, MapPin, Users, Building2, ArrowLeft, Phone, Clock } from 'lucide-react';
 
 // Placeholder data for states and territories
 const statesData = [
@@ -60,17 +60,103 @@ const statesData = [
   { name: 'Wyoming', adjusters: 3, partners: 2, active: true },
 ];
 
+// Sample adjuster data for Alabama
+const alabamaAdjusters = [
+  {
+    id: 1,
+    name: 'Sarah Mitchell',
+    role: 'Senior Claims Adjuster',
+    primaryState: 'Alabama',
+    experience: 8,
+    phone: '(205) 555-0123',
+    specializations: ['Hurricane', 'Commercial'],
+    status: 'available'
+  },
+  {
+    id: 2,
+    name: 'Michael Roberts',
+    role: 'Property Adjuster',
+    primaryState: 'Alabama',
+    experience: 5,
+    phone: '(256) 555-0184',
+    specializations: ['Residential', 'Flood'],
+    status: 'busy'
+  },
+  {
+    id: 3,
+    name: 'Jennifer Adams',
+    role: 'Field Inspector',
+    primaryState: 'Alabama',
+    experience: 3,
+    phone: '(334) 555-0195',
+    specializations: ['Auto', 'Property'],
+    status: 'available'
+  },
+  {
+    id: 4,
+    name: 'David Thompson',
+    role: 'Senior Claims Adjuster',
+    primaryState: 'Alabama',
+    experience: 12,
+    phone: '(251) 555-0167',
+    specializations: ['Commercial', 'Marine'],
+    status: 'available'
+  },
+  {
+    id: 5,
+    name: 'Lisa Johnson',
+    role: 'Claims Adjuster',
+    primaryState: 'Alabama',
+    experience: 6,
+    phone: '(205) 555-0198',
+    specializations: ['Residential', 'Hurricane'],
+    status: 'unavailable'
+  },
+  {
+    id: 6,
+    name: 'Robert Wilson',
+    role: 'Property Inspector',
+    primaryState: 'Alabama',
+    experience: 4,
+    phone: '(256) 555-0172',
+    specializations: ['Property', 'Hail'],
+    status: 'available'
+  }
+];
+
 const Talent = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('states');
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [adjusterSearchQuery, setAdjusterSearchQuery] = useState('');
 
   const filteredStates = statesData.filter(state =>
     state.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const filteredAdjusters = alabamaAdjusters.filter(adjuster =>
+    adjuster.name.toLowerCase().includes(adjusterSearchQuery.toLowerCase()) ||
+    adjuster.role.toLowerCase().includes(adjusterSearchQuery.toLowerCase()) ||
+    adjuster.specializations.some(spec => spec.toLowerCase().includes(adjusterSearchQuery.toLowerCase()))
+  );
+
   const handleStateClick = (stateName: string) => {
     console.log(`Clicked state: ${stateName} in ${activeTab} context`);
-    // This will handle navigation to state detail view
+    setSelectedState(stateName);
+  };
+
+  const handleBackToStates = () => {
+    setSelectedState(null);
+    setAdjusterSearchQuery('');
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'available': return 'bg-green-500';
+      case 'busy': return 'bg-yellow-500';
+      case 'unavailable': return 'bg-red-500';
+      default: return 'bg-gray-500';
+    }
   };
 
   return (
@@ -88,9 +174,9 @@ const Talent = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
                 <Input
-                  placeholder="Search states and territories..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={selectedState ? "Search adjusters by name, role, or specialty..." : "Search states and territories..."}
+                  value={selectedState ? adjusterSearchQuery : searchQuery}
+                  onChange={(e) => selectedState ? setAdjusterSearchQuery(e.target.value) : setSearchQuery(e.target.value)}
                   className="pl-10 w-80 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
                 />
               </div>
@@ -140,7 +226,73 @@ const Talent = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-6 bg-slate-900 overflow-auto">
-          {(activeTab === 'states' || activeTab === 'adjusters') && (
+          {/* Adjuster Detail View for Selected State */}
+          {selectedState && activeTab === 'adjusters' && (
+            <div className="space-y-6">
+              {/* Back Button and Header */}
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  onClick={handleBackToStates}
+                  className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                >
+                  <ArrowLeft size={16} className="mr-2" />
+                  Back to States
+                </Button>
+                <div>
+                  <h2 className="text-xl font-semibold text-white">{selectedState} Adjusters</h2>
+                  <p className="text-slate-400">{filteredAdjusters.length} adjusters available</p>
+                </div>
+              </div>
+
+              {/* Adjusters Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredAdjusters.map((adjuster) => (
+                  <Card key={adjuster.id} className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-semibold text-white">{adjuster.name}</h3>
+                          <p className="text-sm text-slate-400">{adjuster.role}</p>
+                        </div>
+                        <div className={`w-2 h-2 rounded-full ${getStatusColor(adjuster.status)}`}></div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin size={14} className="text-slate-400" />
+                          <span className="text-slate-300">{adjuster.primaryState}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock size={14} className="text-slate-400" />
+                          <span className="text-slate-300">{adjuster.experience} years experience</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone size={14} className="text-slate-400" />
+                          <span className="text-slate-300">{adjuster.phone}</span>
+                        </div>
+                        
+                        {/* Specializations */}
+                        <div className="flex flex-wrap gap-1 mt-3">
+                          {adjuster.specializations.map((spec, index) => (
+                            <span
+                              key={index}
+                              className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded-full"
+                            >
+                              {spec}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* States Grid View */}
+          {!selectedState && (activeTab === 'states' || activeTab === 'adjusters') && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredStates.map((state) => (
                 <Card 
@@ -179,7 +331,8 @@ const Talent = () => {
             </div>
           )}
 
-          {activeTab === 'partners' && (
+          {/* Partners Placeholder */}
+          {!selectedState && activeTab === 'partners' && (
             <div className="text-center py-12">
               <Building2 size={48} className="mx-auto text-slate-600 mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Partners View</h3>
