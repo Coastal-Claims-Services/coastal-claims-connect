@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -111,6 +112,13 @@ const PartnerRegistration = () => {
     navigate('/talent');
   };
 
+  const handleSubmit = () => {
+    console.log('Form submitted:', formData);
+    // Here you would typically send the data to your backend
+    alert('Registration submitted successfully!');
+    navigate('/talent');
+  };
+
   const updateFormData = (updates: Partial<PartnerFormData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
   };
@@ -132,7 +140,7 @@ const PartnerRegistration = () => {
       case 'communication':
         return <CommunicationStep formData={formData} updateFormData={updateFormData} />;
       case 'review':
-        return <ReviewStep formData={formData} onEditStep={setCurrentStep} />;
+        return <ReviewStep formData={formData} onEditStep={setCurrentStep} onSubmit={handleSubmit} />;
       default:
         return (
           <div className="text-center py-12">

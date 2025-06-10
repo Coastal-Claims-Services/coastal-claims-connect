@@ -8,11 +8,13 @@ import { PartnerFormData } from '@/pages/PartnerRegistration';
 interface ReviewStepProps {
   formData: PartnerFormData;
   onEditStep: (stepIndex: number) => void;
+  onSubmit: () => void;
 }
 
 export const ReviewStep: React.FC<ReviewStepProps> = ({
   formData,
-  onEditStep
+  onEditStep,
+  onSubmit
 }) => {
   const sections = [
     {
@@ -128,7 +130,10 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
         <p className="text-blue-200 mb-4">
           By submitting this registration, you confirm that all information provided is accurate and complete.
         </p>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button 
+          onClick={onSubmit}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
           Submit Registration
         </Button>
       </div>
