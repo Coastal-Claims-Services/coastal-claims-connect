@@ -68,6 +68,11 @@ const Talent = () => {
     state.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleStateClick = (stateName: string) => {
+    console.log(`Clicked state: ${stateName} in ${activeTab} context`);
+    // This will handle navigation to state detail view
+  };
+
   return (
     <div className="h-screen flex bg-slate-900">
       <Sidebar />
@@ -135,36 +140,42 @@ const Talent = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-6 bg-slate-900 overflow-auto">
-          {activeTab === 'states' && (
+          {(activeTab === 'states' || activeTab === 'adjusters') && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredStates.map((state) => (
-                <Card key={state.name} className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer">
+                <Card 
+                  key={state.name} 
+                  className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer"
+                  onClick={() => handleStateClick(state.name)}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold text-white">{state.name}</h3>
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400">Adjusters</span>
-                        <span className="text-white font-medium">{state.adjusters}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400">Partners</span>
-                        <span className="text-white font-medium">{state.partners}</span>
-                      </div>
+                      {activeTab === 'states' && (
+                        <>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-slate-400">Adjusters</span>
+                            <span className="text-white font-medium">{state.adjusters}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-slate-400">Partners</span>
+                            <span className="text-white font-medium">{state.partners}</span>
+                          </div>
+                        </>
+                      )}
+                      {activeTab === 'adjusters' && (
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-slate-400">Licensed Adjusters</span>
+                          <span className="text-white font-medium">{state.adjusters}</span>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
               ))}
-            </div>
-          )}
-
-          {activeTab === 'adjusters' && (
-            <div className="text-center py-12">
-              <Users size={48} className="mx-auto text-slate-600 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Adjusters View</h3>
-              <p className="text-slate-400">Placeholder for adjusters management interface</p>
             </div>
           )}
 
