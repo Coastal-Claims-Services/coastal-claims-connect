@@ -212,5 +212,3 @@ const PartnerRegistration = () => {
 };
 
 export default PartnerRegistration;
-
-</edits_to_apply>
