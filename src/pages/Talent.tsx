@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Input } from '@/components/ui/input';
@@ -7,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MapPin, Users, Building2, ArrowLeft, Phone, Clock, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ExternalPartners } from '@/components/ExternalPartners';
 
 // Placeholder data for states and territories
 const statesData = [
@@ -226,7 +226,11 @@ const Talent = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
                 <Input
-                  placeholder={selectedState ? "Search by name, role, or specialty..." : "Search states and territories..."}
+                  placeholder={
+                    selectedState ? "Search by name, role, or specialty..." : 
+                    activeTab === 'partners' ? "Search partners by company, contact, or specialty..." :
+                    "Search states and territories..."
+                  }
                   value={selectedState ? adjusterSearchQuery : searchQuery}
                   onChange={(e) => selectedState ? setAdjusterSearchQuery(e.target.value) : setSearchQuery(e.target.value)}
                   className="pl-10 w-80 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
@@ -403,13 +407,9 @@ const Talent = () => {
             </div>
           )}
 
-          {/* External Partners Placeholder */}
+          {/* External Partners */}
           {!selectedState && activeTab === 'partners' && (
-            <div className="text-center py-12">
-              <Building2 size={48} className="mx-auto text-slate-600 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">External Partners</h3>
-              <p className="text-slate-400">Manage building experts, consultants, engineers, external appraisers, umpires, attorneys, and loss consultants</p>
-            </div>
+            <ExternalPartners searchQuery={searchQuery} />
           )}
         </div>
       </div>
