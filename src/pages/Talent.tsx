@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Input } from '@/components/ui/input';
@@ -417,5 +418,3 @@ const Talent = () => {
 };
 
 export default Talent;
-
-</edits_to_apply>
