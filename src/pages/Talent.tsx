@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MapPin, Users, Building2, ArrowLeft, Phone, Clock } from 'lucide-react';
 
 // Placeholder data for states and territories
@@ -60,12 +60,13 @@ const statesData = [
   { name: 'Wyoming', adjusters: 3, partners: 2, active: true },
 ];
 
-// Sample adjuster data for Alabama
-const alabamaAdjusters = [
+// Updated sample data for Alabama with different role types
+const alabamaProfessionals = [
   {
     id: 1,
     name: 'Sarah Mitchell',
     role: 'Senior Claims Adjuster',
+    type: 'adjuster',
     primaryState: 'Alabama',
     experience: 8,
     phone: '(205) 555-0123',
@@ -75,7 +76,8 @@ const alabamaAdjusters = [
   {
     id: 2,
     name: 'Michael Roberts',
-    role: 'Property Adjuster',
+    role: 'Property Inspector',
+    type: 'inspector',
     primaryState: 'Alabama',
     experience: 5,
     phone: '(256) 555-0184',
@@ -85,7 +87,8 @@ const alabamaAdjusters = [
   {
     id: 3,
     name: 'Jennifer Adams',
-    role: 'Field Inspector',
+    role: 'Field Representative',
+    type: 'field-representative',
     primaryState: 'Alabama',
     experience: 3,
     phone: '(334) 555-0195',
@@ -96,6 +99,7 @@ const alabamaAdjusters = [
     id: 4,
     name: 'David Thompson',
     role: 'Senior Claims Adjuster',
+    type: 'adjuster',
     primaryState: 'Alabama',
     experience: 12,
     phone: '(251) 555-0167',
@@ -105,7 +109,8 @@ const alabamaAdjusters = [
   {
     id: 5,
     name: 'Lisa Johnson',
-    role: 'Claims Adjuster',
+    role: 'Field Investigator',
+    type: 'field-investigator',
     primaryState: 'Alabama',
     experience: 6,
     phone: '(205) 555-0198',
@@ -116,12 +121,44 @@ const alabamaAdjusters = [
     id: 6,
     name: 'Robert Wilson',
     role: 'Property Inspector',
+    type: 'inspector',
     primaryState: 'Alabama',
     experience: 4,
     phone: '(256) 555-0172',
     specializations: ['Property', 'Hail'],
     status: 'available'
+  },
+  {
+    id: 7,
+    name: 'Emily Davis',
+    role: 'Auto Appraiser',
+    type: 'appraiser',
+    primaryState: 'Alabama',
+    experience: 7,
+    phone: '(334) 555-0189',
+    specializations: ['Auto', 'Collision'],
+    status: 'available'
+  },
+  {
+    id: 8,
+    name: 'James Martinez',
+    role: 'Property Appraiser',
+    type: 'appraiser',
+    primaryState: 'Alabama',
+    experience: 9,
+    phone: '(251) 555-0156',
+    specializations: ['Commercial', 'Residential'],
+    status: 'busy'
   }
+];
+
+const professionalTypes = [
+  { value: 'all', label: 'All Professionals' },
+  { value: 'adjuster', label: 'Adjusters' },
+  { value: 'inspector', label: 'Inspectors' },
+  { value: 'field-representative', label: 'Field Representatives' },
+  { value: 'field-investigator', label: 'Field Investigators' },
+  { value: 'appraiser', label: 'Appraisers' }
 ];
 
 const Talent = () => {
@@ -129,16 +166,21 @@ const Talent = () => {
   const [activeTab, setActiveTab] = useState('states');
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [adjusterSearchQuery, setAdjusterSearchQuery] = useState('');
+  const [selectedProfessionalType, setSelectedProfessionalType] = useState('all');
 
   const filteredStates = statesData.filter(state =>
     state.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredAdjusters = alabamaAdjusters.filter(adjuster =>
-    adjuster.name.toLowerCase().includes(adjusterSearchQuery.toLowerCase()) ||
-    adjuster.role.toLowerCase().includes(adjusterSearchQuery.toLowerCase()) ||
-    adjuster.specializations.some(spec => spec.toLowerCase().includes(adjusterSearchQuery.toLowerCase()))
-  );
+  const filteredProfessionals = alabamaProfessionals.filter(professional => {
+    const matchesSearch = professional.name.toLowerCase().includes(adjusterSearchQuery.toLowerCase()) ||
+      professional.role.toLowerCase().includes(adjusterSearchQuery.toLowerCase()) ||
+      professional.specializations.some(spec => spec.toLowerCase().includes(adjusterSearchQuery.toLowerCase()));
+    
+    const matchesType = selectedProfessionalType === 'all' || professional.type === selectedProfessionalType;
+    
+    return matchesSearch && matchesType;
+  });
 
   const handleStateClick = (stateName: string) => {
     console.log(`Clicked state: ${stateName} in ${activeTab} context`);
@@ -174,7 +216,7 @@ const Talent = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
                 <Input
-                  placeholder={selectedState ? "Search adjusters by name, role, or specialty..." : "Search states and territories..."}
+                  placeholder={selectedState ? "Search by name, role, or specialty..." : "Search states and territories..."}
                   value={selectedState ? adjusterSearchQuery : searchQuery}
                   onChange={(e) => selectedState ? setAdjusterSearchQuery(e.target.value) : setSearchQuery(e.target.value)}
                   className="pl-10 w-80 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
@@ -226,55 +268,75 @@ const Talent = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-6 bg-slate-900 overflow-auto">
-          {/* Adjuster Detail View for Selected State */}
+          {/* Professional Detail View for Selected State */}
           {selectedState && activeTab === 'adjusters' && (
             <div className="space-y-6">
-              {/* Back Button and Header */}
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  onClick={handleBackToStates}
-                  className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                >
-                  <ArrowLeft size={16} className="mr-2" />
-                  Back to States
-                </Button>
-                <div>
-                  <h2 className="text-xl font-semibold text-white">{selectedState} Adjusters</h2>
-                  <p className="text-slate-400">{filteredAdjusters.length} adjusters available</p>
+              {/* Back Button and Header with Filter */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    onClick={handleBackToStates}
+                    className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                  >
+                    <ArrowLeft size={16} className="mr-2" />
+                    Back to States
+                  </Button>
+                  <div>
+                    <h2 className="text-xl font-semibold text-white">{selectedState}</h2>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <Select value={selectedProfessionalType} onValueChange={setSelectedProfessionalType}>
+                    <SelectTrigger className="w-48 bg-slate-700 border-slate-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700 border-slate-600">
+                      {professionalTypes.map((type) => (
+                        <SelectItem 
+                          key={type.value} 
+                          value={type.value}
+                          className="text-white hover:bg-slate-600 focus:bg-slate-600"
+                        >
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              {/* Adjusters Grid */}
+              {/* Professionals Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredAdjusters.map((adjuster) => (
-                  <Card key={adjuster.id} className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer">
+                {filteredProfessionals.map((professional) => (
+                  <Card key={professional.id} className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="font-semibold text-white">{adjuster.name}</h3>
-                          <p className="text-sm text-slate-400">{adjuster.role}</p>
+                          <h3 className="font-semibold text-white">{professional.name}</h3>
+                          <p className="text-sm text-slate-400">{professional.role}</p>
                         </div>
-                        <div className={`w-2 h-2 rounded-full ${getStatusColor(adjuster.status)}`}></div>
+                        <div className={`w-2 h-2 rounded-full ${getStatusColor(professional.status)}`}></div>
                       </div>
                       
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm">
                           <MapPin size={14} className="text-slate-400" />
-                          <span className="text-slate-300">{adjuster.primaryState}</span>
+                          <span className="text-slate-300">{professional.primaryState}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <Clock size={14} className="text-slate-400" />
-                          <span className="text-slate-300">{adjuster.experience} years experience</span>
+                          <span className="text-slate-300">{professional.experience} years experience</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <Phone size={14} className="text-slate-400" />
-                          <span className="text-slate-300">{adjuster.phone}</span>
+                          <span className="text-slate-300">{professional.phone}</span>
                         </div>
                         
                         {/* Specializations */}
                         <div className="flex flex-wrap gap-1 mt-3">
-                          {adjuster.specializations.map((spec, index) => (
+                          {professional.specializations.map((spec, index) => (
                             <span
                               key={index}
                               className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded-full"
@@ -346,3 +408,5 @@ const Talent = () => {
 };
 
 export default Talent;
+
+</edits_to_apply>
