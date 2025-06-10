@@ -9,6 +9,7 @@ import { CoverageStep } from '@/components/registration/CoverageStep';
 import { ExpertiseStep } from '@/components/registration/ExpertiseStep';
 import { CredentialsStep } from '@/components/registration/CredentialsStep';
 import { BillingStep } from '@/components/registration/BillingStep';
+import { CommunicationStep } from '@/components/registration/CommunicationStep';
 
 const steps = [
   { id: 'basic-info', label: 'Basic Info', icon: 'basic-info' },
@@ -62,6 +63,12 @@ export interface PartnerFormData {
   travelRate?: string;
   paymentSchedule?: string;
   additionalBillingInfo?: string;
+  
+  // Communication
+  preferredContact?: 'email' | 'phone' | 'text' | 'any';
+  responseTime?: string;
+  urgentAssignments?: 'yes' | 'no' | 'depends';
+  additionalNotes?: string;
 }
 
 const PartnerRegistration = () => {
@@ -117,6 +124,8 @@ const PartnerRegistration = () => {
         return <CredentialsStep formData={formData} updateFormData={updateFormData} />;
       case 'billing':
         return <BillingStep formData={formData} updateFormData={updateFormData} />;
+      case 'communication':
+        return <CommunicationStep formData={formData} updateFormData={updateFormData} />;
       default:
         return (
           <div className="text-center py-12">
