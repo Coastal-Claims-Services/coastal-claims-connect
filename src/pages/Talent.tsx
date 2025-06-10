@@ -408,5 +408,3 @@ const Talent = () => {
 };
 
 export default Talent;
-
-</edits_to_apply>
