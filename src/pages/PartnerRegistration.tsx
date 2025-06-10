@@ -12,6 +12,7 @@ import { CredentialsStep } from '@/components/registration/CredentialsStep';
 import { BillingStep } from '@/components/registration/BillingStep';
 import { CommunicationStep } from '@/components/registration/CommunicationStep';
 import { ReviewStep } from '@/components/registration/ReviewStep';
+import { useToast } from '@/hooks/use-toast';
 
 const steps = [
   { id: 'basic-info', label: 'Basic Info', icon: 'basic-info' },
@@ -71,10 +72,18 @@ export interface PartnerFormData {
   responseTime?: string;
   urgentAssignments?: 'yes' | 'no' | 'depends';
   additionalNotes?: string;
+
+  // Admin Status Fields
+  submissionStatus?: 'draft' | 'submitted' | 'under-review' | 'approved' | 'rejected' | 'active';
+  submissionDate?: Date;
+  reviewerId?: string;
+  reviewNotes?: string;
+  rejectionReason?: string;
 }
 
 const PartnerRegistration = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PartnerFormData>({
     companyName: '',
@@ -94,7 +103,8 @@ const PartnerRegistration = () => {
     maxClaimSize: '',
     isLicensed: 'yes',
     providesReferences: 'yes',
-    acknowledgesDisclosure: false
+    acknowledgesDisclosure: false,
+    submissionStatus: 'draft'
   });
 
   const handleNext = () => {
@@ -111,6 +121,23 @@ const PartnerRegistration = () => {
 
   const handleBackToTalent = () => {
     navigate('/talent');
+  };
+
+  const handleSubmitApplication = () => {
+    const updatedFormData = {
+      ...formData,
+      submissionStatus: 'submitted' as const,
+      submissionDate: new Date()
+    };
+    setFormData(updatedFormData);
+    
+    toast({
+      title: "Application Submitted",
+      description: "Your partner application has been submitted for review. You'll receive an email confirmation shortly.",
+    });
+
+    // Navigate to admin dashboard for demo purposes
+    navigate('/admin/applications');
   };
 
   const updateFormData = (updates: Partial<PartnerFormData>) => {
@@ -134,7 +161,7 @@ const PartnerRegistration = () => {
       case 'communication':
         return <CommunicationStep formData={formData} updateFormData={updateFormData} />;
       case 'review':
-        return <ReviewStep formData={formData} onEditStep={setCurrentStep} />;
+        return <ReviewStep formData={formData} onEditStep={setCurrentStep} onSubmit={handleSubmitApplication} />;
       default:
         return (
           <div className="text-center py-12">
@@ -212,3 +239,5 @@ const PartnerRegistration = () => {
 };
 
 export default PartnerRegistration;
+
+}
