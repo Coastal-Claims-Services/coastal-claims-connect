@@ -28,54 +28,48 @@ export const ExpertiseStep: React.FC<ExpertiseStepProps> = ({
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="fieldOfPractice" className="text-white text-lg font-semibold">
-            Field of Practice / Trade Specialties
-          </Label>
-        </div>
+        <Label htmlFor="fieldOfPractice" className="text-white text-lg font-normal block">
+          Field of Practice / Trade Specialties
+        </Label>
         <Textarea
           id="fieldOfPractice"
           value={formData.fieldOfPractice}
           onChange={(e) => updateFormData({ fieldOfPractice: e.target.value })}
           placeholder="e.g., First-Party Property, Roofing, Structural Engineering, Large Loss Appraisal"
-          className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 min-h-[120px] resize-none"
+          className="bg-slate-700 border border-slate-600 text-white placeholder:text-slate-400 min-h-[140px] resize-none rounded-lg p-4 text-base"
         />
       </div>
 
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="clientTypes" className="text-white text-lg font-semibold">
-            Types of Clients You Typically Serve
-          </Label>
-        </div>
+        <Label htmlFor="clientTypes" className="text-white text-lg font-normal block">
+          Types of Clients You Typically Serve
+        </Label>
         <Textarea
           id="clientTypes"
           value={formData.clientTypes}
           onChange={(e) => updateFormData({ clientTypes: e.target.value })}
           placeholder="e.g., Residential, Commercial, HOA, Industrial"
-          className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 min-h-[120px] resize-none"
+          className="bg-slate-700 border border-slate-600 text-white placeholder:text-slate-400 min-h-[140px] resize-none rounded-lg p-4 text-base"
         />
       </div>
 
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="maxClaimSize" className="text-white text-lg font-semibold">
-            Maximum Claim Size You're Comfortable Handling
-          </Label>
-        </div>
+        <Label htmlFor="maxClaimSize" className="text-white text-lg font-normal block">
+          Maximum Claim Size You're Comfortable Handling
+        </Label>
         <Select 
           value={formData.maxClaimSize} 
           onValueChange={(value) => updateFormData({ maxClaimSize: value })}
         >
-          <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+          <SelectTrigger className="bg-slate-700 border border-slate-600 text-white h-12 text-base rounded-lg">
             <SelectValue placeholder="Select maximum claim size" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-700 border-slate-600">
+          <SelectContent className="bg-slate-700 border-slate-600 z-50">
             {maxClaimSizes.map((size) => (
               <SelectItem 
                 key={size} 
                 value={size}
-                className="text-white hover:bg-slate-600 focus:bg-slate-600"
+                className="text-white hover:bg-slate-600 focus:bg-slate-600 cursor-pointer"
               >
                 {size}
               </SelectItem>
