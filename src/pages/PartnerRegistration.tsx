@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { RegistrationSteps } from '@/components/registration/RegistrationSteps';
 import { BasicInfoStep } from '@/components/registration/BasicInfoStep';
 import { ServicesStep } from '@/components/registration/ServicesStep';
 import { CoverageStep } from '@/components/registration/CoverageStep';
+import { ExpertiseStep } from '@/components/registration/ExpertiseStep';
 
 const steps = [
   { id: 'basic-info', label: 'Basic Info', icon: 'basic-info' },
@@ -38,6 +38,11 @@ export interface PartnerFormData {
   licensedStates: string[];
   primaryState: string;
   willingToTravel: 'yes' | 'no' | 'case-by-case';
+  
+  // Expertise
+  fieldOfPractice: string;
+  clientTypes: string;
+  maxClaimSize: string;
 }
 
 const PartnerRegistration = () => {
@@ -54,7 +59,10 @@ const PartnerRegistration = () => {
     serviceCategories: [],
     licensedStates: [],
     primaryState: '',
-    willingToTravel: 'yes'
+    willingToTravel: 'yes',
+    fieldOfPractice: '',
+    clientTypes: '',
+    maxClaimSize: ''
   });
 
   const handleNext = () => {
@@ -81,6 +89,8 @@ const PartnerRegistration = () => {
         return <ServicesStep formData={formData} updateFormData={updateFormData} />;
       case 'coverage':
         return <CoverageStep formData={formData} updateFormData={updateFormData} />;
+      case 'expertise':
+        return <ExpertiseStep formData={formData} updateFormData={updateFormData} />;
       default:
         return (
           <div className="text-center py-12">
