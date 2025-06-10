@@ -8,6 +8,7 @@ import { ServicesStep } from '@/components/registration/ServicesStep';
 import { CoverageStep } from '@/components/registration/CoverageStep';
 import { ExpertiseStep } from '@/components/registration/ExpertiseStep';
 import { CredentialsStep } from '@/components/registration/CredentialsStep';
+import { BillingStep } from '@/components/registration/BillingStep';
 
 const steps = [
   { id: 'basic-info', label: 'Basic Info', icon: 'basic-info' },
@@ -50,6 +51,17 @@ export interface PartnerFormData {
   businessLicenseFile?: File;
   insuranceCertificateFile?: File;
   providesReferences: 'yes' | 'no';
+  
+  // Billing
+  billingDisclosure?: string;
+  acknowledgesDisclosure?: boolean;
+  billingMethods?: string[];
+  hourlyRate?: string;
+  contingencyRate?: string;
+  minimumFee?: string;
+  travelRate?: string;
+  paymentSchedule?: string;
+  additionalBillingInfo?: string;
 }
 
 const PartnerRegistration = () => {
@@ -71,7 +83,8 @@ const PartnerRegistration = () => {
     clientTypes: '',
     maxClaimSize: '',
     isLicensed: 'yes',
-    providesReferences: 'yes'
+    providesReferences: 'yes',
+    acknowledgesDisclosure: false
   });
 
   const handleNext = () => {
@@ -102,6 +115,8 @@ const PartnerRegistration = () => {
         return <ExpertiseStep formData={formData} updateFormData={updateFormData} />;
       case 'credentials':
         return <CredentialsStep formData={formData} updateFormData={updateFormData} />;
+      case 'billing':
+        return <BillingStep formData={formData} updateFormData={updateFormData} />;
       default:
         return (
           <div className="text-center py-12">
