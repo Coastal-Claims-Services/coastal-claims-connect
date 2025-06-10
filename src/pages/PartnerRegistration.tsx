@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { RegistrationSteps } from '@/components/registration/RegistrationSteps';
@@ -73,6 +74,7 @@ export interface PartnerFormData {
 }
 
 const PartnerRegistration = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PartnerFormData>({
     companyName: '',
@@ -105,6 +107,10 @@ const PartnerRegistration = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleBackToTalent = () => {
+    navigate('/talent');
   };
 
   const updateFormData = (updates: Partial<PartnerFormData>) => {
@@ -147,7 +153,11 @@ const PartnerRegistration = () => {
       <div className="bg-slate-800 border-b border-slate-700 p-6">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" className="text-slate-300 hover:text-white">
+            <Button 
+              variant="ghost" 
+              className="text-slate-300 hover:text-white"
+              onClick={handleBackToTalent}
+            >
               <ArrowLeft size={20} />
             </Button>
             <div>
@@ -202,3 +212,5 @@ const PartnerRegistration = () => {
 };
 
 export default PartnerRegistration;
+
+</edits_to_apply>
