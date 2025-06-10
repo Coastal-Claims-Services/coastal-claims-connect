@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, MapPin, Users, Building2, ArrowLeft, Phone, Clock } from 'lucide-react';
+import { Search, MapPin, Users, Building2, ArrowLeft, Phone, Clock, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Placeholder data for states and territories
 const statesData = [
@@ -162,6 +163,7 @@ const professionalTypes = [
 ];
 
 const Talent = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('states');
   const [selectedState, setSelectedState] = useState<string | null>(null);
@@ -213,6 +215,13 @@ const Talent = () => {
               <p className="text-slate-400 mt-1">Manage adjusters and external partners across all territories</p>
             </div>
             <div className="flex items-center gap-4">
+              <Button
+                onClick={() => navigate('/partner-registration')}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Plus size={16} className="mr-2" />
+                Register Partner
+              </Button>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
                 <Input
@@ -408,3 +417,5 @@ const Talent = () => {
 };
 
 export default Talent;
+
+</edits_to_apply>
