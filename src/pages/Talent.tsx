@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Input } from '@/components/ui/input';
@@ -212,6 +213,7 @@ const Talent = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-white">Talent Management</h1>
+              <p className="text-slate-400 mt-1">Manage adjusters and external partners across all territories</p>
             </div>
             <div className="flex items-center gap-4">
               <Button
@@ -416,5 +418,3 @@ const Talent = () => {
 };
 
 export default Talent;
-
-</edits_to_apply>
