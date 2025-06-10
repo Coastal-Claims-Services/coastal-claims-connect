@@ -7,6 +7,7 @@ import { BasicInfoStep } from '@/components/registration/BasicInfoStep';
 import { ServicesStep } from '@/components/registration/ServicesStep';
 import { CoverageStep } from '@/components/registration/CoverageStep';
 import { ExpertiseStep } from '@/components/registration/ExpertiseStep';
+import { CredentialsStep } from '@/components/registration/CredentialsStep';
 
 const steps = [
   { id: 'basic-info', label: 'Basic Info', icon: 'basic-info' },
@@ -43,6 +44,12 @@ export interface PartnerFormData {
   fieldOfPractice: string;
   clientTypes: string;
   maxClaimSize: string;
+  
+  // Credentials
+  isLicensed: 'yes' | 'no' | 'pending';
+  businessLicenseFile?: File;
+  insuranceCertificateFile?: File;
+  providesReferences: 'yes' | 'no';
 }
 
 const PartnerRegistration = () => {
@@ -62,7 +69,9 @@ const PartnerRegistration = () => {
     willingToTravel: 'yes',
     fieldOfPractice: '',
     clientTypes: '',
-    maxClaimSize: ''
+    maxClaimSize: '',
+    isLicensed: 'yes',
+    providesReferences: 'yes'
   });
 
   const handleNext = () => {
@@ -91,6 +100,8 @@ const PartnerRegistration = () => {
         return <CoverageStep formData={formData} updateFormData={updateFormData} />;
       case 'expertise':
         return <ExpertiseStep formData={formData} updateFormData={updateFormData} />;
+      case 'credentials':
+        return <CredentialsStep formData={formData} updateFormData={updateFormData} />;
       default:
         return (
           <div className="text-center py-12">
