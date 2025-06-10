@@ -61,9 +61,7 @@ export interface PartnerFormData {
   billingMethods?: string[];
   hourlyRate?: string;
   contingencyRate?: string;
-  minimumFee?: string;
-  travelRate?: string;
-  paymentSchedule?: string;
+  perJobRate?: string;
   additionalBillingInfo?: string;
   
   // Communication
