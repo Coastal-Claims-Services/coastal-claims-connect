@@ -210,7 +210,7 @@ const Talent = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-white">Talent Management</h1>
-              <p className="text-slate-400 mt-1">Manage adjusters and partners across all territories</p>
+              <p className="text-slate-400 mt-1">Manage adjusters and external partners across all territories</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -261,7 +261,7 @@ const Talent = () => {
               }`}
             >
               <Building2 size={16} className="mr-2" />
-              Partners
+              External Partners
             </Button>
           </div>
         </div>
@@ -393,12 +393,12 @@ const Talent = () => {
             </div>
           )}
 
-          {/* Partners Placeholder */}
+          {/* External Partners Placeholder */}
           {!selectedState && activeTab === 'partners' && (
             <div className="text-center py-12">
               <Building2 size={48} className="mx-auto text-slate-600 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Partners View</h3>
-              <p className="text-slate-400">Placeholder for partners management interface</p>
+              <h3 className="text-xl font-semibold text-white mb-2">External Partners</h3>
+              <p className="text-slate-400">Manage building experts, consultants, engineers, external appraisers, umpires, attorneys, and loss consultants</p>
             </div>
           )}
         </div>
