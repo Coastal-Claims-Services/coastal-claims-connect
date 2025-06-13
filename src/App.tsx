@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import CoastalU from "./pages/CoastalU";
 import Talent from "./pages/Talent";
 import PartnerRegistration from "./pages/PartnerRegistration";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/coastal-u" element={<CoastalU />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/partner-registration" element={<PartnerRegistration />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
