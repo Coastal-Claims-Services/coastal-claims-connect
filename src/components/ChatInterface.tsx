@@ -128,6 +128,20 @@ export const ChatInterface = () => {
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
+    // Check if API key is available
+    const apiKey = localStorage.getItem('openai_api_key');
+    if (!apiKey) {
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        content: "⚠️ OpenAI API key not found. Please go to Admin panel to set up your API key first.",
+        sender: 'ai',
+        timestamp: new Date(),
+        aiAssistant: 'System'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
@@ -147,31 +161,71 @@ export const ChatInterface = () => {
     const targetAI = getCurrentAI();
     const memoryContext = MemoryManager.injectToPrompt(sessionId, targetAI);
     
+    // Get department rules if they exist
+    const departmentRulesData = localStorage.getItem('department_rules');
+    let departmentRules = '';
+    if (departmentRulesData) {
+      try {
+        const rules = JSON.parse(departmentRulesData);
+        departmentRules = rules[mockUser.department] || '';
+      } catch (error) {
+        console.error('Failed to parse department rules:', error);
+      }
+    }
+    
     setInputValue('');
     setIsProcessing(true);
 
     // Add to AI history
     MemoryManager.addToHistory(sessionId, targetAI, inputValue, 'automatic');
 
-    // Simulate AI response with memory context and training assignment logic
-    setTimeout(() => {
-      let aiResponseContent = `Thank you for your question, ${mockUser.name}. As a ${mockUser.role} in ${mockUser.department}, I'll provide you with the appropriate guidance.`;
-      
-      // Include memory context in response if available
-      if (memoryContext) {
-        console.log('Using memory context:', memoryContext);
-      }
-      
-      if (isPdfRelated) {
-        aiResponseContent = `I see you're having issues with PDF processing. I've assigned the "PDF Converter Training" course to your Coastal U account. This 15-minute course will teach you how to convert image-based PDFs to readable text format.
+    try {
+      // Build system message with context
+      let systemMessage = `You are ${targetAI}, an AI assistant helping ${mockUser.name}, who works as a ${mockUser.role} in the ${mockUser.department} department.
 
-Please complete this training and then return to continue with your PDF processing task.`;
-        
-        // Simulate training assignment
+${departmentRules ? `Department Rules for ${mockUser.department}:\n${departmentRules}\n` : ''}
+
+${memoryContext ? `Previous conversation context:\n${memoryContext}\n` : ''}
+
+Provide helpful, accurate responses based on the user's role and department. Be professional and concise.`;
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: systemMessage
+            },
+            {
+              role: 'user',
+              content: inputValue
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      let aiResponseContent = data.choices[0]?.message?.content || "I apologize, but I couldn't generate a response at this time.";
+      
+      // Handle PDF-related training assignment
+      if (isPdfRelated) {
+        aiResponseContent += `\n\n📚 I've assigned the "PDF Converter Training" course to your Coastal U account. This 15-minute course will teach you how to convert image-based PDFs to readable text format.`;
         simulateTrainingAssignment('PDF Converter Training');
       }
 
-      // Example: Update memory based on AI response
+      // Update memory based on AI response
       if (targetAI === 'CCS Policy Pro') {
         MemoryManager.update(sessionId, {
           policyReviewSummary: 'Policy reviewed - Coverage A: $500,900, Hurricane Deductible: $10,018'
@@ -187,8 +241,22 @@ Please complete this training and then return to continue with your PDF processi
       };
 
       setMessages(prev => [...prev, aiResponse]);
+      
+    } catch (error) {
+      console.error('OpenAI API error:', error);
+      
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: `❌ Sorry, I encountered an error while processing your request: ${error instanceof Error ? error.message : 'Unknown error'}. Please check your API key in the Admin panel and try again.`,
+        sender: 'ai',
+        timestamp: new Date(),
+        aiAssistant: targetAI
+      };
+
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
       setIsProcessing(false);
-    }, 2000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
