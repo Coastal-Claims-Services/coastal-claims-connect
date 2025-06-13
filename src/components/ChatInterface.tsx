@@ -181,13 +181,13 @@ export const ChatInterface = () => {
 
     try {
       // Build system message with context
-      let systemMessage = `You are ${targetAI}, an AI assistant helping ${mockUser.name}, who works as a ${mockUser.role} in the ${mockUser.department} department.
+      let systemMessage = `You are ${targetAI}, a conversational AI assistant designed to help ${mockUser.name}, who works as a ${mockUser.role} in the ${mockUser.department} department at their company.
 
 ${departmentRules ? `Department Rules for ${mockUser.department}:\n${departmentRules}\n` : ''}
 
 ${memoryContext ? `Previous conversation context:\n${memoryContext}\n` : ''}
 
-Provide helpful, accurate responses based on the user's role and department. Be professional and concise.`;
+Keep responses conversational, helpful, and concise. Don't provide lengthy corporate descriptions unless specifically asked. Focus on answering the user's actual question.`;
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
