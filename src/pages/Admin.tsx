@@ -5,34 +5,39 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Key, Eye, EyeOff, Settings, Shield } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Key, Eye, EyeOff, Settings, Shield, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+const availableDepartments = [
+  'CAN program', 'Claims', 'Operations', 'Policy', 'Underwriting',
+  'Field Operations', 'Legal', 'Compliance', 'Customer Service', 'Support'
+];
 
 const Admin = () => {
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const [isApiKeySet, setIsApiKeySet] = useState(false);
-  const [systemRules, setSystemRules] = useState('');
-  const [routingRules, setRoutingRules] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('');
+  const [departmentRules, setDepartmentRules] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   useEffect(() => {
     // Check if API key is already stored
     const storedApiKey = localStorage.getItem('openai_api_key');
-    const storedSystemRules = localStorage.getItem('system_rules');
-    const storedRoutingRules = localStorage.getItem('routing_rules');
+    const storedDepartmentRules = localStorage.getItem('department_rules');
     
     if (storedApiKey) {
       setIsApiKeySet(true);
       setApiKey(storedApiKey);
     }
     
-    if (storedSystemRules) {
-      setSystemRules(storedSystemRules);
-    }
-    
-    if (storedRoutingRules) {
-      setRoutingRules(storedRoutingRules);
+    if (storedDepartmentRules) {
+      try {
+        setDepartmentRules(JSON.parse(storedDepartmentRules));
+      } catch (error) {
+        console.error('Failed to parse department rules:', error);
+      }
     }
   }, []);
 
@@ -54,13 +59,30 @@ const Admin = () => {
     });
   };
 
-  const handleSaveRules = () => {
-    localStorage.setItem('system_rules', systemRules);
-    localStorage.setItem('routing_rules', routingRules);
+  const handleSaveDepartmentRules = () => {
+    if (!selectedDepartment) {
+      toast({
+        title: "No Department Selected",
+        description: "Please select a department before saving rules.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    localStorage.setItem('department_rules', JSON.stringify(departmentRules));
     toast({
-      title: "Rules Saved",
-      description: "System and routing rules have been updated successfully.",
+      title: "Department Rules Saved",
+      description: `Rules for ${selectedDepartment} have been updated successfully.`,
     });
+  };
+
+  const handleRulesChange = (value: string) => {
+    if (!selectedDepartment) return;
+    
+    setDepartmentRules(prev => ({
+      ...prev,
+      [selectedDepartment]: value
+    }));
   };
 
   const handleRemoveApiKey = () => {
@@ -182,44 +204,73 @@ const Admin = () => {
             <div className="space-y-6">
               <Card className="bg-slate-800 border-slate-700">
                 <CardHeader>
-                  <CardTitle>System Rules</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5" />
+                    <CardTitle>Department Rules</CardTitle>
+                  </div>
                   <CardDescription>
-                    Define how the AI assistants should behave and respond to users.
+                    Configure department-specific rules and behavior for AI assistants. Select a department to manage its rules.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Textarea
-                    placeholder="Enter system-wide rules and guidelines for AI behavior..."
-                    value={systemRules}
-                    onChange={(e) => setSystemRules(e.target.value)}
-                    className="bg-slate-700 border-slate-600 min-h-[120px]"
-                  />
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Select Department</Label>
+                    <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="Choose a department..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        {availableDepartments.map((dept) => (
+                          <SelectItem key={dept} value={dept} className="text-slate-100">
+                            {dept}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {selectedDepartment && (
+                    <div className="space-y-2">
+                      <Label>Rules for {selectedDepartment}</Label>
+                      <Textarea
+                        placeholder={`Enter specific rules and guidelines for ${selectedDepartment} department...`}
+                        value={departmentRules[selectedDepartment] || ''}
+                        onChange={(e) => handleRulesChange(e.target.value)}
+                        className="bg-slate-700 border-slate-600 min-h-[200px]"
+                      />
+                      <p className="text-xs text-slate-400">
+                        These rules will be applied to AI assistants when responding to users from the {selectedDepartment} department.
+                      </p>
+                    </div>
+                  )}
+
+                  <Button 
+                    onClick={handleSaveDepartmentRules}
+                    className="bg-green-600 hover:bg-green-700"
+                    disabled={!selectedDepartment}
+                  >
+                    Save Department Rules
+                  </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle>Routing Rules</CardTitle>
-                  <CardDescription>
-                    Configure how user queries are routed to specific AI assistants based on role and context.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Textarea
-                    placeholder="Define routing logic, conditions, and assistant assignment rules..."
-                    value={routingRules}
-                    onChange={(e) => setRoutingRules(e.target.value)}
-                    className="bg-slate-700 border-slate-600 min-h-[120px]"
-                  />
-                </CardContent>
-              </Card>
-
-              <Button 
-                onClick={handleSaveRules}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                Save Rules Configuration
-              </Button>
+              {Object.keys(departmentRules).length > 0 && (
+                <Card className="bg-slate-800 border-slate-700">
+                  <CardHeader>
+                    <CardTitle className="text-sm">Configured Departments</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-2">
+                      {Object.keys(departmentRules).map((dept) => (
+                        <div key={dept} className="flex items-center justify-between p-2 bg-slate-700 rounded text-sm">
+                          <span>{dept}</span>
+                          <span className="text-green-400">✓</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
         </Tabs>
