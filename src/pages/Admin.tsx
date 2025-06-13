@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Key, Eye, EyeOff, Settings, Shield, Building2 } from 'lucide-react';
+import { Key, Eye, EyeOff, Settings, Shield, Building2, ArrowLeft, Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const availableDepartments = [
@@ -98,6 +99,18 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-white p-6">
       <div className="max-w-4xl mx-auto">
+        {/* Navigation Header */}
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Chat
+          </Link>
+          <Link to="/" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+            <Home className="w-4 h-4" />
+            Home
+          </Link>
+        </div>
+
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">AI-Powered Assistant</h1>
           <p className="text-slate-400">Administration Panel</p>
