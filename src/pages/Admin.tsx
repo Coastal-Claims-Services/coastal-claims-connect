@@ -11,9 +11,6 @@ import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const availableDepartments = [
-  // Executive
-  'CEO', 'President', 'CFO',
-  
   // Management  
   'Claims Director', 'HR (Human Resources)', 'Administrative', 
   'Onboarding', 'Reception', 'Compliance',
