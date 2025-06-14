@@ -523,7 +523,7 @@ const Admin = () => {
                                 </div>
                               ) : (
                                 <>
-                                  <span className="text-slate-300 text-sm">├── {subDept}</span>
+                                  <span className="text-slate-300 text-sm">• {subDept}</span>
                                   <div className="flex items-center gap-1">
                                     <Button
                                       variant="ghost"
