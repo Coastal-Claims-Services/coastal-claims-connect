@@ -11,24 +11,44 @@ import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const availableDepartments = [
-  // Management  
-  'Claims Director', 'HR (Human Resources)', 'Administrative', 
-  'Onboarding', 'Reception', 'Compliance',
+  // Management
+  'Management - Claims Director',
+  'Management - HR (Human Resources)', 
+  'Management - Administrative',
+  'Management - Onboarding',
+  'Management - Reception',
+  'Management - Compliance',
   
-  // Finance
-  'AR (Accounts Receivable)', 'AP (Accounts Payable)',
+  // Finance Department
+  'Finance - AR (Accounts Receivable)',
+  'Finance - AP (Accounts Payable)',
   
   // Claims
-  'MMC (Management Monitored Claims) Public Adjusters',
-  'CTG (Cradle to Grave) Public Adjusters', 
-  'CAN Network (Coastal Adjuster Network)',
-  'TLS (Team Lead Support)', 'Investigation', 'Estimating',
+  'Claims - MMC (Management Monitored Claims) Public Adjusters',
+  'Claims - CTG (Cradle to Grave) Public Adjusters',
+  'Claims - CAN Network (Coastal Adjuster Network)',
+  'Claims - TLS (Team Lead Support)',
+  'Claims - Investigation',
+  'Claims - Estimating',
   
-  // Commercial Claims
-  'Commercial Claims',
+  // Commercial Claims Department
+  'Commercial Claims Department',
   
-  // Other Departments
-  'Sales Team', 'Strategic Growth & Partnerships', 'IT', 'Marketing', 'Operations'
+  // Sales
+  'Sales - Sales Team',
+  
+  // Strategic Growth & Partnerships
+  'Strategic Growth & Partnerships - Cristin\'s Role',
+  'Strategic Growth & Partnerships - Carlos\'s Role',
+  
+  // IT
+  'IT',
+  
+  // Marketing
+  'Marketing',
+  
+  // Operations
+  'Operations'
 ];
 
 const Admin = () => {
