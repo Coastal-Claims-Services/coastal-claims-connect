@@ -212,10 +212,63 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
   return {
     departments: [
       {
+        id: 'executive',
+        name: 'Executive',
+        description: 'Executive leadership team',
+        order: 1,
+        subDepartments: [
+          {
+            id: 'ceo',
+            name: 'CEO',
+            description: 'Chief Executive Officer',
+            order: 1,
+            workflows: [
+              {
+                id: 'strategic-planning',
+                name: 'Strategic Planning',
+                description: 'Company strategic planning and vision',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'president',
+            name: 'President',
+            description: 'Company President',
+            order: 2,
+            workflows: [
+              {
+                id: 'operational-oversight',
+                name: 'Operational Oversight',
+                description: 'Overall operational management',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'cfo',
+            name: 'CFO',
+            description: 'Chief Financial Officer',
+            order: 3,
+            workflows: [
+              {
+                id: 'financial-oversight',
+                name: 'Financial Oversight',
+                description: 'Financial planning and control',
+                order: 1,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
         id: 'management',
         name: 'Management',
-        description: 'Executive and administrative oversight',
-        order: 1,
+        description: 'Management team oversight',
+        order: 2,
         subDepartments: [
           {
             id: 'claims-director',
@@ -224,10 +277,17 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             order: 1,
             workflows: [
               {
+                id: 'claims-oversight',
+                name: 'Claims Oversight',
+                description: 'Overall claims department management',
+                order: 1,
+                items: []
+              },
+              {
                 id: 'policy-review',
                 name: 'Policy Review Process',
                 description: 'Review and approve policy changes',
-                order: 1,
+                order: 2,
                 items: []
               }
             ]
@@ -239,25 +299,69 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             order: 2,
             workflows: [
               {
-                id: 'employee-onboarding',
-                name: 'Employee Onboarding',
-                description: 'New employee integration process',
+                id: 'employee-management',
+                name: 'Employee Management',
+                description: 'Employee lifecycle management',
                 order: 1,
+                items: []
+              },
+              {
+                id: 'recruitment',
+                name: 'Recruitment',
+                description: 'Hiring and onboarding processes',
+                order: 2,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'administrative',
+        name: 'Administrative',
+        description: 'Administrative operations',
+        order: 3,
+        subDepartments: [
+          {
+            id: 'onboarding',
+            name: 'Onboarding',
+            description: 'Client and staff onboarding processes',
+            order: 1,
+            workflows: [
+              {
+                id: 'client-onboarding',
+                name: 'Client Onboarding',
+                description: 'New client setup and documentation',
+                order: 1,
+                items: []
+              },
+              {
+                id: 'staff-onboarding',
+                name: 'Staff Onboarding',
+                description: 'New employee onboarding process',
+                order: 2,
                 items: []
               }
             ]
           },
           {
-            id: 'onboarding',
-            name: 'Onboarding',
-            description: 'Client and staff onboarding processes',
-            order: 3,
+            id: 'reception',
+            name: 'Reception',
+            description: 'Front desk and customer service',
+            order: 2,
             workflows: [
               {
-                id: 'client-onboarding',
-                name: 'Client Onboarding',
-                description: 'Process for bringing new clients into the system',
+                id: 'customer-service',
+                name: 'Customer Service',
+                description: 'Front desk customer interaction',
                 order: 1,
+                items: []
+              },
+              {
+                id: 'call-handling',
+                name: 'Call Handling',
+                description: 'Phone and inquiry management',
+                order: 2,
                 items: []
               }
             ]
@@ -266,13 +370,20 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'compliance',
             name: 'Compliance',
             description: 'Regulatory and policy compliance',
-            order: 4,
+            order: 3,
             workflows: [
               {
                 id: 'regulatory-compliance',
                 name: 'Regulatory Compliance',
                 description: 'State and federal regulation adherence',
                 order: 1,
+                items: []
+              },
+              {
+                id: 'audit-preparation',
+                name: 'Audit Preparation',
+                description: 'Compliance audit readiness',
+                order: 2,
                 items: []
               }
             ]
@@ -281,9 +392,9 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
       },
       {
         id: 'finance',
-        name: 'Finance',
+        name: 'Finance Department (directed by CFO)',
         description: 'Financial operations and accounting',
-        order: 2,
+        order: 4,
         subDepartments: [
           {
             id: 'accounts-receivable',
@@ -297,6 +408,13 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
                 description: 'Client invoicing and payment tracking',
                 order: 1,
                 items: []
+              },
+              {
+                id: 'collections',
+                name: 'Collections',
+                description: 'Outstanding payment collection',
+                order: 2,
+                items: []
               }
             ]
           },
@@ -309,8 +427,15 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
               {
                 id: 'expense-processing',
                 name: 'Expense Processing',
-                description: 'Process and approve expenses',
+                description: 'Process and approve vendor payments',
                 order: 1,
+                items: []
+              },
+              {
+                id: 'budget-management',
+                name: 'Budget Management',
+                description: 'Budget tracking and control',
+                order: 2,
                 items: []
               }
             ]
@@ -321,12 +446,12 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         id: 'claims',
         name: 'Claims',
         description: 'Claims processing and management',
-        order: 3,
+        order: 5,
         subDepartments: [
           {
             id: 'mmc-adjusters',
             name: 'MMC (Management Monitored Claims) Public Adjusters',
-            description: 'Management Monitored Claims adjusters',
+            description: 'Management monitored claims processing',
             order: 1,
             workflows: [
               {
@@ -337,9 +462,9 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
                 items: []
               },
               {
-                id: 'damage-assessment',
-                name: 'Damage Assessment',
-                description: 'Property damage evaluation process',
+                id: 'claim-review',
+                name: 'Claim Review',
+                description: 'Management review of claims',
                 order: 2,
                 items: []
               }
@@ -348,7 +473,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
           {
             id: 'ctg-adjusters',
             name: 'CTG (Cradle to Grave) Public Adjusters',
-            description: 'Cradle to Grave claims management',
+            description: 'Full service claims management',
             order: 2,
             workflows: [
               {
@@ -369,8 +494,264 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
               {
                 id: 'network-coordination',
                 name: 'Network Coordination',
-                description: 'Coordinate adjuster network activities',
+                description: 'Adjuster network management',
                 order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'tls',
+            name: 'TLS (Team Lead Support)',
+            description: 'Team leadership support services',
+            order: 4,
+            workflows: [
+              {
+                id: 'team-support',
+                name: 'Team Support',
+                description: 'Support for claims teams',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'investigation',
+            name: 'Investigation',
+            description: 'Claims investigation services',
+            order: 5,
+            workflows: [
+              {
+                id: 'claim-investigation',
+                name: 'Claim Investigation',
+                description: 'Detailed claim investigation process',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'estimating',
+            name: 'Estimating',
+            description: 'Damage estimation and assessment',
+            order: 6,
+            workflows: [
+              {
+                id: 'damage-estimation',
+                name: 'Damage Estimation',
+                description: 'Property damage assessment and estimation',
+                order: 1,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'commercial-claims',
+        name: 'Commercial Claims Department',
+        description: 'Commercial claims processing',
+        order: 6,
+        subDepartments: [
+          {
+            id: 'president-commercial',
+            name: 'President of Commercial Claims',
+            description: 'Commercial claims leadership',
+            order: 1,
+            workflows: [
+              {
+                id: 'commercial-oversight',
+                name: 'Commercial Oversight',
+                description: 'Commercial claims department management',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'coo-commercial',
+            name: '2 COOs',
+            description: 'Chief Operating Officers for commercial claims',
+            order: 2,
+            workflows: [
+              {
+                id: 'operations-management',
+                name: 'Operations Management',
+                description: 'Commercial claims operations',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'detailed-adjusters',
+            name: 'Detailed Adjusters',
+            description: 'Specialized commercial adjusters',
+            order: 3,
+            workflows: [
+              {
+                id: 'detailed-adjustment',
+                name: 'Detailed Adjustment',
+                description: 'Complex commercial claim adjustment',
+                order: 1,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sales',
+        name: 'Sales',
+        description: 'Sales and business development',
+        order: 7,
+        subDepartments: [
+          {
+            id: 'sales-team',
+            name: 'Sales Team',
+            description: 'Sales representatives and account management',
+            order: 1,
+            workflows: [
+              {
+                id: 'lead-generation',
+                name: 'Lead Generation',
+                description: 'New client acquisition',
+                order: 1,
+                items: []
+              },
+              {
+                id: 'account-management',
+                name: 'Account Management',
+                description: 'Existing client relationship management',
+                order: 2,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'strategic-growth',
+        name: 'Strategic Growth & Partnerships',
+        description: 'Business growth and partnership development',
+        order: 8,
+        subDepartments: [
+          {
+            id: 'cristin-role',
+            name: 'Cristin\'s Role',
+            description: 'Strategic growth initiatives',
+            order: 1,
+            workflows: [
+              {
+                id: 'growth-strategy',
+                name: 'Growth Strategy',
+                description: 'Strategic business growth planning',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'carlos-role',
+            name: 'Carlos\'s Role',
+            description: 'Partnership development',
+            order: 2,
+            workflows: [
+              {
+                id: 'partnership-development',
+                name: 'Partnership Development',
+                description: 'Strategic partnership initiatives',
+                order: 1,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'it',
+        name: 'IT',
+        description: 'Information technology services',
+        order: 9,
+        subDepartments: [
+          {
+            id: 'it-support',
+            name: 'IT Support',
+            description: 'Technology support and infrastructure',
+            order: 1,
+            workflows: [
+              {
+                id: 'system-administration',
+                name: 'System Administration',
+                description: 'IT infrastructure management',
+                order: 1,
+                items: []
+              },
+              {
+                id: 'user-support',
+                name: 'User Support',
+                description: 'Employee technology assistance',
+                order: 2,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'marketing',
+        name: 'Marketing',
+        description: 'Marketing and communications',
+        order: 10,
+        subDepartments: [
+          {
+            id: 'marketing-team',
+            name: 'Marketing Team',
+            description: 'Marketing campaigns and communications',
+            order: 1,
+            workflows: [
+              {
+                id: 'campaign-management',
+                name: 'Campaign Management',
+                description: 'Marketing campaign development and execution',
+                order: 1,
+                items: []
+              },
+              {
+                id: 'brand-management',
+                name: 'Brand Management',
+                description: 'Brand consistency and messaging',
+                order: 2,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'operations',
+        name: 'Operations',
+        description: 'Operational management and support',
+        order: 11,
+        subDepartments: [
+          {
+            id: 'operations-team',
+            name: 'Operations Team',
+            description: 'General operational support',
+            order: 1,
+            workflows: [
+              {
+                id: 'process-improvement',
+                name: 'Process Improvement',
+                description: 'Operational efficiency initiatives',
+                order: 1,
+                items: []
+              },
+              {
+                id: 'quality-assurance',
+                name: 'Quality Assurance',
+                description: 'Quality control and assurance',
+                order: 2,
                 items: []
               }
             ]
@@ -378,7 +759,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         ]
       }
     ],
-    version: 'v2025-06-14-001',
+    version: 'v2025-06-14-002',
     lastModified: new Date().toISOString()
   };
 };
