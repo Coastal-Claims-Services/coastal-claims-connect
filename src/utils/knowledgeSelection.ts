@@ -218,10 +218,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 1,
         subDepartments: [
           {
+            id: 'executive-general',
+            name: 'General',
+            description: 'Universal rules and policies for all Executive team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'executive-general-policies',
+                name: 'Executive General Policies',
+                description: 'Company-wide executive policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'ceo',
             name: 'CEO',
             description: 'Chief Executive Officer',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'strategic-planning',
@@ -236,7 +251,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'president',
             name: 'President',
             description: 'Company President',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'operational-oversight',
@@ -251,7 +266,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'cfo',
             name: 'CFO',
             description: 'Chief Financial Officer',
-            order: 3,
+            order: 4,
             workflows: [
               {
                 id: 'financial-oversight',
@@ -271,10 +286,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 2,
         subDepartments: [
           {
+            id: 'management-general',
+            name: 'General',
+            description: 'Universal policies for all Management team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'management-general-policies',
+                name: 'Management General Policies',
+                description: 'Company-wide management policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'claims-director',
             name: 'Claims Director',
             description: 'Claims management oversight',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'claims-oversight',
@@ -296,7 +326,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'hr',
             name: 'HR (Human Resources)',
             description: 'Human resources management',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'employee-management',
@@ -323,10 +353,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 3,
         subDepartments: [
           {
+            id: 'administrative-general',
+            name: 'General',
+            description: 'Universal policies for all Administrative team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'administrative-general-policies',
+                name: 'Administrative General Policies',
+                description: 'Company-wide administrative policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'onboarding',
             name: 'Onboarding',
             description: 'Client and staff onboarding processes',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'client-onboarding',
@@ -348,7 +393,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'reception',
             name: 'Reception',
             description: 'Front desk and customer service',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'customer-service',
@@ -370,7 +415,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'compliance',
             name: 'Compliance',
             description: 'Regulatory and policy compliance',
-            order: 3,
+            order: 4,
             workflows: [
               {
                 id: 'regulatory-compliance',
@@ -397,10 +442,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 4,
         subDepartments: [
           {
+            id: 'finance-general',
+            name: 'General',
+            description: 'Universal policies for all Finance team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'finance-general-policies',
+                name: 'Finance General Policies',
+                description: 'Company-wide finance policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'accounts-receivable',
             name: 'AR (Accounts Receivable)',
             description: 'Client billing and payment processing',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'billing-process',
@@ -422,7 +482,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'accounts-payable',
             name: 'AP (Accounts Payable)',
             description: 'Vendor payments and expense management',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'expense-processing',
@@ -449,10 +509,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 5,
         subDepartments: [
           {
+            id: 'claims-general',
+            name: 'General',
+            description: 'Universal policies for all Claims team members (e.g., CCS Policy Pro)',
+            order: 1,
+            workflows: [
+              {
+                id: 'claims-general-policies',
+                name: 'Claims General Policies',
+                description: 'Company-wide claims policies and tools like CCS Policy Pro',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'mmc-adjusters',
             name: 'MMC (Management Monitored Claims) Public Adjusters',
             description: 'Management monitored claims processing',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'claim-intake',
@@ -474,7 +549,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'ctg-adjusters',
             name: 'CTG (Cradle to Grave) Public Adjusters',
             description: 'Full service claims management',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'full-service-claims',
@@ -489,7 +564,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'can-network',
             name: 'CAN Network (Coastal Adjuster Network)',
             description: 'Network of coastal adjusters',
-            order: 3,
+            order: 4,
             workflows: [
               {
                 id: 'network-coordination',
@@ -504,7 +579,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'tls',
             name: 'TLS (Team Lead Support)',
             description: 'Team leadership support services',
-            order: 4,
+            order: 5,
             workflows: [
               {
                 id: 'team-support',
@@ -519,7 +594,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'investigation',
             name: 'Investigation',
             description: 'Claims investigation services',
-            order: 5,
+            order: 6,
             workflows: [
               {
                 id: 'claim-investigation',
@@ -534,7 +609,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'estimating',
             name: 'Estimating',
             description: 'Damage estimation and assessment',
-            order: 6,
+            order: 7,
             workflows: [
               {
                 id: 'damage-estimation',
@@ -554,10 +629,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 6,
         subDepartments: [
           {
+            id: 'commercial-general',
+            name: 'General',
+            description: 'Universal policies for all Commercial Claims team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'commercial-general-policies',
+                name: 'Commercial General Policies',
+                description: 'Company-wide commercial claims policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'president-commercial',
             name: 'President of Commercial Claims',
             description: 'Commercial claims leadership',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'commercial-oversight',
@@ -572,7 +662,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'coo-commercial',
             name: '2 COOs',
             description: 'Chief Operating Officers for commercial claims',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'operations-management',
@@ -587,7 +677,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'detailed-adjusters',
             name: 'Detailed Adjusters',
             description: 'Specialized commercial adjusters',
-            order: 3,
+            order: 4,
             workflows: [
               {
                 id: 'detailed-adjustment',
@@ -607,10 +697,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 7,
         subDepartments: [
           {
+            id: 'sales-general',
+            name: 'General',
+            description: 'Universal policies for all Sales team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'sales-general-policies',
+                name: 'Sales General Policies',
+                description: 'Company-wide sales policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'sales-team',
             name: 'Sales Team',
             description: 'Sales representatives and account management',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'lead-generation',
@@ -637,10 +742,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 8,
         subDepartments: [
           {
+            id: 'strategic-general',
+            name: 'General',
+            description: 'Universal policies for all Strategic Growth & Partnerships team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'strategic-general-policies',
+                name: 'Strategic General Policies',
+                description: 'Company-wide strategic growth and partnership policies',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'cristin-role',
             name: 'Cristin\'s Role',
             description: 'Strategic growth initiatives',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'growth-strategy',
@@ -655,7 +775,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'carlos-role',
             name: 'Carlos\'s Role',
             description: 'Partnership development',
-            order: 2,
+            order: 3,
             workflows: [
               {
                 id: 'partnership-development',
@@ -675,10 +795,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 9,
         subDepartments: [
           {
+            id: 'it-general',
+            name: 'General',
+            description: 'Universal policies for all IT team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'it-general-policies',
+                name: 'IT General Policies',
+                description: 'Company-wide IT policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'it-support',
             name: 'IT Support',
             description: 'Technology support and infrastructure',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'system-administration',
@@ -705,10 +840,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 10,
         subDepartments: [
           {
+            id: 'marketing-general',
+            name: 'General',
+            description: 'Universal policies for all Marketing team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'marketing-general-policies',
+                name: 'Marketing General Policies',
+                description: 'Company-wide marketing policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'marketing-team',
             name: 'Marketing Team',
             description: 'Marketing campaigns and communications',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'campaign-management',
@@ -735,10 +885,25 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 11,
         subDepartments: [
           {
+            id: 'operations-general',
+            name: 'General',
+            description: 'Universal policies for all Operations team members',
+            order: 1,
+            workflows: [
+              {
+                id: 'operations-general-policies',
+                name: 'Operations General Policies',
+                description: 'Company-wide operations policies and procedures',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'operations-team',
             name: 'Operations Team',
             description: 'General operational support',
-            order: 1,
+            order: 2,
             workflows: [
               {
                 id: 'process-improvement',
