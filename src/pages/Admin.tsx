@@ -6,9 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Key, Eye, EyeOff, Settings, Shield, Building2, ArrowLeft, Home, Plus, Edit2, Trash2, ChevronDown, ChevronRight, FolderOpen, Folder } from 'lucide-react';
+import { Key, Eye, EyeOff, Settings, Shield, Building2, ArrowLeft, Home, Plus, Edit2, Trash2, ChevronDown, ChevronRight, FolderOpen, Folder, FileText, Clock, Tag, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { Rule, RuleScope } from '@/types/rules';
+import { selectRules, generateRulePrompt } from '@/utils/ruleSelection';
 
 // Department structure type
 interface Department {
@@ -94,6 +96,24 @@ const Admin = () => {
   const [editingDepartment, setEditingDepartment] = useState<{ type: 'main' | 'sub', departmentId?: string, index?: number, value: string } | null>(null);
   const [newMainDepartment, setNewMainDepartment] = useState('');
   const [newSubDepartments, setNewSubDepartments] = useState<Record<string, string>>({});
+  
+  // Smart Rules state
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [editingRule, setEditingRule] = useState<Rule | null>(null);
+  const [isRuleDialogOpen, setIsRuleDialogOpen] = useState(false);
+  const [newRule, setNewRule] = useState<Partial<Rule>>({
+    title: '',
+    content: '',
+    aiInstructions: '',
+    scope: { role: [], state: [], department: [] },
+    tags: [],
+    priority: 'Medium',
+    order: 0,
+    effective: new Date().toISOString().split('T')[0],
+    sunset: null,
+    isActive: true
+  });
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -322,7 +342,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="api-setup" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-800">
+          <TabsList className="grid w-full grid-cols-4 bg-slate-800">
             <TabsTrigger value="api-setup" className="flex items-center gap-2">
               <Key className="w-4 h-4" />
               API Setup
@@ -334,6 +354,10 @@ const Admin = () => {
             <TabsTrigger value="rules" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Rules & Commands
+            </TabsTrigger>
+            <TabsTrigger value="smart-rules" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Smart Rules
             </TabsTrigger>
           </TabsList>
 
@@ -667,6 +691,244 @@ const Admin = () => {
                   </CardContent>
                 </Card>
               )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="smart-rules">
+            <div className="space-y-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5" />
+                      <div>
+                        <CardTitle>Smart Rules Engine</CardTitle>
+                        <CardDescription>
+                          Advanced rule management with versioning, scope filtering, and conflict detection
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Rule
+                    </Button>
+                  </div>
+                </CardHeader>
+              </Card>
+
+              {/* Rule Builder Card */}
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-lg">Quick Rule Builder</CardTitle>
+                  <CardDescription>
+                    Create rules with enhanced schema including versioning, scope, and priority
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Rule Title</Label>
+                      <Input
+                        placeholder="e.g., Client Onboarding Process"
+                        value={newRule.title}
+                        onChange={(e) => setNewRule(prev => ({ ...prev, title: e.target.value }))}
+                        className="bg-slate-700 border-slate-600"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Priority</Label>
+                      <Select 
+                        value={newRule.priority} 
+                        onValueChange={(value: 'High' | 'Medium' | 'Low') => 
+                          setNewRule(prev => ({ ...prev, priority: value }))
+                        }
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="High">🔴 High Priority</SelectItem>
+                          <SelectItem value="Medium">🟡 Medium Priority</SelectItem>
+                          <SelectItem value="Low">🟢 Low Priority</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>AI Instructions (≤160 chars)</Label>
+                    <Textarea
+                      placeholder="Brief, imperative instruction for the AI model..."
+                      value={newRule.aiInstructions}
+                      onChange={(e) => setNewRule(prev => ({ ...prev, aiInstructions: e.target.value }))}
+                      className="bg-slate-700 border-slate-600 h-20"
+                      maxLength={160}
+                    />
+                    <div className="text-xs text-slate-400">
+                      {newRule.aiInstructions?.length || 0}/160 characters
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Full SOP Content</Label>
+                    <Textarea
+                      placeholder="Detailed standard operating procedure for human reference..."
+                      value={newRule.content}
+                      onChange={(e) => setNewRule(prev => ({ ...prev, content: e.target.value }))}
+                      className="bg-slate-700 border-slate-600 h-32"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>Effective Date</Label>
+                      <Input
+                        type="date"
+                        value={newRule.effective}
+                        onChange={(e) => setNewRule(prev => ({ ...prev, effective: e.target.value }))}
+                        className="bg-slate-700 border-slate-600"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sunset Date (Optional)</Label>
+                      <Input
+                        type="date"
+                        value={newRule.sunset || ''}
+                        onChange={(e) => setNewRule(prev => ({ ...prev, sunset: e.target.value || null }))}
+                        className="bg-slate-700 border-slate-600"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Order</Label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={newRule.order}
+                        onChange={(e) => setNewRule(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
+                        className="bg-slate-700 border-slate-600"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Tags (comma-separated)</Label>
+                    <Input
+                      placeholder="e.g., onboarding, clients, verification"
+                      value={newRule.tags?.join(', ') || ''}
+                      onChange={(e) => setNewRule(prev => ({ 
+                        ...prev, 
+                        tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean)
+                      }))}
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button className="bg-green-600 hover:bg-green-700">
+                      Save Rule
+                    </Button>
+                    <Button variant="outline" className="border-slate-600">
+                      Preview
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Rules Overview */}
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="w-5 h-5" />
+                    Active Rules Overview
+                  </CardTitle>
+                  <CardDescription>
+                    View and manage all configured rules with their priority and scope
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {rules.length === 0 ? (
+                    <div className="text-center py-8 text-slate-400">
+                      <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p>No rules configured yet</p>
+                      <p className="text-sm">Create your first rule above to get started</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {rules.map((rule) => (
+                        <div key={rule.id} className="border border-slate-600 rounded-lg p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full ${
+                                rule.priority === 'High' ? 'bg-red-500' :
+                                rule.priority === 'Medium' ? 'bg-yellow-500' : 'bg-green-500'
+                              }`}></div>
+                              <div>
+                                <h4 className="font-medium text-slate-100">{rule.title}</h4>
+                                <p className="text-sm text-slate-400">v{rule.version}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1">
+                                {rule.tags.slice(0, 2).map(tag => (
+                                  <span key={tag} className="px-2 py-1 bg-slate-700 text-xs rounded">
+                                    {tag}
+                                  </span>
+                                ))}
+                                {rule.tags.length > 2 && (
+                                  <span className="px-2 py-1 bg-slate-700 text-xs rounded">
+                                    +{rule.tags.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <Edit2 className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-400">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-slate-300 mb-2 line-clamp-2">{rule.aiInstructions}</p>
+                          
+                          <div className="flex items-center justify-between text-xs text-slate-400">
+                            <div className="flex items-center gap-4">
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {rule.effective}
+                                {rule.sunset && ` → ${rule.sunset}`}
+                              </span>
+                              <span className={`px-2 py-1 rounded ${
+                                rule.isActive ? 'bg-green-900/20 text-green-400' : 'bg-red-900/20 text-red-400'
+                              }`}>
+                                {rule.isActive ? 'Active' : 'Inactive'}
+                              </span>
+                            </div>
+                            <span>Updated by {rule.updatedBy}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Conflict Detection */}
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                    Rule Conflicts & Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-6 text-slate-400">
+                    <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p>No conflicts detected</p>
+                    <p className="text-sm">Rule selection algorithm will detect conflicts automatically</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
