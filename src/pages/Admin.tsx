@@ -345,17 +345,13 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="api-setup" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-800">
+          <TabsList className="grid w-full grid-cols-2 bg-slate-800">
             <TabsTrigger value="api-setup" className="flex items-center gap-2">
               <Key className="w-4 h-4" />
               API Setup
             </TabsTrigger>
             <TabsTrigger value="departments" className="flex items-center gap-2">
               <Building2 className="w-4 h-4" />
-              Departments
-            </TabsTrigger>
-            <TabsTrigger value="knowledge" className="flex items-center gap-2">
-              <Settings className="w-4 h-4" />
               Knowledge Management
             </TabsTrigger>
           </TabsList>
@@ -446,177 +442,15 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="departments">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
-                  <CardTitle>Department Management</CardTitle>
-                </div>
-                <CardDescription>
-                  Manage your organization's department structure. Add, edit, or remove departments and sub-departments.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Department Tree View */}
-                <div className="space-y-2">
-                  {departments.map((dept) => (
-                    <div key={dept.id} className="border border-slate-600 rounded-lg p-3">
-                      {/* Main Department */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleDepartmentExpansion(dept.id)}
-                            className="h-6 w-6 p-0"
-                          >
-                            {expandedDepartments.has(dept.id) ? (
-                              <ChevronDown className="h-4 w-4" />
-                            ) : (
-                              <ChevronRight className="h-4 w-4" />
-                            )}
-                          </Button>
-                          {expandedDepartments.has(dept.id) ? (
-                            <FolderOpen className="h-4 w-4 text-blue-400" />
-                          ) : (
-                            <Folder className="h-4 w-4 text-blue-400" />
-                          )}
-                          
-                          {editingDepartment?.type === 'main' && editingDepartment.departmentId === dept.id ? (
-                            <div className="flex items-center gap-2">
-                              <Input
-                                value={editingDepartment.value}
-                                onChange={(e) => setEditingDepartment({ ...editingDepartment, value: e.target.value })}
-                                className="h-6 text-sm bg-slate-700 border-slate-600"
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') saveEdit();
-                                  if (e.key === 'Escape') cancelEdit();
-                                }}
-                                autoFocus
-                              />
-                              <Button onClick={saveEdit} size="sm" className="h-6 px-2">Save</Button>
-                              <Button onClick={cancelEdit} size="sm" variant="outline" className="h-6 px-2">Cancel</Button>
-                            </div>
-                          ) : (
-                            <span className="font-medium text-slate-100">{dept.name}</span>
-                          )}
-                        </div>
-                        
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => startEditing('main', dept.id)}
-                            className="h-6 w-6 p-0 text-slate-400 hover:text-slate-100"
-                          >
-                            <Edit2 className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => deleteMainDepartment(dept.id)}
-                            className="h-6 w-6 p-0 text-red-400 hover:text-red-300"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      {/* Sub-departments */}
-                      {expandedDepartments.has(dept.id) && (
-                        <div className="ml-6 mt-2 space-y-1">
-                          {dept.subDepartments.map((subDept, index) => (
-                            <div key={index} className="flex items-center justify-between py-1">
-                              {editingDepartment?.type === 'sub' && 
-                               editingDepartment.departmentId === dept.id && 
-                               editingDepartment.index === index ? (
-                                <div className="flex items-center gap-2 flex-1">
-                                  <Input
-                                    value={editingDepartment.value}
-                                    onChange={(e) => setEditingDepartment({ ...editingDepartment, value: e.target.value })}
-                                    className="h-6 text-sm bg-slate-700 border-slate-600"
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') saveEdit();
-                                      if (e.key === 'Escape') cancelEdit();
-                                    }}
-                                    autoFocus
-                                  />
-                                  <Button onClick={saveEdit} size="sm" className="h-6 px-2">Save</Button>
-                                  <Button onClick={cancelEdit} size="sm" variant="outline" className="h-6 px-2">Cancel</Button>
-                                </div>
-                              ) : (
-                                <>
-                                  <span className="text-slate-300 text-sm">• {subDept}</span>
-                                  <div className="flex items-center gap-1">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => startEditing('sub', dept.id, index)}
-                                      className="h-5 w-5 p-0 text-slate-400 hover:text-slate-100"
-                                    >
-                                      <Edit2 className="h-3 w-3" />
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => deleteSubDepartment(dept.id, index)}
-                                      className="h-5 w-5 p-0 text-red-400 hover:text-red-300"
-                                    >
-                                      <Trash2 className="h-3 w-3" />
-                                    </Button>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          ))}
-                          
-                          {/* Add Sub-department */}
-                          <div className="flex items-center gap-2 pt-2">
-                            <Input
-                              placeholder="New sub-department name..."
-                              value={newSubDepartments[dept.id] || ''}
-                              onChange={(e) => setNewSubDepartments(prev => ({ ...prev, [dept.id]: e.target.value }))}
-                              className="h-7 text-sm bg-slate-700 border-slate-600"
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') addSubDepartment(dept.id);
-                              }}
-                            />
-                            <Button
-                              onClick={() => addSubDepartment(dept.id)}
-                              size="sm"
-                              className="h-7 px-3 bg-green-600 hover:bg-green-700"
-                            >
-                              <Plus className="h-3 w-3 mr-1" />
-                              Add Sub-department
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Add Main Department */}
-                <div className="flex items-center gap-2 pt-4 border-t border-slate-600">
-                  <Input
-                    placeholder="New main department name..."
-                    value={newMainDepartment}
-                    onChange={(e) => setNewMainDepartment(e.target.value)}
-                    className="bg-slate-700 border-slate-600"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') addMainDepartment();
-                    }}
-                  />
-                  <Button
-                    onClick={addMainDepartment}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Main Department
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <KnowledgeTree
+              knowledgeTree={knowledgeTree}
+              onUpdate={(tree) => {
+                setKnowledgeTree(tree);
+                localStorage.setItem('knowledge_tree', JSON.stringify(tree));
+              }}
+              expansion={treeExpansion}
+              onExpansionChange={setTreeExpansion}
+            />
           </TabsContent>
 
         </Tabs>

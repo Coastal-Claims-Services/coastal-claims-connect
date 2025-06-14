@@ -218,23 +218,46 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         order: 1,
         subDepartments: [
           {
+            id: 'claims-director',
+            name: 'Claims Director',
+            description: 'Claims management oversight',
+            order: 1,
+            workflows: [
+              {
+                id: 'policy-review',
+                name: 'Policy Review Process',
+                description: 'Review and approve policy changes',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'hr',
+            name: 'HR (Human Resources)',
+            description: 'Human resources management',
+            order: 2,
+            workflows: [
+              {
+                id: 'employee-onboarding',
+                name: 'Employee Onboarding',
+                description: 'New employee integration process',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
             id: 'onboarding',
             name: 'Onboarding',
             description: 'Client and staff onboarding processes',
-            order: 1,
+            order: 3,
             workflows: [
               {
                 id: 'client-onboarding',
                 name: 'Client Onboarding',
                 description: 'Process for bringing new clients into the system',
                 order: 1,
-                items: []
-              },
-              {
-                id: 'staff-onboarding',
-                name: 'Staff Onboarding',
-                description: 'Process for new employee integration',
-                order: 2,
                 items: []
               }
             ]
@@ -243,7 +266,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
             id: 'compliance',
             name: 'Compliance',
             description: 'Regulatory and policy compliance',
-            order: 2,
+            order: 4,
             workflows: [
               {
                 id: 'regulatory-compliance',
@@ -257,14 +280,52 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
         ]
       },
       {
-        id: 'claims',
-        name: 'Claims',
-        description: 'Claims processing and management',
+        id: 'finance',
+        name: 'Finance',
+        description: 'Financial operations and accounting',
         order: 2,
         subDepartments: [
           {
+            id: 'accounts-receivable',
+            name: 'AR (Accounts Receivable)',
+            description: 'Client billing and payment processing',
+            order: 1,
+            workflows: [
+              {
+                id: 'billing-process',
+                name: 'Billing Process',
+                description: 'Client invoicing and payment tracking',
+                order: 1,
+                items: []
+              }
+            ]
+          },
+          {
+            id: 'accounts-payable',
+            name: 'AP (Accounts Payable)',
+            description: 'Vendor payments and expense management',
+            order: 2,
+            workflows: [
+              {
+                id: 'expense-processing',
+                name: 'Expense Processing',
+                description: 'Process and approve expenses',
+                order: 1,
+                items: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'claims',
+        name: 'Claims',
+        description: 'Claims processing and management',
+        order: 3,
+        subDepartments: [
+          {
             id: 'mmc-adjusters',
-            name: 'MMC Public Adjusters',
+            name: 'MMC (Management Monitored Claims) Public Adjusters',
             description: 'Management Monitored Claims adjusters',
             order: 1,
             workflows: [
@@ -286,7 +347,7 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
           },
           {
             id: 'ctg-adjusters',
-            name: 'CTG Public Adjusters',
+            name: 'CTG (Cradle to Grave) Public Adjusters',
             description: 'Cradle to Grave claims management',
             order: 2,
             workflows: [
@@ -298,25 +359,17 @@ export const createDefaultKnowledgeTree = (): KnowledgeTree => {
                 items: []
               }
             ]
-          }
-        ]
-      },
-      {
-        id: 'finance',
-        name: 'Finance',
-        description: 'Financial operations and accounting',
-        order: 3,
-        subDepartments: [
+          },
           {
-            id: 'accounts-receivable',
-            name: 'Accounts Receivable',
-            description: 'Client billing and payment processing',
-            order: 1,
+            id: 'can-network',
+            name: 'CAN Network (Coastal Adjuster Network)',
+            description: 'Network of coastal adjusters',
+            order: 3,
             workflows: [
               {
-                id: 'billing-process',
-                name: 'Billing Process',
-                description: 'Client invoicing and payment tracking',
+                id: 'network-coordination',
+                name: 'Network Coordination',
+                description: 'Coordinate adjuster network activities',
                 order: 1,
                 items: []
               }
