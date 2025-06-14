@@ -11,8 +11,27 @@ import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 const availableDepartments = [
-  'CAN program', 'Claims', 'Operations', 'Policy', 'Underwriting',
-  'Field Operations', 'Legal', 'Compliance', 'Customer Service', 'Support'
+  // Executive
+  'CEO', 'President', 'CFO',
+  
+  // Management  
+  'Claims Director', 'HR (Human Resources)', 'Administrative', 
+  'Onboarding', 'Reception', 'Compliance',
+  
+  // Finance
+  'AR (Accounts Receivable)', 'AP (Accounts Payable)',
+  
+  // Claims
+  'MMC (Management Monitored Claims) Public Adjusters',
+  'CTG (Cradle to Grave) Public Adjusters', 
+  'CAN Network (Coastal Adjuster Network)',
+  'TLS (Team Lead Support)', 'Investigation', 'Estimating',
+  
+  // Commercial Claims
+  'Commercial Claims',
+  
+  // Other Departments
+  'Sales Team', 'Strategic Growth & Partnerships', 'IT', 'Marketing', 'Operations'
 ];
 
 const Admin = () => {
