@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { KnowledgeTree as KnowledgeTreeType, Department, SubDepartment, Workflow, KnowledgeItem, TreeNodeExpansion, EditingState, ContentType } from '@/types/knowledge';
 import { KnowledgeItemForm } from './KnowledgeItemForm';
 
@@ -442,14 +443,16 @@ export const KnowledgeTree: React.FC<KnowledgeTreeProps> = ({
                                 <Plus className="h-3 w-3" />
                               </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-slate-800 border-slate-700 text-slate-100 max-w-3xl">
+                            <DialogContent className="bg-slate-800 border-slate-700 text-slate-100 max-w-4xl w-[95vw] h-[90vh]">
                               <DialogHeader>
                                 <DialogTitle>Add Knowledge Item</DialogTitle>
                               </DialogHeader>
-                              <KnowledgeItemForm 
-                                onSubmit={addKnowledgeItem}
-                                parentPath={`${dept.name} > ${subDept.name} > ${workflow.name}`}
-                              />
+                              <ScrollArea className="h-full pr-6">
+                                <KnowledgeItemForm 
+                                  onSubmit={addKnowledgeItem}
+                                  parentPath={`${dept.name} > ${subDept.name} > ${workflow.name}`}
+                                />
+                              </ScrollArea>
                             </DialogContent>
                           </Dialog>
                           <Button
