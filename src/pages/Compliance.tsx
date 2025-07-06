@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Shield, 
   AlertTriangle, 
@@ -197,6 +199,14 @@ const Compliance = () => {
   const [editingStatus, setEditingStatus] = useState(false);
   const [tempStatus, setTempStatus] = useState<'compliant' | 'warning' | 'restricted'>('compliant');
   const [statusNotes, setStatusNotes] = useState('');
+  const [editingEntityLicenses, setEditingEntityLicenses] = useState(false);
+  const [editingLicenseId, setEditingLicenseId] = useState<number | null>(null);
+  const [licenseFormData, setLicenseFormData] = useState({
+    type: '',
+    number: '',
+    expires: '',
+    status: 'compliant' as 'compliant' | 'warning' | 'critical'
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -245,6 +255,29 @@ const Compliance = () => {
     console.log(`Notes: ${statusNotes}`);
     setEditingStatus(false);
     setStatusNotes('');
+  };
+
+  const handleDeleteLicense = (licenseId: number) => {
+    // In a real app, this would delete from backend
+    console.log(`Delete license ID: ${licenseId} from ${selectedEntityState}`);
+    setEditingEntityLicenses(false);
+  };
+
+  const handleEditLicense = (license: any) => {
+    setLicenseFormData({
+      type: license.type,
+      number: license.number,
+      expires: license.expires,
+      status: license.status
+    });
+    setEditingLicenseId(license.id);
+  };
+
+  const handleSaveLicense = () => {
+    // In a real app, this would save to backend
+    console.log(`Save license ID ${editingLicenseId}:`, licenseFormData);
+    setEditingLicenseId(null);
+    setLicenseFormData({ type: '', number: '', expires: '', status: 'compliant' });
   };
 
   return (
@@ -553,14 +586,138 @@ const Compliance = () => {
                             <Shield className="h-5 w-5 mr-2 text-blue-400" />
                             Entity Licenses
                           </CardTitle>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Edit
-                          </Button>
+                          <Dialog open={editingEntityLicenses} onOpenChange={setEditingEntityLicenses}>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                                onClick={() => setEditingEntityLicenses(true)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Manage Entity Licenses - {selectedEntityState}</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Add or remove entity licenses for this state
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                {getStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
+                                  <div key={license.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                                    <div>
+                                      <h4 className="font-medium text-white">{license.type}</h4>
+                                      <p className="text-sm text-slate-400">License #: {license.number}</p>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleDeleteLicense(license.id)}
+                                      className="text-red-400 border-red-400 hover:bg-red-400/10"
+                                    >
+                                      Delete
+                                    </Button>
+                                  </div>
+                                ))}
+                                
+                                <div className="p-3 border-2 border-dashed border-slate-600 rounded-lg">
+                                  <Button variant="ghost" className="w-full text-slate-400 hover:text-white">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add New License Type
+                                  </Button>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingEntityLicenses(false)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Close
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                          
+                          {/* Individual License Edit Dialog */}
+                          <Dialog open={editingLicenseId !== null} onOpenChange={() => setEditingLicenseId(null)}>
+                            <DialogContent className="bg-slate-800 border-slate-700">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Edit License Details</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Update the license information below
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="licenseType" className="text-white">License Type</Label>
+                                  <Input
+                                    id="licenseType"
+                                    value={licenseFormData.type}
+                                    onChange={(e) => setLicenseFormData({...licenseFormData, type: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="licenseNumber" className="text-white">License Number</Label>
+                                  <Input
+                                    id="licenseNumber"
+                                    value={licenseFormData.number}
+                                    onChange={(e) => setLicenseFormData({...licenseFormData, number: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="expirationDate" className="text-white">Expiration Date</Label>
+                                  <Input
+                                    id="expirationDate"
+                                    type="date"
+                                    value={licenseFormData.expires}
+                                    onChange={(e) => setLicenseFormData({...licenseFormData, expires: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="licenseStatus" className="text-white">Status</Label>
+                                  <Select value={licenseFormData.status} onValueChange={(value) => setLicenseFormData({...licenseFormData, status: value as 'compliant' | 'warning' | 'critical'})}>
+                                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-slate-700 border-slate-600">
+                                      <SelectItem value="compliant" className="text-white hover:bg-slate-600">Compliant</SelectItem>
+                                      <SelectItem value="warning" className="text-white hover:bg-slate-600">Warning</SelectItem>
+                                      <SelectItem value="critical" className="text-white hover:bg-slate-600">Critical</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingLicenseId(null)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleSaveLicense}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  Save Changes
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
@@ -578,7 +735,12 @@ const Compliance = () => {
                                   <Upload className="h-3 w-3 mr-1" />
                                   Upload
                                 </Button>
-                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="text-slate-300 border-slate-600"
+                                  onClick={() => handleEditLicense(license)}
+                                >
                                   <Edit className="h-3 w-3 mr-1" />
                                   Edit
                                 </Button>
