@@ -1373,66 +1373,24 @@ const Compliance = () => {
                             <User className="h-5 w-5 mr-2 text-purple-400" />
                             Registered Agent
                           </CardTitle>
-                          <Dialog open={editingRegisteredAgent} onOpenChange={setEditingRegisteredAgent}>
-                            <DialogTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                                onClick={() => setEditingRegisteredAgent(true)}
-                              >
-                                <Edit className="h-4 w-4 mr-1" />
-                                Edit
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="bg-slate-800 border-slate-700">
-                              <DialogHeader>
-                                <DialogTitle className="text-white">Manage Registered Agent - {selectedEntityState}</DialogTitle>
-                                <DialogDescription className="text-slate-400">
-                                  Update registered agent information for this state
-                                </DialogDescription>
-                              </DialogHeader>
-                              
-                              <div className="space-y-4">
-                                <div className="p-3 bg-slate-700/30 rounded-lg">
-                                  <div className="flex items-center justify-between">
-                                    <div>
-                                    <h4 className="font-medium text-white">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
-                                    <p className="text-sm text-slate-400">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
-                                    </div>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={handleEditAgent}
-                                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10"
-                                    >
-                                      Edit Details
-                                    </Button>
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <DialogFooter>
-                                <Button
-                                  variant="outline"
-                                  onClick={() => setEditingRegisteredAgent(false)}
-                                  className="text-slate-300 border-slate-600"
-                                >
-                                  Close
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                            onClick={handleEditAgent}
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="p-4 bg-slate-700/30 rounded-lg">
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-white">{getStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
-                            <div className={`w-2 h-2 rounded-full ${getStatusDot(getStateEntityDetails(selectedEntityState).registeredAgent.status)}`}></div>
+                            <h4 className="font-medium text-white">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
+                            <div className={`w-2 h-2 rounded-full ${getStatusDot(getCurrentStateEntityDetails(selectedEntityState).registeredAgent.status)}`}></div>
                           </div>
                           <div className="space-y-1 text-sm">
-                            <h4 className="font-medium text-white">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
                             <p className="text-slate-300">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
                             <p className="text-slate-300">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.phone}</p>
                             <div className="flex items-center gap-2 mt-2">
@@ -1440,15 +1398,15 @@ const Compliance = () => {
                                 <Upload className="h-3 w-3 mr-1" />
                                 Upload
                               </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
-                                  className="text-slate-300 border-slate-600"
-                                  onClick={() => handleEditLocation(location)}
-                                >
-                                  <Edit className="h-3 w-3 mr-1" />
-                                  Edit
-                                </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="text-slate-300 border-slate-600"
+                                onClick={handleEditAgent}
+                              >
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
+                              </Button>
                             </div>
                           </div>
                         </div>
