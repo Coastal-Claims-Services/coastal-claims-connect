@@ -161,226 +161,215 @@ const AdjusterStates = () => {
             </div>
           </div>
 
-          <Tabs defaultValue="license" className="space-y-6">
-            <TabsList className="bg-slate-800 border-slate-700">
-              <TabsTrigger value="license" className="data-[state=active]:bg-slate-700">License</TabsTrigger>
-              <TabsTrigger value="bond" className="data-[state=active]:bg-slate-700">Bond</TabsTrigger>
-              <TabsTrigger value="contract" className="data-[state=active]:bg-slate-700">Contract</TabsTrigger>
-              <TabsTrigger value="ce" className="data-[state=active]:bg-slate-700">Continuing Education</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="license">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-slate-100">License Information</CardTitle>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* License Information */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-slate-100">License Information</CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setEditingLicense(true)}
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {licenseData.isLicensed && licenseData.license ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-slate-300">License Number</Label>
+                      <p className="text-slate-100 font-mono">{licenseData.license.number}</p>
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">License Type</Label>
+                      <p className="text-slate-100">{licenseData.license.type}</p>
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Expires</Label>
+                      <p className="text-slate-100">{licenseData.license.expires}</p>
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Status</Label>
+                      <Badge className={`${getStatusColor(licenseData.license.status)} text-white`}>
+                        {licenseData.license.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Shield className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                    <p className="text-slate-400 mb-4">No license on file for {selectedJurisdiction}</p>
                     <Button 
-                      variant="outline" 
-                      size="sm"
                       onClick={() => setEditingLicense(true)}
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                      className="bg-green-600 hover:bg-green-700"
                     >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add License
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {licenseData.isLicensed && licenseData.license ? (
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Bond Information */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-slate-100">Bond Information</CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setEditingBond(true)}
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {licenseData.isLicensed && licenseData.bond ? (
+                  <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-slate-300">License Number</Label>
-                        <p className="text-slate-100 font-mono">{licenseData.license.number}</p>
+                        <Label className="text-slate-300">Bond Type</Label>
+                        <p className="text-slate-100">{licenseData.bond.type}</p>
                       </div>
                       <div>
-                        <Label className="text-slate-300">License Type</Label>
-                        <p className="text-slate-100">{licenseData.license.type}</p>
+                        <Label className="text-slate-300">Amount</Label>
+                        <p className="text-slate-100 font-bold">{licenseData.bond.amount}</p>
+                      </div>
+                      <div>
+                        <Label className="text-slate-300">Carrier</Label>
+                        <p className="text-slate-100">{licenseData.bond.carrier}</p>
                       </div>
                       <div>
                         <Label className="text-slate-300">Expires</Label>
-                        <p className="text-slate-100">{licenseData.license.expires}</p>
+                        <p className="text-slate-100">{licenseData.bond.expires}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" checked={licenseData.bond.useENO} readOnly />
+                      <Label className="text-slate-300">Using ENO Insurance instead of bond</Label>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Building className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                    <p className="text-slate-400 mb-4">No bond information available</p>
+                    <Button 
+                      onClick={() => setEditingBond(true)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Bond
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Contract Information */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-slate-100">State Contract Requirements</CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setEditingContract(true)}
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {licenseData.isLicensed && licenseData.contract ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" checked={licenseData.contract.hasStateContract} readOnly />
+                      <Label className="text-slate-300">State requires specific contract</Label>
+                    </div>
+                    {licenseData.contract.hasStateContract && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
+                        <div>
+                          <Label className="text-slate-300">Contract Type</Label>
+                          <p className="text-slate-100">{licenseData.contract.contractType || 'Not specified'}</p>
+                        </div>
+                        <div>
+                          <Label className="text-slate-300">Status</Label>
+                          <Badge className={licenseData.contract.approved ? 'bg-green-600' : 'bg-red-600'}>
+                            {licenseData.contract.approved ? 'Approved' : 'Pending'}
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                    <p className="text-slate-400">Contract information not available</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Continuing Education */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-slate-100">Continuing Education</CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setEditingCE(true)}
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {licenseData.isLicensed && licenseData.continuingEducation ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-slate-300">Required Credits</Label>
+                        <p className="text-slate-100 font-bold">{licenseData.continuingEducation.required}</p>
                       </div>
                       <div>
-                        <Label className="text-slate-300">Status</Label>
-                        <Badge className={`${getStatusColor(licenseData.license.status)} text-white`}>
-                          {licenseData.license.status}
-                        </Badge>
+                        <Label className="text-slate-300">Completed Credits</Label>
+                        <p className="text-slate-100 font-bold">{licenseData.continuingEducation.completed}</p>
+                      </div>
+                      <div>
+                        <Label className="text-slate-300">Deadline</Label>
+                        <p className="text-slate-100">{licenseData.continuingEducation.deadline}</p>
                       </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Shield className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-                      <p className="text-slate-400 mb-4">No license on file for {selectedJurisdiction}</p>
-                      <Button 
-                        onClick={() => setEditingLicense(true)}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add License
-                      </Button>
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" checked={licenseData.continuingEducation.reciprocityWithHome} readOnly />
+                      <Label className="text-slate-300">
+                        Reciprocity with home state ({licenseData.continuingEducation.homeState})
+                      </Label>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="bond">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-slate-100">Bond Information</CardTitle>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setEditingBond(true)}
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {licenseData.isLicensed && licenseData.bond ? (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-slate-300">Bond Type</Label>
-                          <p className="text-slate-100">{licenseData.bond.type}</p>
-                        </div>
-                        <div>
-                          <Label className="text-slate-300">Amount</Label>
-                          <p className="text-slate-100 font-bold">{licenseData.bond.amount}</p>
-                        </div>
-                        <div>
-                          <Label className="text-slate-300">Carrier</Label>
-                          <p className="text-slate-100">{licenseData.bond.carrier}</p>
-                        </div>
-                        <div>
-                          <Label className="text-slate-300">Expires</Label>
-                          <p className="text-slate-100">{licenseData.bond.expires}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input type="checkbox" checked={licenseData.bond.useENO} readOnly />
-                        <Label className="text-slate-300">Using ENO Insurance instead of bond</Label>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Building className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-                      <p className="text-slate-400 mb-4">No bond information available</p>
-                      <Button 
-                        onClick={() => setEditingBond(true)}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Bond
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="contract">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-slate-100">State Contract Requirements</CardTitle>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setEditingContract(true)}
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
+                ) : (
+                  <div className="text-center py-8">
+                    <Award className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                    <p className="text-slate-400">CE information not available</p>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {licenseData.isLicensed && licenseData.contract ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <input type="checkbox" checked={licenseData.contract.hasStateContract} readOnly />
-                        <Label className="text-slate-300">State requires specific contract</Label>
-                      </div>
-                      {licenseData.contract.hasStateContract && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
-                          <div>
-                            <Label className="text-slate-300">Contract Type</Label>
-                            <p className="text-slate-100">{licenseData.contract.contractType || 'Not specified'}</p>
-                          </div>
-                          <div>
-                            <Label className="text-slate-300">Status</Label>
-                            <Badge className={licenseData.contract.approved ? 'bg-green-600' : 'bg-red-600'}>
-                              {licenseData.contract.approved ? 'Approved' : 'Pending'}
-                            </Badge>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <FileText className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-                      <p className="text-slate-400">Contract information not available</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="ce">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-slate-100">Continuing Education</CardTitle>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setEditingCE(true)}
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {licenseData.isLicensed && licenseData.continuingEducation ? (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label className="text-slate-300">Required Credits</Label>
-                          <p className="text-slate-100 font-bold">{licenseData.continuingEducation.required}</p>
-                        </div>
-                        <div>
-                          <Label className="text-slate-300">Completed Credits</Label>
-                          <p className="text-slate-100 font-bold">{licenseData.continuingEducation.completed}</p>
-                        </div>
-                        <div>
-                          <Label className="text-slate-300">Deadline</Label>
-                          <p className="text-slate-100">{licenseData.continuingEducation.deadline}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input type="checkbox" checked={licenseData.continuingEducation.reciprocityWithHome} readOnly />
-                        <Label className="text-slate-300">
-                          Reciprocity with home state ({licenseData.continuingEducation.homeState})
-                        </Label>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Award className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-                      <p className="text-slate-400">CE information not available</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Edit Dialogs */}
           <Dialog open={editingLicense} onOpenChange={setEditingLicense}>
