@@ -254,6 +254,10 @@ const Compliance = () => {
   const [employeeViewMode, setEmployeeViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [employeeDetailOpen, setEmployeeDetailOpen] = useState(false);
+  
+  // Search mode state
+  const [searchMode, setSearchMode] = useState<'adjusters' | 'state'>('adjusters');
+  const [selectedState, setSelectedState] = useState('all');
 
   // State management for actual data that can be edited
   const [stateEntityData, setStateEntityData] = useState<{[key: string]: any}>({});
@@ -523,8 +527,17 @@ const Compliance = () => {
   const getFilteredEmployees = () => {
     let filtered = employees;
 
-    // Search filter
-    if (employeeSearchTerm) {
+    // State-based filtering (only show employees with licenses in selected state)
+    if (searchMode === 'state' && selectedState !== 'all') {
+      filtered = filtered.filter(emp => 
+        emp.licenses.some(license => 
+          license.state === selectedState && license.status === 'active'
+        )
+      );
+    }
+
+    // Search filter (only applies in adjusters mode)
+    if (searchMode === 'adjusters' && employeeSearchTerm) {
       filtered = filtered.filter(emp => 
         emp.name.toLowerCase().includes(employeeSearchTerm.toLowerCase()) ||
         emp.role.toLowerCase().includes(employeeSearchTerm.toLowerCase()) ||
@@ -532,17 +545,17 @@ const Compliance = () => {
       );
     }
 
-    // Location filter
-    if (employeeLocationFilter !== 'all') {
+    // Location filter (only applies in adjusters mode)
+    if (searchMode === 'adjusters' && employeeLocationFilter !== 'all') {
       filtered = filtered.filter(emp => emp.location.includes(employeeLocationFilter));
     }
 
-    // Role filter
-    if (employeeRoleFilter !== 'all') {
+    // Role filter (only applies in adjusters mode)
+    if (searchMode === 'adjusters' && employeeRoleFilter !== 'all') {
       filtered = filtered.filter(emp => emp.role.toLowerCase().includes(employeeRoleFilter.toLowerCase()));
     }
 
-    // Compliance filter
+    // Compliance filter (applies in both modes)
     if (employeeComplianceFilter !== 'all') {
       filtered = filtered.filter(emp => emp.complianceStatus === employeeComplianceFilter);
     }
@@ -575,6 +588,13 @@ const Compliance = () => {
       return emp.role;
     });
     return [...new Set(roles)];
+  };
+
+  const getUniqueStates = () => {
+    const states = employees.flatMap(emp => 
+      emp.licenses.filter(license => license.status === 'active').map(license => license.state)
+    );
+    return [...new Set(states)].sort();
   };
 
   return (
@@ -1755,60 +1775,125 @@ const Compliance = () => {
               <Card className="bg-slate-800 border-slate-700">
                 <CardContent className="p-4">
                   <div className="flex flex-col lg:flex-row gap-4">
-                    {/* Search */}
-                    <div className="flex-1">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
-                        <Input
-                          placeholder="Search by name, role, or email..."
-                          value={employeeSearchTerm}
-                          onChange={(e) => setEmployeeSearchTerm(e.target.value)}
-                          className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
-                        />
-                      </div>
+                    {/* Search Mode Toggle */}
+                    <div className="flex items-center gap-2 bg-slate-700 rounded-lg p-1">
+                      <Button
+                        variant={searchMode === 'adjusters' ? 'secondary' : 'ghost'}
+                        size="sm"
+                        onClick={() => {
+                          setSearchMode('adjusters');
+                          setSelectedState('all');
+                        }}
+                        className={searchMode === 'adjusters' 
+                          ? 'bg-secondary text-secondary-foreground' 
+                          : 'text-slate-300 hover:bg-slate-600'
+                        }
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        By Adjusters
+                      </Button>
+                      <Button
+                        variant={searchMode === 'state' ? 'secondary' : 'ghost'}
+                        size="sm"
+                        onClick={() => {
+                          setSearchMode('state');
+                          setEmployeeSearchTerm('');
+                          setEmployeeLocationFilter('all');
+                          setEmployeeRoleFilter('all');
+                        }}
+                        className={searchMode === 'state' 
+                          ? 'bg-secondary text-secondary-foreground' 
+                          : 'text-slate-300 hover:bg-slate-600'
+                        }
+                      >
+                        <MapPin className="h-4 w-4 mr-2" />
+                        By State
+                      </Button>
                     </div>
 
-                    {/* Filters */}
-                    <div className="flex gap-2">
-                      <Select value={employeeLocationFilter} onValueChange={setEmployeeLocationFilter}>
-                        <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
-                          <SelectValue placeholder="Location" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-slate-700">
-                          <SelectItem value="all" className="text-white hover:bg-slate-700">All Locations</SelectItem>
-                          {getUniqueLocations().map(location => (
-                            <SelectItem key={location} value={location} className="text-white hover:bg-slate-700">
-                              {location}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                    {/* Search/Filter Content */}
+                    <div className="flex-1 flex flex-col lg:flex-row gap-4">
+                      {searchMode === 'adjusters' ? (
+                        <>
+                          {/* Search */}
+                          <div className="flex-1">
+                            <div className="relative">
+                              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                              <Input
+                                placeholder="Search by name, role, or email..."
+                                value={employeeSearchTerm}
+                                onChange={(e) => setEmployeeSearchTerm(e.target.value)}
+                                className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
+                              />
+                            </div>
+                          </div>
 
-                      <Select value={employeeRoleFilter} onValueChange={setEmployeeRoleFilter}>
-                        <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
-                          <SelectValue placeholder="Role" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-slate-700">
-                          <SelectItem value="all" className="text-white hover:bg-slate-700">All Roles</SelectItem>
-                          {getUniqueRoles().map(role => (
-                            <SelectItem key={role} value={role} className="text-white hover:bg-slate-700">
-                              {role}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                          {/* Adjusters Filters */}
+                          <div className="flex gap-2">
+                            <Select value={employeeLocationFilter} onValueChange={setEmployeeLocationFilter}>
+                              <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
+                                <SelectValue placeholder="Location" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-800 border-slate-700">
+                                <SelectItem value="all" className="text-white hover:bg-slate-700">All Locations</SelectItem>
+                                {getUniqueLocations().map(location => (
+                                  <SelectItem key={location} value={location} className="text-white hover:bg-slate-700">
+                                    {location}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
 
-                      <Select value={employeeComplianceFilter} onValueChange={setEmployeeComplianceFilter}>
-                        <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
-                          <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-slate-700">
-                          <SelectItem value="all" className="text-white hover:bg-slate-700">All Status</SelectItem>
-                          <SelectItem value="compliant" className="text-white hover:bg-slate-700">Compliant</SelectItem>
-                          <SelectItem value="warning" className="text-white hover:bg-slate-700">Warning</SelectItem>
-                          <SelectItem value="critical" className="text-white hover:bg-slate-700">Critical</SelectItem>
-                        </SelectContent>
-                      </Select>
+                            <Select value={employeeRoleFilter} onValueChange={setEmployeeRoleFilter}>
+                              <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
+                                <SelectValue placeholder="Role" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-800 border-slate-700">
+                                <SelectItem value="all" className="text-white hover:bg-slate-700">All Roles</SelectItem>
+                                {getUniqueRoles().map(role => (
+                                  <SelectItem key={role} value={role} className="text-white hover:bg-slate-700">
+                                    {role}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {/* State Selection */}
+                          <div className="flex-1">
+                            <Select value={selectedState} onValueChange={setSelectedState}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                <SelectValue placeholder="Select a state to view licensed adjusters..." />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-800 border-slate-700">
+                                <SelectItem value="all" className="text-white hover:bg-slate-700">All States</SelectItem>
+                                {getUniqueStates().map(state => (
+                                  <SelectItem key={state} value={state} className="text-white hover:bg-slate-700">
+                                    {state}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </>
+                      )}
+
+                      {/* Compliance Filter (always visible) */}
+                      <div>
+                        <Select value={employeeComplianceFilter} onValueChange={setEmployeeComplianceFilter}>
+                          <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-slate-800 border-slate-700">
+                            <SelectItem value="all" className="text-white hover:bg-slate-700">All Status</SelectItem>
+                            <SelectItem value="compliant" className="text-white hover:bg-slate-700">Compliant</SelectItem>
+                            <SelectItem value="warning" className="text-white hover:bg-slate-700">Warning</SelectItem>
+                            <SelectItem value="critical" className="text-white hover:bg-slate-700">Critical</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -1856,12 +1941,30 @@ const Compliance = () => {
 
                         <div className="mt-3 pt-3 border-t border-slate-600">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-slate-400">Licenses: {employee.licenses.length}</span>
+                            <span className="text-slate-400">
+                              {searchMode === 'state' && selectedState !== 'all' 
+                                ? `${selectedState} License` 
+                                : `Licenses: ${employee.licenses.length}`
+                              }
+                            </span>
                             <span className="text-slate-400">CE: {employee.ceCredits.completed}/{employee.ceCredits.required}</span>
                             <Badge className={getStatusColor(employee.complianceStatus)}>
                               {employee.complianceStatus}
                             </Badge>
                           </div>
+                          {searchMode === 'state' && selectedState !== 'all' && (
+                            <div className="mt-2 text-xs">
+                              {employee.licenses
+                                .filter(license => license.state === selectedState && license.status === 'active')
+                                .map(license => (
+                                  <div key={license.licenseNumber} className="flex justify-between text-slate-300">
+                                    <span>{license.licenseNumber}</span>
+                                    <span>Exp: {license.expires}</span>
+                                  </div>
+                                ))
+                              }
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -1913,9 +2016,20 @@ const Compliance = () => {
                                 <div className="text-xs text-slate-400">{employee.phone}</div>
                               </td>
                               <td className="p-4">
-                                <div className="text-sm text-slate-300">{employee.licenses.length} active</div>
+                                <div className="text-sm text-slate-300">
+                                  {searchMode === 'state' && selectedState !== 'all' 
+                                    ? `${selectedState} License` 
+                                    : `${employee.licenses.length} active`
+                                  }
+                                </div>
                                 <div className="text-xs text-slate-400">
-                                  {employee.licenses.map(l => l.state).join(', ')}
+                                  {searchMode === 'state' && selectedState !== 'all'
+                                    ? employee.licenses
+                                        .filter(license => license.state === selectedState && license.status === 'active')
+                                        .map(license => `${license.licenseNumber} (${license.expires})`)
+                                        .join(', ')
+                                    : employee.licenses.map(l => l.state).join(', ')
+                                  }
                                 </div>
                               </td>
                               <td className="p-4">
