@@ -106,11 +106,11 @@ const AdjusterStates = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'compliant': return 'bg-green-500';
-      case 'warning': return 'bg-yellow-500';
-      case 'critical': return 'bg-red-500';
-      case 'not-licensed': return 'bg-slate-500';
-      default: return 'bg-slate-500';
+      case 'compliant': return 'bg-green-600 text-white';
+      case 'warning': return 'bg-yellow-600 text-white';
+      case 'critical': return 'bg-red-600 text-white';
+      case 'not-licensed': return 'bg-red-600 text-white';
+      default: return 'bg-red-600 text-white';
     }
   };
 
@@ -381,6 +381,180 @@ const AdjusterStates = () => {
               </Card>
             </TabsContent>
           </Tabs>
+
+          {/* Edit Dialogs */}
+          <Dialog open={editingLicense} onOpenChange={setEditingLicense}>
+            <DialogContent className="bg-slate-800 border-slate-700 text-white">
+              <DialogHeader>
+                <DialogTitle>Edit License Information - {selectedJurisdiction}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="licenseNumber">License Number</Label>
+                  <Input id="licenseNumber" placeholder="Enter license number" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="licenseType">License Type</Label>
+                  <Select>
+                    <SelectTrigger className="bg-slate-700 border-slate-600">
+                      <SelectValue placeholder="Select license type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700 border-slate-600">
+                      <SelectItem value="public-adjuster">Public Adjuster License</SelectItem>
+                      <SelectItem value="resident-adjuster">Resident Adjuster License</SelectItem>
+                      <SelectItem value="non-resident-adjuster">Non-Resident Adjuster License</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="expirationDate">Expiration Date</Label>
+                  <Input id="expirationDate" type="date" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select>
+                    <SelectTrigger className="bg-slate-700 border-slate-600">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700 border-slate-600">
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="expired">Expired</SelectItem>
+                      <SelectItem value="suspended">Suspended</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setEditingLicense(false)} className="border-slate-600">
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setEditingLicense(false)} className="bg-green-600 hover:bg-green-700">
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={editingBond} onOpenChange={setEditingBond}>
+            <DialogContent className="bg-slate-800 border-slate-700 text-white">
+              <DialogHeader>
+                <DialogTitle>Edit Bond Information - {selectedJurisdiction}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="bondType">Bond Type</Label>
+                  <Select>
+                    <SelectTrigger className="bg-slate-700 border-slate-600">
+                      <SelectValue placeholder="Select bond type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700 border-slate-600">
+                      <SelectItem value="surety-bond">Surety Bond</SelectItem>
+                      <SelectItem value="cash-bond">Cash Bond</SelectItem>
+                      <SelectItem value="eno-insurance">ENO Insurance</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="bondAmount">Bond Amount</Label>
+                  <Input id="bondAmount" placeholder="e.g., $50,000" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="bondCarrier">Bond Carrier</Label>
+                  <Input id="bondCarrier" placeholder="Enter carrier name" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="bondExpiration">Expiration Date</Label>
+                  <Input id="bondExpiration" type="date" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" id="useENO" className="rounded" />
+                  <Label htmlFor="useENO">Using ENO Insurance instead of bond</Label>
+                </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setEditingBond(false)} className="border-slate-600">
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setEditingBond(false)} className="bg-green-600 hover:bg-green-700">
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={editingContract} onOpenChange={setEditingContract}>
+            <DialogContent className="bg-slate-800 border-slate-700 text-white">
+              <DialogHeader>
+                <DialogTitle>Edit Contract Requirements - {selectedJurisdiction}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" id="hasStateContract" className="rounded" />
+                  <Label htmlFor="hasStateContract">State requires specific contract</Label>
+                </div>
+                <div>
+                  <Label htmlFor="contractType">Contract Type</Label>
+                  <Input id="contractType" placeholder="Enter contract type" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="contractStatus">Approval Status</Label>
+                  <Select>
+                    <SelectTrigger className="bg-slate-700 border-slate-600">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700 border-slate-600">
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setEditingContract(false)} className="border-slate-600">
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setEditingContract(false)} className="bg-green-600 hover:bg-green-700">
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={editingCE} onOpenChange={setEditingCE}>
+            <DialogContent className="bg-slate-800 border-slate-700 text-white">
+              <DialogHeader>
+                <DialogTitle>Edit Continuing Education - {selectedJurisdiction}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="requiredCredits">Required Credits</Label>
+                  <Input id="requiredCredits" type="number" placeholder="24" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="completedCredits">Completed Credits</Label>
+                  <Input id="completedCredits" type="number" placeholder="0" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div>
+                  <Label htmlFor="ceDeadline">Deadline</Label>
+                  <Input id="ceDeadline" type="date" className="bg-slate-700 border-slate-600" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" id="reciprocity" className="rounded" />
+                  <Label htmlFor="reciprocity">Reciprocity with home state (Florida)</Label>
+                </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setEditingCE(false)} className="border-slate-600">
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setEditingCE(false)} className="bg-green-600 hover:bg-green-700">
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );
