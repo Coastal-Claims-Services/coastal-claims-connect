@@ -31,9 +31,15 @@ import {
   ArrowLeft,
   Upload,
   Edit,
-  AlertCircle
+  AlertCircle,
+  LayoutList,
+  Phone,
+  Mail,
+  Award,
+  BookOpen
 } from 'lucide-react';
 import { FileUploadZone } from '@/components/FileUploadZone';
+import { employees, Employee, getEmployeesByLocation, getEmployeesByRole, getEmployeesByComplianceStatus } from '@/data/employees';
 
 // Mock data for compliance dashboard
 const complianceStats = {
@@ -239,6 +245,15 @@ const Compliance = () => {
     endDate: '',
     status: 'active' as 'active' | 'expired'
   });
+
+  // Employee directory state
+  const [employeeSearchTerm, setEmployeeSearchTerm] = useState('');
+  const [employeeLocationFilter, setEmployeeLocationFilter] = useState('all');
+  const [employeeRoleFilter, setEmployeeRoleFilter] = useState('all');
+  const [employeeComplianceFilter, setEmployeeComplianceFilter] = useState('all');
+  const [employeeViewMode, setEmployeeViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [employeeDetailOpen, setEmployeeDetailOpen] = useState(false);
 
   // State management for actual data that can be edited
   const [stateEntityData, setStateEntityData] = useState<{[key: string]: any}>({});
@@ -502,6 +517,64 @@ const Compliance = () => {
     });
     
     setEditingEntityLicenses(false);
+  };
+
+  // Employee directory functions
+  const getFilteredEmployees = () => {
+    let filtered = employees;
+
+    // Search filter
+    if (employeeSearchTerm) {
+      filtered = filtered.filter(emp => 
+        emp.name.toLowerCase().includes(employeeSearchTerm.toLowerCase()) ||
+        emp.role.toLowerCase().includes(employeeSearchTerm.toLowerCase()) ||
+        emp.email.toLowerCase().includes(employeeSearchTerm.toLowerCase())
+      );
+    }
+
+    // Location filter
+    if (employeeLocationFilter !== 'all') {
+      filtered = filtered.filter(emp => emp.location.includes(employeeLocationFilter));
+    }
+
+    // Role filter
+    if (employeeRoleFilter !== 'all') {
+      filtered = filtered.filter(emp => emp.role.toLowerCase().includes(employeeRoleFilter.toLowerCase()));
+    }
+
+    // Compliance filter
+    if (employeeComplianceFilter !== 'all') {
+      filtered = filtered.filter(emp => emp.complianceStatus === employeeComplianceFilter);
+    }
+
+    return filtered;
+  };
+
+  const handleEmployeeClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setEmployeeDetailOpen(true);
+  };
+
+  const getUniqueLocations = () => {
+    const locations = employees.map(emp => {
+      if (emp.location.includes('New Smyrna Beach')) return 'New Smyrna Beach';
+      if (emp.location.includes('South FL')) return 'South FL';
+      if (emp.location.includes('Texas') || emp.location.includes('Haslet')) return 'Texas';
+      if (emp.location.includes('Indialantic')) return 'Indialantic';
+      if (emp.location.includes('California') || emp.location.includes('Sacramento')) return 'California';
+      return emp.location;
+    });
+    return [...new Set(locations)];
+  };
+
+  const getUniqueRoles = () => {
+    const roles = employees.map(emp => {
+      if (emp.role.includes('Public Adjuster')) return 'Public Adjuster';
+      if (emp.role.includes('Branch Manager')) return 'Branch Manager';
+      if (emp.role.includes('CAN Adjuster')) return 'CAN Adjuster';
+      return emp.role;
+    });
+    return [...new Set(roles)];
   };
 
   return (
@@ -1646,27 +1719,385 @@ const Compliance = () => {
             </TabsContent>
 
             <TabsContent value="adjusters" className="space-y-6">
+              {/* Header with Search and View Toggle */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                <div>
+                  <h2 className="text-xl font-semibold text-white">Adjuster Management</h2>
+                  <p className="text-slate-400">Individual adjuster compliance tracking</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={employeeViewMode === 'grid' ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() => setEmployeeViewMode('grid')}
+                    className={employeeViewMode === 'grid' 
+                      ? 'bg-secondary text-secondary-foreground' 
+                      : 'text-slate-300 border-slate-600 hover:bg-slate-700'
+                    }
+                  >
+                    <User className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={employeeViewMode === 'list' ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() => setEmployeeViewMode('list')}
+                    className={employeeViewMode === 'list' 
+                      ? 'bg-secondary text-secondary-foreground' 
+                      : 'text-slate-300 border-slate-600 hover:bg-slate-700'
+                    }
+                  >
+                    <LayoutList className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Search and Filters */}
               <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Individual Adjuster Management</CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Track individual adjuster licenses, bonds, and continuing education
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <User className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Adjuster Management Module</h3>
-                    <p className="text-slate-400 mb-6">
-                      Individual adjuster profiles, license tracking, bond management, and CE credit monitoring.
-                    </p>
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add New Adjuster
-                    </Button>
+                <CardContent className="p-4">
+                  <div className="flex flex-col lg:flex-row gap-4">
+                    {/* Search */}
+                    <div className="flex-1">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                        <Input
+                          placeholder="Search by name, role, or email..."
+                          value={employeeSearchTerm}
+                          onChange={(e) => setEmployeeSearchTerm(e.target.value)}
+                          className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Filters */}
+                    <div className="flex gap-2">
+                      <Select value={employeeLocationFilter} onValueChange={setEmployeeLocationFilter}>
+                        <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Location" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700">
+                          <SelectItem value="all" className="text-white hover:bg-slate-700">All Locations</SelectItem>
+                          {getUniqueLocations().map(location => (
+                            <SelectItem key={location} value={location} className="text-white hover:bg-slate-700">
+                              {location}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={employeeRoleFilter} onValueChange={setEmployeeRoleFilter}>
+                        <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Role" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700">
+                          <SelectItem value="all" className="text-white hover:bg-slate-700">All Roles</SelectItem>
+                          {getUniqueRoles().map(role => (
+                            <SelectItem key={role} value={role} className="text-white hover:bg-slate-700">
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={employeeComplianceFilter} onValueChange={setEmployeeComplianceFilter}>
+                        <SelectTrigger className="w-40 bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700">
+                          <SelectItem value="all" className="text-white hover:bg-slate-700">All Status</SelectItem>
+                          <SelectItem value="compliant" className="text-white hover:bg-slate-700">Compliant</SelectItem>
+                          <SelectItem value="warning" className="text-white hover:bg-slate-700">Warning</SelectItem>
+                          <SelectItem value="critical" className="text-white hover:bg-slate-700">Critical</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Employee Directory */}
+              {employeeViewMode === 'grid' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {getFilteredEmployees().map((employee) => (
+                    <Card 
+                      key={employee.id} 
+                      className="bg-slate-800 border-slate-700 hover:bg-slate-750 cursor-pointer transition-colors"
+                      onClick={() => handleEmployeeClick(employee)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                            {employee.initials}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-white truncate">{employee.name}</h3>
+                            <p className="text-sm text-slate-400 truncate">{employee.role}</p>
+                          </div>
+                          <div className={`w-2 h-2 rounded-full ${getStatusDot(employee.complianceStatus)}`}></div>
+                        </div>
+                        
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2 text-slate-300">
+                            <MapPin className="h-3 w-3 text-slate-400" />
+                            <span className="truncate">{employee.location}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-300">
+                            <Mail className="h-3 w-3 text-slate-400" />
+                            <span className="truncate">{employee.email}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-300">
+                            <Phone className="h-3 w-3 text-slate-400" />
+                            <span>{employee.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-300">
+                            <Calendar className="h-3 w-3 text-slate-400" />
+                            <span>Started {employee.startDate}</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 pt-3 border-t border-slate-600">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-slate-400">Licenses: {employee.licenses.length}</span>
+                            <span className="text-slate-400">CE: {employee.ceCredits.completed}/{employee.ceCredits.required}</span>
+                            <Badge className={getStatusColor(employee.complianceStatus)}>
+                              {employee.complianceStatus}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <Card className="bg-slate-800 border-slate-700">
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-slate-600">
+                            <th className="text-left p-4 text-slate-300 font-medium">Employee</th>
+                            <th className="text-left p-4 text-slate-300 font-medium">Role</th>
+                            <th className="text-left p-4 text-slate-300 font-medium">Location</th>
+                            <th className="text-left p-4 text-slate-300 font-medium">Contact</th>
+                            <th className="text-left p-4 text-slate-300 font-medium">Licenses</th>
+                            <th className="text-left p-4 text-slate-300 font-medium">CE Progress</th>
+                            <th className="text-left p-4 text-slate-300 font-medium">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {getFilteredEmployees().map((employee) => (
+                            <tr 
+                              key={employee.id}
+                              className="border-b border-slate-700 hover:bg-slate-700/30 cursor-pointer"
+                              onClick={() => handleEmployeeClick(employee)}
+                            >
+                              <td className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-white font-medium text-xs">
+                                    {employee.initials}
+                                  </div>
+                                  <div>
+                                    <div className="font-medium text-white">{employee.name}</div>
+                                    <div className="text-sm text-slate-400">Started {employee.startDate}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <div className="text-sm text-slate-300">{employee.role}</div>
+                                <div className="text-xs text-slate-400">{employee.department}</div>
+                              </td>
+                              <td className="p-4">
+                                <div className="text-sm text-slate-300">{employee.location}</div>
+                              </td>
+                              <td className="p-4">
+                                <div className="text-sm text-slate-300">{employee.email}</div>
+                                <div className="text-xs text-slate-400">{employee.phone}</div>
+                              </td>
+                              <td className="p-4">
+                                <div className="text-sm text-slate-300">{employee.licenses.length} active</div>
+                                <div className="text-xs text-slate-400">
+                                  {employee.licenses.map(l => l.state).join(', ')}
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <div className={`text-sm ${
+                                    employee.ceCredits.completed >= employee.ceCredits.required 
+                                      ? 'text-green-400' 
+                                      : employee.ceCredits.completed >= employee.ceCredits.required * 0.5
+                                        ? 'text-yellow-400'
+                                        : 'text-red-400'
+                                  }`}>
+                                    {employee.ceCredits.completed}/{employee.ceCredits.required}
+                                  </div>
+                                  <div className="w-16 bg-slate-600 rounded-full h-2">
+                                    <div 
+                                      className={`h-2 rounded-full ${
+                                        employee.ceCredits.completed >= employee.ceCredits.required 
+                                          ? 'bg-green-500' 
+                                          : employee.ceCredits.completed >= employee.ceCredits.required * 0.5
+                                            ? 'bg-yellow-500'
+                                            : 'bg-red-500'
+                                      }`}
+                                      style={{ 
+                                        width: `${Math.min(100, (employee.ceCredits.completed / employee.ceCredits.required) * 100)}%` 
+                                      }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <Badge className={getStatusColor(employee.complianceStatus)}>
+                                  {employee.complianceStatus}
+                                </Badge>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Employee Details Modal */}
+              <Dialog open={employeeDetailOpen} onOpenChange={setEmployeeDetailOpen}>
+                <DialogContent className="bg-slate-800 border-slate-700 max-w-4xl max-h-[90vh] overflow-y-auto">
+                  {selectedEmployee && (
+                    <>
+                      <DialogHeader>
+                        <DialogTitle className="text-white flex items-center gap-3">
+                          <div className="w-12 h-12 bg-slate-600 rounded-full flex items-center justify-center text-white font-medium">
+                            {selectedEmployee.initials}
+                          </div>
+                          <div>
+                            <div>{selectedEmployee.name}</div>
+                            <div className="text-sm text-slate-400 font-normal">{selectedEmployee.role}</div>
+                          </div>
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-400">
+                          Compliance details and license management for {selectedEmployee.name}
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="space-y-6">
+                        {/* Employee Info */}
+                        <Card className="bg-slate-700/30 border-slate-600">
+                          <CardHeader>
+                            <CardTitle className="text-white text-sm">Contact Information</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Mail className="h-4 w-4 text-slate-400" />
+                              <span className="text-slate-300">{selectedEmployee.email}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Phone className="h-4 w-4 text-slate-400" />
+                              <span className="text-slate-300">{selectedEmployee.phone}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <MapPin className="h-4 w-4 text-slate-400" />
+                              <span className="text-slate-300">{selectedEmployee.location}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Calendar className="h-4 w-4 text-slate-400" />
+                              <span className="text-slate-300">Started {selectedEmployee.startDate}</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Licenses */}
+                        <Card className="bg-slate-700/30 border-slate-600">
+                          <CardHeader>
+                            <CardTitle className="text-white text-sm flex items-center gap-2">
+                              <Award className="h-4 w-4" />
+                              License Status
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {selectedEmployee.licenses.map((license, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 bg-slate-600/30 rounded-lg">
+                                <div>
+                                  <div className="font-medium text-white">{license.state} License</div>
+                                  <div className="text-sm text-slate-400">#{license.licenseNumber}</div>
+                                  <div className="text-sm text-slate-400">Expires: {license.expires}</div>
+                                </div>
+                                <Badge className={getStatusColor(license.status === 'active' ? 'compliant' : 'critical')}>
+                                  {license.status}
+                                </Badge>
+                              </div>
+                            ))}
+                          </CardContent>
+                        </Card>
+
+                        {/* CE Credits */}
+                        <Card className="bg-slate-700/30 border-slate-600">
+                          <CardHeader>
+                            <CardTitle className="text-white text-sm flex items-center gap-2">
+                              <BookOpen className="h-4 w-4" />
+                              Continuing Education
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-slate-300">Progress</span>
+                                <span className="text-white font-medium">
+                                  {selectedEmployee.ceCredits.completed} / {selectedEmployee.ceCredits.required} credits
+                                </span>
+                              </div>
+                              <Progress 
+                                value={(selectedEmployee.ceCredits.completed / selectedEmployee.ceCredits.required) * 100} 
+                                className="h-2"
+                              />
+                              <div className="text-sm text-slate-400">
+                                Deadline: {selectedEmployee.ceCredits.deadline}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Bonds */}
+                        <Card className="bg-slate-700/30 border-slate-600">
+                          <CardHeader>
+                            <CardTitle className="text-white text-sm flex items-center gap-2">
+                              <Shield className="h-4 w-4" />
+                              Bonds & Insurance
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {selectedEmployee.bonds.map((bond, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 bg-slate-600/30 rounded-lg">
+                                <div>
+                                  <div className="font-medium text-white">{bond.type}</div>
+                                  <div className="text-sm text-slate-400">Amount: {bond.amount}</div>
+                                  <div className="text-sm text-slate-400">Expires: {bond.expires}</div>
+                                </div>
+                                <Badge className={getStatusColor(bond.status === 'active' ? 'compliant' : 'critical')}>
+                                  {bond.status}
+                                </Badge>
+                              </div>
+                            ))}
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => setEmployeeDetailOpen(false)}
+                          className="text-slate-300 border-slate-600"
+                        >
+                          Close
+                        </Button>
+                        <Button className="bg-green-600 hover:bg-green-700">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit Details
+                        </Button>
+                      </DialogFooter>
+                    </>
+                  )}
+                </DialogContent>
+              </Dialog>
             </TabsContent>
 
             <TabsContent value="requirements" className="space-y-6">
