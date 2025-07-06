@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Shield, AlertTriangle, CheckCircle, Calendar, FileText, Building, Award, Plus, Edit, Upload } from 'lucide-react';
+import { useUser } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +25,7 @@ const jurisdictions = [
 ];
 
 // Mock license data structure for each jurisdiction
-const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string, updates: Record<string, any> = {}) => {
+const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string, userHomeState: string, updates: Record<string, any> = {}) => {
   const employee = employees.find(emp => emp.name === adjusterName);
   const existingLicense = employee?.licenses.find(license => 
     license.state === jurisdiction.substring(0, 2).toUpperCase() || 
@@ -68,8 +69,8 @@ const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string, 
       required: parseInt(jurisdictionUpdates?.requiredCredits || '24'),
       completed: parseInt(jurisdictionUpdates?.completedCredits || '0'),
       deadline: jurisdictionUpdates?.ceDeadline || '2024-12-31',
-      reciprocityWithHome: jurisdictionUpdates?.reciprocity || (jurisdiction !== 'Florida' ? Math.random() > 0.5 : false),
-      homeState: 'Florida'
+      reciprocityWithHome: jurisdictionUpdates?.reciprocity || (jurisdiction !== userHomeState ? Math.random() > 0.5 : false),
+      homeState: userHomeState
     } : null
   };
 };
@@ -77,6 +78,7 @@ const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string, 
 const AdjusterStates = () => {
   const { adjusterId } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
   const [selectedJurisdiction, setSelectedJurisdiction] = useState<string | null>(null);
   const [editingLicense, setEditingLicense] = useState(false);
   const [editingBond, setEditingBond] = useState(false);
@@ -121,7 +123,7 @@ const AdjusterStates = () => {
   }
 
   const getComplianceStatus = (jurisdiction: string) => {
-    const data = getJurisdictionLicenseData(adjuster.name, jurisdiction, licenseUpdates);
+    const data = getJurisdictionLicenseData(adjuster.name, jurisdiction, user.homeState, licenseUpdates);
     if (!data.isLicensed) return 'not-licensed';
     
     // Check various compliance factors
@@ -219,7 +221,7 @@ const AdjusterStates = () => {
   };
 
   if (selectedJurisdiction) {
-    const licenseData = getJurisdictionLicenseData(adjuster.name, selectedJurisdiction, licenseUpdates);
+    const licenseData = getJurisdictionLicenseData(adjuster.name, selectedJurisdiction, user.homeState, licenseUpdates);
     
     return (
       <div className="min-h-screen bg-slate-900 text-slate-100">
@@ -795,7 +797,7 @@ const AdjusterStates = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <input type="checkbox" id="reciprocity" className="rounded" />
-                  <Label htmlFor="reciprocity">Reciprocity with home state (Florida)</Label>
+                  <Label htmlFor="reciprocity">Reciprocity with home state ({user.homeState})</Label>
                 </div>
                 <div className="flex justify-end gap-2 pt-4">
                   <Button variant="outline" onClick={() => setEditingCE(false)} className="border-slate-600">
@@ -834,7 +836,7 @@ const AdjusterStates = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {jurisdictions.map((jurisdiction) => {
             const status = getComplianceStatus(jurisdiction);
-            const licenseData = getJurisdictionLicenseData(adjuster.name, jurisdiction, licenseUpdates);
+            const licenseData = getJurisdictionLicenseData(adjuster.name, jurisdiction, user.homeState, licenseUpdates);
             
             return (
               <Card 

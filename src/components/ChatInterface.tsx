@@ -4,6 +4,8 @@ import { ChatHeader } from './chat/ChatHeader';
 import { MessagesList } from './chat/MessagesList';
 import { ChatInput } from './chat/ChatInput';
 import { AIManagement } from './AIManagement';
+import { HomeStateSelector } from './HomeStateSelector';
+import { useUser } from '@/contexts/UserContext';
 import { AIAssistant, aiAssistantsData } from '@/data/aiAssistants';
 import { MemoryManager } from '@/utils/memoryManager';
 import { 
@@ -16,6 +18,7 @@ import {
 } from '@/utils/chatUtils';
 
 export const ChatInterface = () => {
+  const { user } = useUser();
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -29,7 +32,7 @@ export const ChatInterface = () => {
   useEffect(() => {
     MemoryManager.create({
       sessionId,
-      userId: mockUser.name,
+      userId: user.name,
       claimId: undefined // Can be set later if working on specific claims
     });
 
@@ -105,7 +108,7 @@ export const ChatInterface = () => {
       id: `ai-${Date.now()}`,
       createdAt: new Date(),
       updatedAt: new Date(),
-      createdBy: mockUser.name
+      createdBy: user.name
     };
     setAiAssistants(prev => [...prev, newAI]);
   };
@@ -122,8 +125,8 @@ export const ChatInterface = () => {
     setAiAssistants(prev => prev.filter(ai => ai.id !== id));
   };
 
-  const canManageAIs = mockUser.userType.permissions.manageAIs;
-  const isDeveloper = mockUser.userType.type === 'developer' || mockUser.userType.type === 'admin';
+  const canManageAIs = user.userType.permissions.manageAIs;
+  const isDeveloper = user.userType.type === 'developer' || user.userType.type === 'admin';
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -167,7 +170,7 @@ export const ChatInterface = () => {
     if (departmentRulesData) {
       try {
         const rules = JSON.parse(departmentRulesData);
-        departmentRules = rules[mockUser.department] || '';
+        departmentRules = rules[user.department] || '';
       } catch (error) {
         console.error('Failed to parse department rules:', error);
       }
@@ -181,9 +184,9 @@ export const ChatInterface = () => {
 
     try {
       // Build system message with context
-      let systemMessage = `You are ${targetAI}, a conversational AI assistant designed to help ${mockUser.name}, who works as a ${mockUser.role} in the ${mockUser.department} department at their company.
+      let systemMessage = `You are ${targetAI}, a conversational AI assistant designed to help ${user.name}, who works as a ${user.role} in the ${user.department} department at their company.
 
-${departmentRules ? `Department Rules for ${mockUser.department}:\n${departmentRules}\n` : ''}
+${departmentRules ? `Department Rules for ${user.department}:\n${departmentRules}\n` : ''}
 
 ${memoryContext ? `Previous conversation context:\n${memoryContext}\n` : ''}
 
@@ -267,7 +270,7 @@ Keep responses conversational, helpful, and concise. Don't provide lengthy corpo
   };
 
   const handleDownloadReport = () => {
-    downloadPolicyReport(mockUser);
+    downloadPolicyReport(user);
   };
 
   return (
@@ -277,15 +280,20 @@ Keep responses conversational, helpful, and concise. Don't provide lengthy corpo
         {/* AI Status Header */}
         <AIStatusHeader 
           currentAI={getCurrentAI()} 
-          userDepartment={mockUser.department}
+          userDepartment={user.department}
         />
 
         {/* Chat Header */}
         <ChatHeader 
-          user={mockUser}
+          user={user}
           showAIManagement={showAIManagement}
           setShowAIManagement={setShowAIManagement}
         />
+
+        {/* Home State Selector */}
+        <div className="bg-slate-800 border-b border-slate-700 p-2 flex justify-end">
+          <HomeStateSelector triggerClassName="border-slate-600 text-slate-300 hover:bg-slate-700" />
+        </div>
 
         {/* AI Management Panel */}
         {showAIManagement && canManageAIs && (
@@ -304,7 +312,7 @@ Keep responses conversational, helpful, and concise. Don't provide lengthy corpo
         <MessagesList
           messages={messages}
           isProcessing={isProcessing}
-          userName={mockUser.name}
+          userName={user.name}
           onDownloadReport={handleDownloadReport}
         />
 
@@ -317,7 +325,7 @@ Keep responses conversational, helpful, and concise. Don't provide lengthy corpo
           isProcessing={isProcessing}
           isDragOver={isDragOver}
           uploadStatus={uploadStatus}
-          userName={mockUser.name}
+          userName={user.name}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}

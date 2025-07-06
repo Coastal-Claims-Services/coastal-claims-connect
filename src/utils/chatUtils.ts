@@ -16,6 +16,7 @@ export const mockUser = {
   department: 'CAN program',
   role: 'Public Adjuster',
   accessLevel: 'Senior',
+  homeState: 'Florida',
   userType: {
     type: 'developer' as const,
     permissions: {

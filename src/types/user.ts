@@ -14,5 +14,7 @@ export interface User {
   name: string;
   department: string;
   role: string;
+  homeState: string;
+  accessLevel: string;
   userType: UserRole;
 }

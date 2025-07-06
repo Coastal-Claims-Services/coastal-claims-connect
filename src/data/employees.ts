@@ -8,6 +8,7 @@ export interface Employee {
   email: string;
   phone: string;
   startDate: string;
+  homeState: string;
   complianceStatus: 'compliant' | 'warning' | 'critical';
   licenses: {
     state: string;
@@ -39,6 +40,7 @@ export const employees: Employee[] = [
     email: 'aaron@coastalclaims.net',
     phone: '17273647761',
     startDate: 'Feb 2019',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-12345', expires: '2025-02-28', status: 'active' },
@@ -57,6 +59,7 @@ export const employees: Employee[] = [
     email: 'awhitney@coastalclaims.net',
     phone: '(754)271-4282',
     startDate: 'Oct 2024',
+    homeState: 'Florida',
     complianceStatus: 'warning',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-54321', expires: '2025-10-31', status: 'active' }
@@ -74,6 +77,7 @@ export const employees: Employee[] = [
     email: 'bkrecow@coastalclaims.net',
     phone: '12393504855',
     startDate: 'Sep 2024',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-11111', expires: '2025-09-30', status: 'active' }
@@ -91,6 +95,7 @@ export const employees: Employee[] = [
     email: 'bill@coastalclaims.net',
     phone: '3215018635',
     startDate: 'Dec 2021',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-22222', expires: '2025-12-31', status: 'active' }
@@ -108,6 +113,7 @@ export const employees: Employee[] = [
     email: 'cschiavi@coastalclaims.net',
     phone: '7722605955',
     startDate: 'Oct 2023',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-33333', expires: '2025-10-31', status: 'active' }
@@ -125,6 +131,7 @@ export const employees: Employee[] = [
     email: 'carl@coastalclaims.net',
     phone: '3863662699',
     startDate: 'Nov 2021',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-44444', expires: '2025-11-30', status: 'active' }
@@ -142,6 +149,7 @@ export const employees: Employee[] = [
     email: 'cmachin@coastalclaims.net',
     phone: '5618794885',
     startDate: 'Jun 2024',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-55555', expires: '2025-06-30', status: 'active' }
@@ -159,6 +167,7 @@ export const employees: Employee[] = [
     email: 'carlos@coastalclaims.net',
     phone: '17863065904',
     startDate: 'Feb 2021',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-66666', expires: '2025-02-28', status: 'active' }
@@ -176,6 +185,7 @@ export const employees: Employee[] = [
     email: 'chrismccombs@coastalclaims.net',
     phone: '(314)-809-8274',
     startDate: 'Jul 2023',
+    homeState: 'Texas',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'TX', licenseNumber: 'TX-77777', expires: '2025-07-31', status: 'active' }
@@ -193,6 +203,7 @@ export const employees: Employee[] = [
     email: 'ctaylor@coastalclaims.net',
     phone: '17274207561',
     startDate: 'Oct 2024',
+    homeState: 'Florida',
     complianceStatus: 'warning',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-88888', expires: '2025-10-31', status: 'active' }
@@ -210,6 +221,7 @@ export const employees: Employee[] = [
     email: 'chubbard@coastalclaims.net',
     phone: '12144540171',
     startDate: 'Jan 2025',
+    homeState: 'Texas',
     complianceStatus: 'critical',
     licenses: [
       { state: 'TX', licenseNumber: 'TX-99999', expires: '2025-01-31', status: 'pending' }
@@ -227,6 +239,7 @@ export const employees: Employee[] = [
     email: 'dlabow@coastalclaims.net',
     phone: '9549145454',
     startDate: 'Aug 2024',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-10101', expires: '2025-08-31', status: 'active' }
@@ -244,6 +257,7 @@ export const employees: Employee[] = [
     email: 'deanna@coastalclaims.net',
     phone: '13863145202',
     startDate: 'Apr 2021',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-20202', expires: '2025-04-30', status: 'active' }
@@ -261,6 +275,7 @@ export const employees: Employee[] = [
     email: 'jjames@coastalclaims.net',
     phone: '13869511677',
     startDate: 'Sep 2022',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-30303', expires: '2025-09-30', status: 'active' }
@@ -278,6 +293,7 @@ export const employees: Employee[] = [
     email: 'jjones@coastalclaims.net',
     phone: '3864536020',
     startDate: 'Nov 2023',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-40404', expires: '2025-11-30', status: 'active' }
@@ -296,6 +312,7 @@ export const employees: Employee[] = [
     email: 'mmanning@coastalclaims.net',
     phone: '13214266566',
     startDate: 'Mar 2023',
+    homeState: 'Florida',
     complianceStatus: 'compliant',
     licenses: [
       { state: 'FL', licenseNumber: 'PA-50505', expires: '2025-03-31', status: 'active' }
