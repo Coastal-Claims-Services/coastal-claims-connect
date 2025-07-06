@@ -33,6 +33,7 @@ import {
   Edit,
   AlertCircle
 } from 'lucide-react';
+import { FileUploadZone } from '@/components/FileUploadZone';
 
 // Mock data for compliance dashboard
 const complianceStats = {
@@ -1130,10 +1131,11 @@ const Compliance = () => {
                               <p className="text-slate-300">License #: {license.number}</p>
                               <p className="text-slate-300">Expires: {license.expires}</p>
                               <div className="flex items-center gap-2 mt-2">
-                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
-                                  <Upload className="h-3 w-3 mr-1" />
-                                  Upload
-                                </Button>
+                                <FileUploadZone 
+                                  title={`Upload Documents - ${license.type}`}
+                                  existingFiles={[]}
+                                  onFilesUploaded={(files) => console.log(`Files uploaded for license ${license.id}:`, files)}
+                                />
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
@@ -1229,10 +1231,11 @@ const Compliance = () => {
                               <p className="text-slate-300">Carrier: {bond.carrier}</p>
                               <p className="text-slate-300">Expires: {bond.expires}</p>
                               <div className="flex items-center gap-2 mt-2">
-                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
-                                  <Upload className="h-3 w-3 mr-1" />
-                                  Upload
-                                </Button>
+                                <FileUploadZone 
+                                  title={`Upload Documents - ${bond.type}`}
+                                  existingFiles={[]}
+                                  onFilesUploaded={(files) => console.log(`Files uploaded for bond ${bond.id}:`, files)}
+                                />
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
@@ -1415,15 +1418,17 @@ const Compliance = () => {
                             <div className="space-y-1 text-sm">
                               <p className="text-slate-300">{location.address}</p>
                               <div className="flex items-center gap-2 mt-2">
-                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
-                                  <Upload className="h-3 w-3 mr-1" />
-                                  Upload Permits
-                                </Button>
+                                <FileUploadZone 
+                                  title={`Upload Permits - Location #${location.id}`}
+                                  existingFiles={[]}
+                                  onFilesUploaded={(files) => console.log(`Files uploaded for location ${location.id}:`, files)}
+                                  acceptedTypes={['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png']}
+                                />
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
                                   className="text-slate-300 border-slate-600"
-                                  onClick={handleEditAgent}
+                                  onClick={() => handleEditLocation(location)}
                                 >
                                   <Edit className="h-3 w-3 mr-1" />
                                   Edit
