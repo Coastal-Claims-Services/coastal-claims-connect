@@ -21,7 +21,11 @@ import {
   Download,
   Plus,
   Search,
-  Filter
+  Filter,
+  ArrowLeft,
+  Upload,
+  Edit,
+  AlertCircle
 } from 'lucide-react';
 
 // Mock data for compliance dashboard
@@ -113,8 +117,79 @@ const entityStatesData = [
   { name: 'US Virgin Islands', registrations: 2, licenses: 3, active: true }
 ];
 
+// Mock data for state entity details
+const getStateEntityDetails = (stateName: string) => ({
+  entityLicenses: [
+    { 
+      id: 1, 
+      type: 'Business Entity License', 
+      number: `${stateName.substring(0,2).toUpperCase()}-BE-2024-001`, 
+      status: 'compliant', 
+      expires: '12/31/2024', 
+      documents: ['license-certificate.pdf', 'application-form.pdf'] 
+    },
+    { 
+      id: 2, 
+      type: 'Public Adjuster Firm License', 
+      number: `${stateName.substring(0,2).toUpperCase()}-PAF-2024-002`, 
+      status: 'warning', 
+      expires: '03/15/2025', 
+      documents: ['firm-license.pdf'] 
+    }
+  ],
+  entityBonds: [
+    { 
+      id: 1, 
+      type: 'Surety Bond', 
+      amount: '$50,000', 
+      carrier: 'ABC Surety Co.', 
+      status: 'compliant', 
+      expires: '06/30/2024', 
+      documents: ['bond-certificate.pdf'] 
+    }
+  ],
+  registeredAgent: {
+    name: 'Corporate Services Inc.',
+    address: '123 Main St, Capital City',
+    phone: '(555) 123-4567',
+    status: 'compliant',
+    documents: ['agent-agreement.pdf']
+  },
+  remoteLocations: [
+    { 
+      id: 1, 
+      address: '456 Branch Ave, City Name', 
+      status: 'compliant', 
+      permits: ['local-permit.pdf'] 
+    },
+    { 
+      id: 2, 
+      address: '789 Regional Blvd, Metro Area', 
+      status: 'warning', 
+      permits: [] 
+    }
+  ],
+  regulatoryDates: [
+    { 
+      id: 1, 
+      type: 'Hurricane Moratorium', 
+      startDate: '2024-06-01', 
+      endDate: '2024-11-30', 
+      status: 'active' 
+    },
+    { 
+      id: 2, 
+      type: 'Statute Tolling Period', 
+      startDate: '2024-03-15', 
+      endDate: '2024-04-15', 
+      status: 'expired' 
+    }
+  ]
+});
+
 const Compliance = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedEntityState, setSelectedEntityState] = useState<string | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -131,6 +206,23 @@ const Compliance = () => {
       case 'medium': return 'text-yellow-400 bg-yellow-400/20';
       case 'low': return 'text-green-400 bg-green-400/20';
       default: return 'text-slate-400 bg-slate-400/20';
+    }
+  };
+
+  const handleEntityStateClick = (stateName: string) => {
+    setSelectedEntityState(stateName);
+  };
+
+  const handleBackToEntityStates = () => {
+    setSelectedEntityState(null);
+  };
+
+  const getStatusDot = (status: string) => {
+    switch (status) {
+      case 'compliant': return 'bg-green-500';
+      case 'warning': return 'bg-yellow-500';
+      case 'critical': return 'bg-red-500';
+      default: return 'bg-slate-500';
     }
   };
 
@@ -318,32 +410,236 @@ const Compliance = () => {
             </TabsContent>
 
             <TabsContent value="entities" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {entityStatesData.map((state) => (
-                  <Card 
-                    key={state.name} 
-                    className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer"
-                    onClick={() => console.log(`Clicked ${state.name} for entity management`)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-lg font-semibold text-white">{state.name}</h3>
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              {selectedEntityState ? (
+                // Expanded State Detail View
+                <div className="space-y-6">
+                  {/* Back Button and Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <Button
+                        variant="ghost"
+                        onClick={handleBackToEntityStates}
+                        className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                      >
+                        <ArrowLeft size={16} className="mr-2" />
+                        Back to States
+                      </Button>
+                      <div>
+                        <h2 className="text-xl font-semibold text-white">{selectedEntityState} - Entity Compliance</h2>
+                        <p className="text-slate-400">Manage licenses, bonds, and regulatory compliance</p>
                       </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-slate-400">Registrations</span>
-                          <span className="text-white font-medium">{state.registrations}</span>
+                    </div>
+                    <div className={`w-4 h-4 rounded-full ${getStatusDot('compliant')}`}></div>
+                  </div>
+
+                  {/* Entity Compliance Sections */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Entity Licenses */}
+                    <Card className="bg-slate-800 border-slate-700">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center">
+                          <Shield className="h-5 w-5 mr-2 text-blue-400" />
+                          Entity Licenses
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {getStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
+                          <div key={license.id} className="p-4 bg-slate-700/30 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-white">{license.type}</h4>
+                              <div className={`w-2 h-2 rounded-full ${getStatusDot(license.status)}`}></div>
+                            </div>
+                            <div className="space-y-1 text-sm">
+                              <p className="text-slate-300">License #: {license.number}</p>
+                              <p className="text-slate-300">Expires: {license.expires}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Upload className="h-3 w-3 mr-1" />
+                                  Upload
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Edit
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+
+                    {/* Entity Bonds */}
+                    <Card className="bg-slate-800 border-slate-700">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center">
+                          <Shield className="h-5 w-5 mr-2 text-green-400" />
+                          Entity Bonds
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {getStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
+                          <div key={bond.id} className="p-4 bg-slate-700/30 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-white">{bond.type}</h4>
+                              <div className={`w-2 h-2 rounded-full ${getStatusDot(bond.status)}`}></div>
+                            </div>
+                            <div className="space-y-1 text-sm">
+                              <p className="text-slate-300">Amount: {bond.amount}</p>
+                              <p className="text-slate-300">Carrier: {bond.carrier}</p>
+                              <p className="text-slate-300">Expires: {bond.expires}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Upload className="h-3 w-3 mr-1" />
+                                  Upload
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Edit
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+
+                    {/* Registered Agent */}
+                    <Card className="bg-slate-800 border-slate-700">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center">
+                          <User className="h-5 w-5 mr-2 text-purple-400" />
+                          Registered Agent
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="p-4 bg-slate-700/30 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-medium text-white">{getStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
+                            <div className={`w-2 h-2 rounded-full ${getStatusDot(getStateEntityDetails(selectedEntityState).registeredAgent.status)}`}></div>
+                          </div>
+                          <div className="space-y-1 text-sm">
+                            <p className="text-slate-300">{getStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
+                            <p className="text-slate-300">{getStateEntityDetails(selectedEntityState).registeredAgent.phone}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                <Upload className="h-3 w-3 mr-1" />
+                                Upload
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
+                              </Button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-slate-400">Licenses</span>
-                          <span className="text-white font-medium">{state.licenses}</span>
+                      </CardContent>
+                    </Card>
+
+                    {/* Remote Locations */}
+                    <Card className="bg-slate-800 border-slate-700">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center">
+                          <MapPin className="h-5 w-5 mr-2 text-orange-400" />
+                          Remote Locations
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {getStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
+                          <div key={location.id} className="p-4 bg-slate-700/30 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-white">Location #{location.id}</h4>
+                              <div className={`w-2 h-2 rounded-full ${getStatusDot(location.status)}`}></div>
+                            </div>
+                            <div className="space-y-1 text-sm">
+                              <p className="text-slate-300">{location.address}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Upload className="h-3 w-3 mr-1" />
+                                  Upload Permits
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Edit
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Regulatory Dates */}
+                  <Card className="bg-slate-800 border-slate-700">
+                    <CardHeader>
+                      <CardTitle className="text-white flex items-center">
+                        <Calendar className="h-5 w-5 mr-2 text-red-400" />
+                        Regulatory Dates & Moratoriums
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {getStateEntityDetails(selectedEntityState).regulatoryDates.map((date) => (
+                          <div key={date.id} className="p-4 bg-slate-700/30 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-white">{date.type}</h4>
+                              <Badge className={date.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-slate-500/20 text-slate-400'}>
+                                {date.status}
+                              </Badge>
+                            </div>
+                            <div className="space-y-1 text-sm">
+                              <p className="text-slate-300">Start: {date.startDate}</p>
+                              <p className="text-slate-300">End: {date.endDate}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Edit Dates
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {/* Add New Date Button */}
+                        <div className="p-4 bg-slate-700/20 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center">
+                          <Button variant="ghost" className="text-slate-400 hover:text-white">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Regulatory Date
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
+                </div>
+              ) : (
+                // State Grid View
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {entityStatesData.map((state) => (
+                    <Card 
+                      key={state.name} 
+                      className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer"
+                      onClick={() => handleEntityStateClick(state.name)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-lg font-semibold text-white">{state.name}</h3>
+                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Registrations</span>
+                            <span className="text-white font-medium">{state.registrations}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Licenses</span>
+                            <span className="text-white font-medium">{state.licenses}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="adjusters" className="space-y-6">
