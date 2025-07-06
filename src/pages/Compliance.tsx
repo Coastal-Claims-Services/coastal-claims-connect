@@ -57,6 +57,62 @@ const stateCompliance = [
   { state: 'GA', status: 'compliant', licenses: 25, expiring: 2 }
 ];
 
+// Entity management state data
+const entityStatesData = [
+  { name: 'Alabama', registrations: 8, licenses: 12, active: true },
+  { name: 'Alaska', registrations: 2, licenses: 3, active: true },
+  { name: 'Arizona', registrations: 11, licenses: 15, active: true },
+  { name: 'Arkansas', registrations: 5, licenses: 8, active: true },
+  { name: 'California', registrations: 32, licenses: 45, active: true },
+  { name: 'Colorado', registrations: 13, licenses: 18, active: true },
+  { name: 'Connecticut', registrations: 7, licenses: 9, active: true },
+  { name: 'Delaware', registrations: 3, licenses: 4, active: true },
+  { name: 'Florida', registrations: 28, licenses: 38, active: true },
+  { name: 'Georgia', registrations: 16, licenses: 22, active: true },
+  { name: 'Hawaii', registrations: 4, licenses: 5, active: true },
+  { name: 'Idaho', registrations: 5, licenses: 7, active: true },
+  { name: 'Illinois', registrations: 18, licenses: 25, active: true },
+  { name: 'Indiana', registrations: 12, licenses: 16, active: true },
+  { name: 'Iowa', registrations: 8, licenses: 11, active: true },
+  { name: 'Kansas', registrations: 7, licenses: 10, active: true },
+  { name: 'Kentucky', registrations: 9, licenses: 13, active: true },
+  { name: 'Louisiana', registrations: 10, licenses: 14, active: true },
+  { name: 'Maine', registrations: 4, licenses: 6, active: true },
+  { name: 'Maryland', registrations: 12, licenses: 17, active: true },
+  { name: 'Massachusetts', registrations: 14, licenses: 19, active: true },
+  { name: 'Michigan', registrations: 15, licenses: 21, active: true },
+  { name: 'Minnesota', registrations: 11, licenses: 16, active: true },
+  { name: 'Mississippi', registrations: 6, licenses: 9, active: true },
+  { name: 'Missouri', registrations: 13, licenses: 18, active: true },
+  { name: 'Montana', registrations: 3, licenses: 5, active: true },
+  { name: 'Nebraska', registrations: 6, licenses: 8, active: true },
+  { name: 'Nevada', registrations: 9, licenses: 12, active: true },
+  { name: 'New Hampshire', registrations: 5, licenses: 7, active: true },
+  { name: 'New Jersey', registrations: 17, licenses: 23, active: true },
+  { name: 'New Mexico', registrations: 6, licenses: 9, active: true },
+  { name: 'New York', registrations: 26, licenses: 35, active: true },
+  { name: 'North Carolina', registrations: 18, licenses: 24, active: true },
+  { name: 'North Dakota', registrations: 3, licenses: 4, active: true },
+  { name: 'Ohio', registrations: 19, licenses: 26, active: true },
+  { name: 'Oklahoma', registrations: 9, licenses: 13, active: true },
+  { name: 'Oregon', registrations: 10, licenses: 14, active: true },
+  { name: 'Pennsylvania', registrations: 21, licenses: 28, active: true },
+  { name: 'Rhode Island', registrations: 3, licenses: 4, active: true },
+  { name: 'South Carolina', registrations: 11, licenses: 15, active: true },
+  { name: 'South Dakota', registrations: 4, licenses: 5, active: true },
+  { name: 'Tennessee', registrations: 14, licenses: 19, active: true },
+  { name: 'Texas', registrations: 39, licenses: 52, active: true },
+  { name: 'Utah', registrations: 8, licenses: 11, active: true },
+  { name: 'Vermont', registrations: 2, licenses: 3, active: true },
+  { name: 'Virginia', registrations: 15, licenses: 20, active: true },
+  { name: 'Washington', registrations: 12, licenses: 17, active: true },
+  { name: 'West Virginia', registrations: 4, licenses: 6, active: true },
+  { name: 'Wisconsin', registrations: 12, licenses: 16, active: true },
+  { name: 'Wyoming', registrations: 2, licenses: 3, active: true },
+  { name: 'Puerto Rico', registrations: 5, licenses: 8, active: true },
+  { name: 'US Virgin Islands', registrations: 2, licenses: 3, active: true }
+];
+
 const Compliance = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -262,27 +318,32 @@ const Compliance = () => {
             </TabsContent>
 
             <TabsContent value="entities" className="space-y-6">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Entity Management</CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Manage business entities, registrations, and firm-level compliance
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Building className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Entity Management Module</h3>
-                    <p className="text-slate-400 mb-6">
-                      Comprehensive entity tracking, business registrations, and firm license management coming soon.
-                    </p>
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Select State
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {entityStatesData.map((state) => (
+                  <Card 
+                    key={state.name} 
+                    className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer"
+                    onClick={() => console.log(`Clicked ${state.name} for entity management`)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-white">{state.name}</h3>
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Registrations</span>
+                          <span className="text-white font-medium">{state.registrations}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Licenses</span>
+                          <span className="text-white font-medium">{state.licenses}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </TabsContent>
 
             <TabsContent value="adjusters" className="space-y-6">
