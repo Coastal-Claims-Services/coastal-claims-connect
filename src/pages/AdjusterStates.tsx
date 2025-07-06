@@ -151,6 +151,14 @@ const AdjusterStates = () => {
               <h1 className="text-3xl font-bold">{selectedJurisdiction}</h1>
               <p className="text-slate-400">License management for {adjuster.name}</p>
             </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className={`w-4 h-4 rounded-full ${getStatusColor(getComplianceStatus(selectedJurisdiction))}`}></div>
+                <Badge className={`${getStatusColor(getComplianceStatus(selectedJurisdiction))} text-white`}>
+                  {getStatusText(getComplianceStatus(selectedJurisdiction))}
+                </Badge>
+              </div>
+            </div>
           </div>
 
           <Tabs defaultValue="license" className="space-y-6">
