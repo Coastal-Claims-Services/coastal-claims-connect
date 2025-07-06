@@ -26,6 +26,7 @@ const sidebarItems = [
   { icon: FileText, label: 'Documents', path: '/documents', active: false },
   { icon: Bot, label: 'Coastal AI', path: '/', active: false },
   { icon: FileText, label: 'HR', path: '/hr', active: false },
+  { icon: Building2, label: 'Compliance', path: '/compliance', active: false },
   { icon: Settings, label: 'Admin', path: '/admin', active: false },
   { icon: User, label: 'Talent', path: '/talent', active: false },
 ];
