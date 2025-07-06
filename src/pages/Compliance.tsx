@@ -240,6 +240,36 @@ const Compliance = () => {
     status: 'active' as 'active' | 'expired'
   });
 
+  // State management for actual data that can be edited
+  const [stateEntityData, setStateEntityData] = useState<{[key: string]: any}>({});
+
+  // Get current state entity details (with any updates applied)
+  const getCurrentStateEntityDetails = (stateName: string) => {
+    const stateKey = stateName;
+    
+    // If we have custom data for this state, merge it with defaults
+    if (stateEntityData[stateKey]) {
+      const defaultData = getStateEntityDetails(stateName);
+      return {
+        ...defaultData,
+        ...stateEntityData[stateKey]
+      };
+    }
+    
+    // Otherwise return default mock data
+    return getStateEntityDetails(stateName);
+  };
+
+  const updateStateEntityData = (stateName: string, updates: any) => {
+    setStateEntityData(prev => ({
+      ...prev,
+      [stateName]: {
+        ...prev[stateName],
+        ...updates
+      }
+    }));
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'compliant': return 'text-green-400 bg-green-400/20';
@@ -289,12 +319,6 @@ const Compliance = () => {
     setStatusNotes('');
   };
 
-  const handleDeleteLicense = (licenseId: number) => {
-    // In a real app, this would delete from backend
-    console.log(`Delete license ID: ${licenseId} from ${selectedEntityState}`);
-    setEditingEntityLicenses(false);
-  };
-
   const handleEditLicense = (license: any) => {
     setLicenseFormData({
       type: license.type,
@@ -306,14 +330,33 @@ const Compliance = () => {
   };
 
   const handleSaveLicense = () => {
-    // In a real app, this would save to backend
-    console.log(`Save license ID ${editingLicenseId}:`, licenseFormData);
+    if (!selectedEntityState || !editingLicenseId) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedLicenses = currentData.entityLicenses.map((license: any) => 
+      license.id === editingLicenseId 
+        ? { ...license, ...licenseFormData }
+        : license
+    );
+    
+    updateStateEntityData(selectedEntityState, {
+      entityLicenses: updatedLicenses
+    });
+    
     setEditingLicenseId(null);
     setLicenseFormData({ type: '', number: '', expires: '', status: 'compliant' });
   };
 
   const handleDeleteBond = (bondId: number) => {
-    console.log(`Delete bond ID: ${bondId} from ${selectedEntityState}`);
+    if (!selectedEntityState) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedBonds = currentData.entityBonds.filter((bond: any) => bond.id !== bondId);
+    
+    updateStateEntityData(selectedEntityState, {
+      entityBonds: updatedBonds
+    });
+    
     setEditingEntityBonds(false);
   };
 
@@ -329,13 +372,25 @@ const Compliance = () => {
   };
 
   const handleSaveBond = () => {
-    console.log(`Save bond ID ${editingBondId}:`, bondFormData);
+    if (!selectedEntityState || !editingBondId) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedBonds = currentData.entityBonds.map((bond: any) => 
+      bond.id === editingBondId 
+        ? { ...bond, ...bondFormData }
+        : bond
+    );
+    
+    updateStateEntityData(selectedEntityState, {
+      entityBonds: updatedBonds
+    });
+    
     setEditingBondId(null);
     setBondFormData({ type: '', amount: '', carrier: '', expires: '', status: 'compliant' });
   };
 
   const handleEditAgent = () => {
-    const agent = getStateEntityDetails(selectedEntityState).registeredAgent;
+    const agent = getCurrentStateEntityDetails(selectedEntityState).registeredAgent;
     setAgentFormData({
       name: agent.name,
       address: agent.address,
@@ -346,13 +401,26 @@ const Compliance = () => {
   };
 
   const handleSaveAgent = () => {
-    console.log(`Save agent:`, agentFormData);
+    if (!selectedEntityState) return;
+    
+    updateStateEntityData(selectedEntityState, {
+      registeredAgent: agentFormData
+    });
+    
     setEditingAgent(false);
     setAgentFormData({ name: '', address: '', phone: '', status: 'compliant' });
   };
 
   const handleDeleteLocation = (locationId: number) => {
-    console.log(`Delete location ID: ${locationId} from ${selectedEntityState}`);
+    if (!selectedEntityState) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedLocations = currentData.remoteLocations.filter((location: any) => location.id !== locationId);
+    
+    updateStateEntityData(selectedEntityState, {
+      remoteLocations: updatedLocations
+    });
+    
     setEditingRemoteLocations(false);
   };
 
@@ -365,13 +433,33 @@ const Compliance = () => {
   };
 
   const handleSaveLocation = () => {
-    console.log(`Save location ID ${editingLocationId}:`, locationFormData);
+    if (!selectedEntityState || !editingLocationId) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedLocations = currentData.remoteLocations.map((location: any) => 
+      location.id === editingLocationId 
+        ? { ...location, ...locationFormData }
+        : location
+    );
+    
+    updateStateEntityData(selectedEntityState, {
+      remoteLocations: updatedLocations
+    });
+    
     setEditingLocationId(null);
     setLocationFormData({ address: '', status: 'compliant' });
   };
 
   const handleDeleteDate = (dateId: number) => {
-    console.log(`Delete regulatory date ID: ${dateId} from ${selectedEntityState}`);
+    if (!selectedEntityState) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedDates = currentData.regulatoryDates.filter((date: any) => date.id !== dateId);
+    
+    updateStateEntityData(selectedEntityState, {
+      regulatoryDates: updatedDates
+    });
+    
     setEditingRegulatoryDates(false);
   };
 
@@ -386,9 +474,34 @@ const Compliance = () => {
   };
 
   const handleSaveDate = () => {
-    console.log(`Save regulatory date ID ${editingDateId}:`, dateFormData);
+    if (!selectedEntityState || !editingDateId) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedDates = currentData.regulatoryDates.map((date: any) => 
+      date.id === editingDateId 
+        ? { ...date, ...dateFormData }
+        : date
+    );
+    
+    updateStateEntityData(selectedEntityState, {
+      regulatoryDates: updatedDates
+    });
+    
     setEditingDateId(null);
     setDateFormData({ type: '', startDate: '', endDate: '', status: 'active' });
+  };
+
+  const handleDeleteLicense = (licenseId: number) => {
+    if (!selectedEntityState) return;
+    
+    const currentData = getCurrentStateEntityDetails(selectedEntityState);
+    const updatedLicenses = currentData.entityLicenses.filter((license: any) => license.id !== licenseId);
+    
+    updateStateEntityData(selectedEntityState, {
+      entityLicenses: updatedLicenses
+    });
+    
+    setEditingEntityLicenses(false);
   };
 
   return (
@@ -718,7 +831,7 @@ const Compliance = () => {
                               </DialogHeader>
                               
                               <div className="space-y-4">
-                                {getStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
+                        {getCurrentStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
                                   <div key={license.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                                     <div>
                                       <h4 className="font-medium text-white">{license.type}</h4>
@@ -1121,7 +1234,7 @@ const Compliance = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {getStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
+                        {getCurrentStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
                           <div key={license.id} className="p-4 bg-slate-700/30 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="font-medium text-white">{license.type}</h4>
@@ -1181,7 +1294,7 @@ const Compliance = () => {
                               </DialogHeader>
                               
                               <div className="space-y-4">
-                                {getStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
+                                {getCurrentStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
                                   <div key={bond.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                                     <div>
                                       <h4 className="font-medium text-white">{bond.type}</h4>
@@ -1220,7 +1333,7 @@ const Compliance = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {getStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
+                        {getCurrentStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
                           <div key={bond.id} className="p-4 bg-slate-700/30 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="font-medium text-white">{bond.type}</h4>
@@ -1284,8 +1397,8 @@ const Compliance = () => {
                                 <div className="p-3 bg-slate-700/30 rounded-lg">
                                   <div className="flex items-center justify-between">
                                     <div>
-                                      <h4 className="font-medium text-white">{getStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
-                                      <p className="text-sm text-slate-400">{getStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
+                                    <h4 className="font-medium text-white">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
+                                    <p className="text-sm text-slate-400">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
                                     </div>
                                     <Button
                                       variant="outline"
@@ -1319,8 +1432,9 @@ const Compliance = () => {
                             <div className={`w-2 h-2 rounded-full ${getStatusDot(getStateEntityDetails(selectedEntityState).registeredAgent.status)}`}></div>
                           </div>
                           <div className="space-y-1 text-sm">
-                            <p className="text-slate-300">{getStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
-                            <p className="text-slate-300">{getStateEntityDetails(selectedEntityState).registeredAgent.phone}</p>
+                            <h4 className="font-medium text-white">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
+                            <p className="text-slate-300">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
+                            <p className="text-slate-300">{getCurrentStateEntityDetails(selectedEntityState).registeredAgent.phone}</p>
                             <div className="flex items-center gap-2 mt-2">
                               <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
                                 <Upload className="h-3 w-3 mr-1" />
@@ -1370,7 +1484,7 @@ const Compliance = () => {
                             </DialogHeader>
                             
                             <div className="space-y-4">
-                              {getStateEntityDetails(selectedEntityState).regulatoryDates.map((date) => (
+                        {getCurrentStateEntityDetails(selectedEntityState).regulatoryDates.map((date) => (
                                 <div key={date.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                                   <div>
                                     <h4 className="font-medium text-white">{date.type}</h4>
@@ -1409,7 +1523,7 @@ const Compliance = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {getStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
+                        {getCurrentStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
                           <div key={location.id} className="p-4 bg-slate-700/30 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="font-medium text-white">Location #{location.id}</h4>
@@ -1470,7 +1584,7 @@ const Compliance = () => {
                               </DialogHeader>
                               
                               <div className="space-y-4">
-                                {getStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
+                                {getCurrentStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
                                   <div key={location.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                                     <div>
                                       <h4 className="font-medium text-white">Location #{location.id}</h4>
@@ -1510,7 +1624,7 @@ const Compliance = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {getStateEntityDetails(selectedEntityState).regulatoryDates.map((date) => (
+                        {getCurrentStateEntityDetails(selectedEntityState).regulatoryDates.map((date) => (
                           <div key={date.id} className="p-4 bg-slate-700/30 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="font-medium text-white">{date.type}</h4>
