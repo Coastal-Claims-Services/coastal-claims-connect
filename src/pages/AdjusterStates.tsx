@@ -24,7 +24,7 @@ const jurisdictions = [
 ];
 
 // Mock license data structure for each jurisdiction
-const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string) => {
+const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string, updates: Record<string, any> = {}) => {
   const employee = employees.find(emp => emp.name === adjusterName);
   const existingLicense = employee?.licenses.find(license => 
     license.state === jurisdiction.substring(0, 2).toUpperCase() || 
@@ -32,34 +32,43 @@ const getJurisdictionLicenseData = (adjusterName: string, jurisdiction: string) 
     (jurisdiction === 'US Virgin Islands' && license.state === 'VI')
   );
 
+  // Check if there are any updates for this jurisdiction
+  const jurisdictionUpdates = updates[jurisdiction];
+  const hasUpdates = jurisdictionUpdates && Object.keys(jurisdictionUpdates).length > 0;
+
   return {
     jurisdiction,
-    isLicensed: !!existingLicense,
-    license: existingLicense ? {
+    isLicensed: hasUpdates ? true : !!existingLicense,
+    license: hasUpdates ? {
+      number: jurisdictionUpdates.licenseNumber || 'Updated License',
+      expires: jurisdictionUpdates.expirationDate || '2025-12-31',
+      status: jurisdictionUpdates.status || 'active',
+      type: jurisdictionUpdates.licenseType === 'public-adjuster' ? 'Public Adjuster License' : 'Adjuster License'
+    } : existingLicense ? {
       number: existingLicense.licenseNumber,
       expires: existingLicense.expires,
       status: existingLicense.status,
       type: 'Public Adjuster License'
     } : null,
-    bond: existingLicense ? {
-      type: 'Surety Bond',
-      amount: '$50,000',
-      expires: '2025-06-30',
+    bond: (hasUpdates || existingLicense) ? {
+      type: jurisdictionUpdates?.bondType === 'surety-bond' ? 'Surety Bond' : 'Surety Bond',
+      amount: jurisdictionUpdates?.bondAmount || '$50,000',
+      expires: jurisdictionUpdates?.bondExpiration || '2025-06-30',
       status: 'active',
-      carrier: 'ABC Surety Co.',
-      useENO: false
+      carrier: jurisdictionUpdates?.bondCarrier || 'ABC Surety Co.',
+      useENO: jurisdictionUpdates?.useENO || false
     } : null,
-    contract: existingLicense ? {
-      hasStateContract: false,
-      contractType: '',
-      approved: false,
+    contract: (hasUpdates || existingLicense) ? {
+      hasStateContract: jurisdictionUpdates?.hasStateContract || false,
+      contractType: jurisdictionUpdates?.contractType || '',
+      approved: jurisdictionUpdates?.contractApproved || false,
       expires: ''
     } : null,
-    continuingEducation: existingLicense ? {
-      required: 24,
-      completed: Math.floor(Math.random() * 24),
-      deadline: '2024-12-31',
-      reciprocityWithHome: jurisdiction !== 'Florida' ? Math.random() > 0.5 : false,
+    continuingEducation: (hasUpdates || existingLicense) ? {
+      required: parseInt(jurisdictionUpdates?.requiredCredits || '24'),
+      completed: parseInt(jurisdictionUpdates?.completedCredits || '0'),
+      deadline: jurisdictionUpdates?.ceDeadline || '2024-12-31',
+      reciprocityWithHome: jurisdictionUpdates?.reciprocity || (jurisdiction !== 'Florida' ? Math.random() > 0.5 : false),
       homeState: 'Florida'
     } : null
   };
@@ -73,6 +82,27 @@ const AdjusterStates = () => {
   const [editingBond, setEditingBond] = useState(false);
   const [editingContract, setEditingContract] = useState(false);
   const [editingCE, setEditingCE] = useState(false);
+  
+  // State to track license data changes for each jurisdiction
+  const [licenseUpdates, setLicenseUpdates] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState({
+    licenseNumber: '',
+    licenseType: 'public-adjuster',
+    expirationDate: '',
+    status: 'active',
+    bondType: 'surety-bond',
+    bondAmount: '',
+    bondCarrier: '',
+    bondExpiration: '',
+    useENO: false,
+    hasStateContract: false,
+    contractType: '',
+    contractApproved: false,
+    requiredCredits: '',
+    completedCredits: '',
+    ceDeadline: '',
+    reciprocity: false
+  });
 
   // Find the adjuster
   const adjuster = employees.find(emp => emp.id === adjusterId);
@@ -91,7 +121,7 @@ const AdjusterStates = () => {
   }
 
   const getComplianceStatus = (jurisdiction: string) => {
-    const data = getJurisdictionLicenseData(adjuster.name, jurisdiction);
+    const data = getJurisdictionLicenseData(adjuster.name, jurisdiction, licenseUpdates);
     if (!data.isLicensed) return 'not-licensed';
     
     // Check various compliance factors
@@ -102,6 +132,62 @@ const AdjusterStates = () => {
     if (hasActiveLicense && hasActiveBond && ceCompliant) return 'compliant';
     if (hasActiveLicense && (hasActiveBond || ceCompliant)) return 'warning';
     return 'critical';
+  };
+
+  const saveLicenseData = () => {
+    if (!selectedJurisdiction) return;
+    
+    setLicenseUpdates(prev => ({
+      ...prev,
+      [selectedJurisdiction]: {
+        ...prev[selectedJurisdiction] || {},
+        licenseNumber: formData.licenseNumber,
+        licenseType: formData.licenseType,
+        expirationDate: formData.expirationDate,
+        status: formData.status,
+        bondType: formData.bondType,
+        bondAmount: formData.bondAmount,
+        bondCarrier: formData.bondCarrier,
+        bondExpiration: formData.bondExpiration,
+        useENO: formData.useENO,
+        hasStateContract: formData.hasStateContract,
+        contractType: formData.contractType,
+        contractApproved: formData.contractApproved,
+        requiredCredits: formData.requiredCredits,
+        completedCredits: formData.completedCredits,
+        ceDeadline: formData.ceDeadline,
+        reciprocity: formData.reciprocity
+      }
+    }));
+  };
+
+  const openEditDialog = (jurisdiction: string) => {
+    setSelectedJurisdiction(jurisdiction);
+    const existing = licenseUpdates[jurisdiction] || {};
+    setFormData({
+      licenseNumber: existing.licenseNumber || '',
+      licenseType: existing.licenseType || 'public-adjuster',
+      expirationDate: existing.expirationDate || '',
+      status: existing.status || 'active',
+      bondType: existing.bondType || 'surety-bond',
+      bondAmount: existing.bondAmount || '',
+      bondCarrier: existing.bondCarrier || '',
+      bondExpiration: existing.bondExpiration || '',
+      useENO: existing.useENO || false,
+      hasStateContract: existing.hasStateContract || false,
+      contractType: existing.contractType || '',
+      contractApproved: existing.contractApproved || false,
+      requiredCredits: existing.requiredCredits || '24',
+      completedCredits: existing.completedCredits || '0',
+      ceDeadline: existing.ceDeadline || '',
+      reciprocity: existing.reciprocity || false
+    });
+    setEditingLicense(true);
+  };
+
+  const handleSaveLicense = () => {
+    saveLicenseData();
+    setEditingLicense(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -133,7 +219,7 @@ const AdjusterStates = () => {
   };
 
   if (selectedJurisdiction) {
-    const licenseData = getJurisdictionLicenseData(adjuster.name, selectedJurisdiction);
+    const licenseData = getJurisdictionLicenseData(adjuster.name, selectedJurisdiction, licenseUpdates);
     
     return (
       <div className="min-h-screen bg-slate-900 text-slate-100">
@@ -161,7 +247,7 @@ const AdjusterStates = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => setEditingLicense(true)}
+                onClick={() => openEditDialog(selectedJurisdiction)}
                 className="border-slate-600 text-slate-300 hover:bg-slate-700"
               >
                 <Edit className="h-4 w-4 mr-2" />
@@ -389,11 +475,17 @@ const AdjusterStates = () => {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="licenseNumber">License Number</Label>
-                  <Input id="licenseNumber" placeholder="Enter license number" className="bg-slate-700 border-slate-600" />
+                  <Input 
+                    id="licenseNumber" 
+                    placeholder="Enter license number" 
+                    className="bg-slate-700 border-slate-600"
+                    value={formData.licenseNumber}
+                    onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
+                  />
                 </div>
                 <div>
                   <Label htmlFor="licenseType">License Type</Label>
-                  <Select>
+                  <Select value={formData.licenseType} onValueChange={(value) => setFormData({...formData, licenseType: value})}>
                     <SelectTrigger className="bg-slate-700 border-slate-600">
                       <SelectValue placeholder="Select license type" />
                     </SelectTrigger>
@@ -406,11 +498,17 @@ const AdjusterStates = () => {
                 </div>
                 <div>
                   <Label htmlFor="expirationDate">Expiration Date</Label>
-                  <Input id="expirationDate" type="date" className="bg-slate-700 border-slate-600" />
+                  <Input 
+                    id="expirationDate" 
+                    type="date" 
+                    className="bg-slate-700 border-slate-600"
+                    value={formData.expirationDate}
+                    onChange={(e) => setFormData({...formData, expirationDate: e.target.value})}
+                  />
                 </div>
                 <div>
                   <Label htmlFor="status">Status</Label>
-                  <Select>
+                  <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
                     <SelectTrigger className="bg-slate-700 border-slate-600">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
@@ -426,7 +524,7 @@ const AdjusterStates = () => {
                   <Button variant="outline" onClick={() => setEditingLicense(false)} className="border-slate-600">
                     Cancel
                   </Button>
-                  <Button onClick={() => setEditingLicense(false)} className="bg-green-600 hover:bg-green-700">
+                  <Button onClick={handleSaveLicense} className="bg-green-600 hover:bg-green-700">
                     Save Changes
                   </Button>
                 </div>
@@ -579,7 +677,7 @@ const AdjusterStates = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {jurisdictions.map((jurisdiction) => {
             const status = getComplianceStatus(jurisdiction);
-            const licenseData = getJurisdictionLicenseData(adjuster.name, jurisdiction);
+            const licenseData = getJurisdictionLicenseData(adjuster.name, jurisdiction, licenseUpdates);
             
             return (
               <Card 
