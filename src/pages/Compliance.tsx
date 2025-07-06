@@ -207,6 +207,37 @@ const Compliance = () => {
     expires: '',
     status: 'compliant' as 'compliant' | 'warning' | 'critical'
   });
+  const [editingEntityBonds, setEditingEntityBonds] = useState(false);
+  const [editingBondId, setEditingBondId] = useState<number | null>(null);
+  const [bondFormData, setBondFormData] = useState({
+    type: '',
+    amount: '',
+    carrier: '',
+    expires: '',
+    status: 'compliant' as 'compliant' | 'warning' | 'critical'
+  });
+  const [editingRegisteredAgent, setEditingRegisteredAgent] = useState(false);
+  const [editingAgent, setEditingAgent] = useState(false);
+  const [agentFormData, setAgentFormData] = useState({
+    name: '',
+    address: '',
+    phone: '',
+    status: 'compliant' as 'compliant' | 'warning' | 'critical'
+  });
+  const [editingRemoteLocations, setEditingRemoteLocations] = useState(false);
+  const [editingLocationId, setEditingLocationId] = useState<number | null>(null);
+  const [locationFormData, setLocationFormData] = useState({
+    address: '',
+    status: 'compliant' as 'compliant' | 'warning' | 'critical'
+  });
+  const [editingRegulatoryDates, setEditingRegulatoryDates] = useState(false);
+  const [editingDateId, setEditingDateId] = useState<number | null>(null);
+  const [dateFormData, setDateFormData] = useState({
+    type: '',
+    startDate: '',
+    endDate: '',
+    status: 'active' as 'active' | 'expired'
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -278,6 +309,85 @@ const Compliance = () => {
     console.log(`Save license ID ${editingLicenseId}:`, licenseFormData);
     setEditingLicenseId(null);
     setLicenseFormData({ type: '', number: '', expires: '', status: 'compliant' });
+  };
+
+  const handleDeleteBond = (bondId: number) => {
+    console.log(`Delete bond ID: ${bondId} from ${selectedEntityState}`);
+    setEditingEntityBonds(false);
+  };
+
+  const handleEditBond = (bond: any) => {
+    setBondFormData({
+      type: bond.type,
+      amount: bond.amount,
+      carrier: bond.carrier,
+      expires: bond.expires,
+      status: bond.status
+    });
+    setEditingBondId(bond.id);
+  };
+
+  const handleSaveBond = () => {
+    console.log(`Save bond ID ${editingBondId}:`, bondFormData);
+    setEditingBondId(null);
+    setBondFormData({ type: '', amount: '', carrier: '', expires: '', status: 'compliant' });
+  };
+
+  const handleEditAgent = () => {
+    const agent = getStateEntityDetails(selectedEntityState).registeredAgent;
+    setAgentFormData({
+      name: agent.name,
+      address: agent.address,
+      phone: agent.phone,
+      status: agent.status as 'compliant' | 'warning' | 'critical'
+    });
+    setEditingAgent(true);
+  };
+
+  const handleSaveAgent = () => {
+    console.log(`Save agent:`, agentFormData);
+    setEditingAgent(false);
+    setAgentFormData({ name: '', address: '', phone: '', status: 'compliant' });
+  };
+
+  const handleDeleteLocation = (locationId: number) => {
+    console.log(`Delete location ID: ${locationId} from ${selectedEntityState}`);
+    setEditingRemoteLocations(false);
+  };
+
+  const handleEditLocation = (location: any) => {
+    setLocationFormData({
+      address: location.address,
+      status: location.status
+    });
+    setEditingLocationId(location.id);
+  };
+
+  const handleSaveLocation = () => {
+    console.log(`Save location ID ${editingLocationId}:`, locationFormData);
+    setEditingLocationId(null);
+    setLocationFormData({ address: '', status: 'compliant' });
+  };
+
+  const handleDeleteDate = (dateId: number) => {
+    console.log(`Delete regulatory date ID: ${dateId} from ${selectedEntityState}`);
+    setEditingRegulatoryDates(false);
+  };
+
+  const handleEditDate = (date: any) => {
+    setDateFormData({
+      type: date.type,
+      startDate: date.startDate,
+      endDate: date.endDate,
+      status: date.status
+    });
+    setEditingDateId(date.id);
+  };
+
+  const handleSaveDate = () => {
+    console.log(`Save regulatory date ID ${editingDateId}:`, dateFormData);
+    setEditingDateId(null);
+    setDateFormData({ type: '', startDate: '', endDate: '', status: 'active' });
   };
 
   return (
@@ -644,6 +754,295 @@ const Compliance = () => {
                             </DialogContent>
                           </Dialog>
                           
+                          {/* Individual Bond Edit Dialog */}
+                          <Dialog open={editingBondId !== null} onOpenChange={() => setEditingBondId(null)}>
+                            <DialogContent className="bg-slate-800 border-slate-700">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Edit Bond Details</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Update the bond information below
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="bondType" className="text-white">Bond Type</Label>
+                                  <Input
+                                    id="bondType"
+                                    value={bondFormData.type}
+                                    onChange={(e) => setBondFormData({...bondFormData, type: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="bondAmount" className="text-white">Bond Amount</Label>
+                                  <Input
+                                    id="bondAmount"
+                                    value={bondFormData.amount}
+                                    onChange={(e) => setBondFormData({...bondFormData, amount: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="bondCarrier" className="text-white">Bond Carrier</Label>
+                                  <Input
+                                    id="bondCarrier"
+                                    value={bondFormData.carrier}
+                                    onChange={(e) => setBondFormData({...bondFormData, carrier: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="bondExpiration" className="text-white">Expiration Date</Label>
+                                  <Input
+                                    id="bondExpiration"
+                                    type="date"
+                                    value={bondFormData.expires}
+                                    onChange={(e) => setBondFormData({...bondFormData, expires: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="bondStatus" className="text-white">Status</Label>
+                                  <Select value={bondFormData.status} onValueChange={(value) => setBondFormData({...bondFormData, status: value as 'compliant' | 'warning' | 'critical'})}>
+                                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-slate-700 border-slate-600">
+                                      <SelectItem value="compliant" className="text-white hover:bg-slate-600">Compliant</SelectItem>
+                                      <SelectItem value="warning" className="text-white hover:bg-slate-600">Warning</SelectItem>
+                                      <SelectItem value="critical" className="text-white hover:bg-slate-600">Critical</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingBondId(null)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleSaveBond}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  Save Changes
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
+                          {/* Individual Agent Edit Dialog */}
+                          <Dialog open={editingAgent} onOpenChange={() => setEditingAgent(false)}>
+                            <DialogContent className="bg-slate-800 border-slate-700">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Edit Registered Agent</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Update the registered agent information
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="agentName" className="text-white">Agent Name</Label>
+                                  <Input
+                                    id="agentName"
+                                    value={agentFormData.name}
+                                    onChange={(e) => setAgentFormData({...agentFormData, name: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="agentAddress" className="text-white">Address</Label>
+                                  <Textarea
+                                    id="agentAddress"
+                                    value={agentFormData.address}
+                                    onChange={(e) => setAgentFormData({...agentFormData, address: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="agentPhone" className="text-white">Phone</Label>
+                                  <Input
+                                    id="agentPhone"
+                                    value={agentFormData.phone}
+                                    onChange={(e) => setAgentFormData({...agentFormData, phone: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="agentStatus" className="text-white">Status</Label>
+                                  <Select value={agentFormData.status} onValueChange={(value) => setAgentFormData({...agentFormData, status: value as 'compliant' | 'warning' | 'critical'})}>
+                                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-slate-700 border-slate-600">
+                                      <SelectItem value="compliant" className="text-white hover:bg-slate-600">Compliant</SelectItem>
+                                      <SelectItem value="warning" className="text-white hover:bg-slate-600">Warning</SelectItem>
+                                      <SelectItem value="critical" className="text-white hover:bg-slate-600">Critical</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingAgent(false)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleSaveAgent}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  Save Changes
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
+                          {/* Individual Location Edit Dialog */}
+                          <Dialog open={editingLocationId !== null} onOpenChange={() => setEditingLocationId(null)}>
+                            <DialogContent className="bg-slate-800 border-slate-700">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Edit Location Details</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Update the location information below
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="locationAddress" className="text-white">Location Address</Label>
+                                  <Textarea
+                                    id="locationAddress"
+                                    value={locationFormData.address}
+                                    onChange={(e) => setLocationFormData({...locationFormData, address: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="locationStatus" className="text-white">Status</Label>
+                                  <Select value={locationFormData.status} onValueChange={(value) => setLocationFormData({...locationFormData, status: value as 'compliant' | 'warning' | 'critical'})}>
+                                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-slate-700 border-slate-600">
+                                      <SelectItem value="compliant" className="text-white hover:bg-slate-600">Compliant</SelectItem>
+                                      <SelectItem value="warning" className="text-white hover:bg-slate-600">Warning</SelectItem>
+                                      <SelectItem value="critical" className="text-white hover:bg-slate-600">Critical</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingLocationId(null)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleSaveLocation}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  Save Changes
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
+                          {/* Individual Regulatory Date Edit Dialog */}
+                          <Dialog open={editingDateId !== null} onOpenChange={() => setEditingDateId(null)}>
+                            <DialogContent className="bg-slate-800 border-slate-700">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Edit Regulatory Date</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Update the regulatory date information below
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="dateType" className="text-white">Date Type</Label>
+                                  <Input
+                                    id="dateType"
+                                    value={dateFormData.type}
+                                    onChange={(e) => setDateFormData({...dateFormData, type: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                    placeholder="e.g., Hurricane Moratorium, Tolling Period"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="startDate" className="text-white">Start Date</Label>
+                                  <Input
+                                    id="startDate"
+                                    type="date"
+                                    value={dateFormData.startDate}
+                                    onChange={(e) => setDateFormData({...dateFormData, startDate: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="endDate" className="text-white">End Date</Label>
+                                  <Input
+                                    id="endDate"
+                                    type="date"
+                                    value={dateFormData.endDate}
+                                    onChange={(e) => setDateFormData({...dateFormData, endDate: e.target.value})}
+                                    className="bg-slate-700 border-slate-600 text-white"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="dateStatus" className="text-white">Status</Label>
+                                  <Select value={dateFormData.status} onValueChange={(value) => setDateFormData({...dateFormData, status: value as 'active' | 'expired'})}>
+                                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-slate-700 border-slate-600">
+                                      <SelectItem value="active" className="text-white hover:bg-slate-600">Active</SelectItem>
+                                      <SelectItem value="expired" className="text-white hover:bg-slate-600">Expired</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingDateId(null)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleSaveDate}
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                  Save Changes
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                          
                           {/* Individual License Edit Dialog */}
                           <Dialog open={editingLicenseId !== null} onOpenChange={() => setEditingLicenseId(null)}>
                             <DialogContent className="bg-slate-800 border-slate-700">
@@ -759,14 +1158,63 @@ const Compliance = () => {
                             <Shield className="h-5 w-5 mr-2 text-green-400" />
                             Entity Bonds
                           </CardTitle>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Edit
-                          </Button>
+                          <Dialog open={editingEntityBonds} onOpenChange={setEditingEntityBonds}>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                                onClick={() => setEditingEntityBonds(true)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Manage Entity Bonds - {selectedEntityState}</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Add or remove entity bonds for this state
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                {getStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
+                                  <div key={bond.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                                    <div>
+                                      <h4 className="font-medium text-white">{bond.type}</h4>
+                                      <p className="text-sm text-slate-400">Amount: {bond.amount} | Carrier: {bond.carrier}</p>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleDeleteBond(bond.id)}
+                                      className="text-red-400 border-red-400 hover:bg-red-400/10"
+                                    >
+                                      Delete
+                                    </Button>
+                                  </div>
+                                ))}
+                                
+                                <div className="p-3 border-2 border-dashed border-slate-600 rounded-lg">
+                                  <Button variant="ghost" className="w-full text-slate-400 hover:text-white">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add New Bond Type
+                                  </Button>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingEntityBonds(false)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Close
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
@@ -785,7 +1233,12 @@ const Compliance = () => {
                                   <Upload className="h-3 w-3 mr-1" />
                                   Upload
                                 </Button>
-                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="text-slate-300 border-slate-600"
+                                  onClick={() => handleEditBond(bond)}
+                                >
                                   <Edit className="h-3 w-3 mr-1" />
                                   Edit
                                 </Button>
@@ -804,14 +1257,56 @@ const Compliance = () => {
                             <User className="h-5 w-5 mr-2 text-purple-400" />
                             Registered Agent
                           </CardTitle>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Edit
-                          </Button>
+                          <Dialog open={editingRegisteredAgent} onOpenChange={setEditingRegisteredAgent}>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                                onClick={() => setEditingRegisteredAgent(true)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-slate-800 border-slate-700">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Manage Registered Agent - {selectedEntityState}</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Update registered agent information for this state
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                <div className="p-3 bg-slate-700/30 rounded-lg">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <h4 className="font-medium text-white">{getStateEntityDetails(selectedEntityState).registeredAgent.name}</h4>
+                                      <p className="text-sm text-slate-400">{getStateEntityDetails(selectedEntityState).registeredAgent.address}</p>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={handleEditAgent}
+                                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10"
+                                    >
+                                      Edit Details
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingRegisteredAgent(false)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Close
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -828,10 +1323,15 @@ const Compliance = () => {
                                 <Upload className="h-3 w-3 mr-1" />
                                 Upload
                               </Button>
-                              <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
-                                <Edit className="h-3 w-3 mr-1" />
-                                Edit
-                              </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="text-slate-300 border-slate-600"
+                                  onClick={() => handleEditLocation(location)}
+                                >
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Edit
+                                </Button>
                             </div>
                           </div>
                         </div>
@@ -846,14 +1346,63 @@ const Compliance = () => {
                             <MapPin className="h-5 w-5 mr-2 text-orange-400" />
                             Remote Locations
                           </CardTitle>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Edit
-                          </Button>
+                        <Dialog open={editingRegulatoryDates} onOpenChange={setEditingRegulatoryDates}>
+                          <DialogTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                              onClick={() => setEditingRegulatoryDates(true)}
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle className="text-white">Manage Regulatory Dates - {selectedEntityState}</DialogTitle>
+                              <DialogDescription className="text-slate-400">
+                                Add or remove regulatory dates and moratoriums for this state
+                              </DialogDescription>
+                            </DialogHeader>
+                            
+                            <div className="space-y-4">
+                              {getStateEntityDetails(selectedEntityState).regulatoryDates.map((date) => (
+                                <div key={date.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                                  <div>
+                                    <h4 className="font-medium text-white">{date.type}</h4>
+                                    <p className="text-sm text-slate-400">{date.startDate} to {date.endDate}</p>
+                                  </div>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleDeleteDate(date.id)}
+                                    className="text-red-400 border-red-400 hover:bg-red-400/10"
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              ))}
+                              
+                              <div className="p-3 border-2 border-dashed border-slate-600 rounded-lg">
+                                <Button variant="ghost" className="w-full text-slate-400 hover:text-white">
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Add New Regulatory Date
+                                </Button>
+                              </div>
+                            </div>
+                            
+                            <DialogFooter>
+                              <Button
+                                variant="outline"
+                                onClick={() => setEditingRegulatoryDates(false)}
+                                className="text-slate-300 border-slate-600"
+                              >
+                                Close
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
@@ -870,7 +1419,12 @@ const Compliance = () => {
                                   <Upload className="h-3 w-3 mr-1" />
                                   Upload Permits
                                 </Button>
-                                <Button size="sm" variant="outline" className="text-slate-300 border-slate-600">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="text-slate-300 border-slate-600"
+                                  onClick={handleEditAgent}
+                                >
                                   <Edit className="h-3 w-3 mr-1" />
                                   Edit
                                 </Button>
@@ -890,14 +1444,63 @@ const Compliance = () => {
                           <Calendar className="h-5 w-5 mr-2 text-red-400" />
                           Regulatory Dates & Moratoriums
                         </CardTitle>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-slate-300 hover:bg-slate-700 hover:text-white"
-                        >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
+                          <Dialog open={editingRemoteLocations} onOpenChange={setEditingRemoteLocations}>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                                onClick={() => setEditingRemoteLocations(true)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle className="text-white">Manage Remote Locations - {selectedEntityState}</DialogTitle>
+                                <DialogDescription className="text-slate-400">
+                                  Add or remove remote locations for this state
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              <div className="space-y-4">
+                                {getStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
+                                  <div key={location.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                                    <div>
+                                      <h4 className="font-medium text-white">Location #{location.id}</h4>
+                                      <p className="text-sm text-slate-400">{location.address}</p>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleDeleteLocation(location.id)}
+                                      className="text-red-400 border-red-400 hover:bg-red-400/10"
+                                    >
+                                      Delete
+                                    </Button>
+                                  </div>
+                                ))}
+                                
+                                <div className="p-3 border-2 border-dashed border-slate-600 rounded-lg">
+                                  <Button variant="ghost" className="w-full text-slate-400 hover:text-white">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add New Location
+                                  </Button>
+                                </div>
+                              </div>
+                              
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setEditingRemoteLocations(false)}
+                                  className="text-slate-300 border-slate-600"
+                                >
+                                  Close
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                       </div>
                     </CardHeader>
                     <CardContent>
