@@ -466,6 +466,163 @@ const AdjusterStates = () => {
             </Card>
           </div>
 
+          {/* Warnings & Alerts and Compliance Actions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            {/* Warnings & Alerts */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-slate-100 flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                    Warnings & Alerts
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {(() => {
+                  const warnings = [];
+                  const status = getComplianceStatus(selectedJurisdiction);
+                  
+                  if (status === 'warning' || status === 'critical') {
+                    if (licenseData.license && new Date(licenseData.license.expires) < new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)) {
+                      warnings.push({
+                        type: 'warning',
+                        message: `License expires on ${licenseData.license.expires}`,
+                        severity: 'medium'
+                      });
+                    }
+                    
+                    if (licenseData.bond && new Date(licenseData.bond.expires) < new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)) {
+                      warnings.push({
+                        type: 'warning',
+                        message: `Bond expires on ${licenseData.bond.expires}`,
+                        severity: 'medium'
+                      });
+                    }
+                    
+                    if (licenseData.continuingEducation && licenseData.continuingEducation.completed < licenseData.continuingEducation.required) {
+                      const remaining = licenseData.continuingEducation.required - licenseData.continuingEducation.completed;
+                      warnings.push({
+                        type: 'critical',
+                        message: `CE incomplete: ${remaining} credits needed by ${licenseData.continuingEducation.deadline}`,
+                        severity: 'high'
+                      });
+                    }
+                    
+                    if (licenseData.contract?.hasStateContract && !licenseData.contract.approved) {
+                      warnings.push({
+                        type: 'warning',
+                        message: 'State contract pending approval',
+                        severity: 'medium'
+                      });
+                    }
+                  }
+                  
+                  if (warnings.length === 0) {
+                    return (
+                      <div className="text-center py-6">
+                        <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                        <p className="text-slate-400">No active warnings or alerts</p>
+                      </div>
+                    );
+                  }
+                  
+                  return warnings.map((warning, index) => (
+                    <div key={index} className={`flex items-start gap-3 p-3 rounded-lg ${
+                      warning.severity === 'high' ? 'bg-red-900/20 border border-red-800' : 'bg-yellow-900/20 border border-yellow-800'
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        warning.severity === 'high' ? 'bg-red-500' : 'bg-yellow-500'
+                      }`}></div>
+                      <div className="flex-1">
+                        <Badge className={`text-xs mb-1 ${
+                          warning.severity === 'high' ? 'bg-red-600' : 'bg-yellow-600'
+                        }`}>
+                          {warning.type.toUpperCase()}
+                        </Badge>
+                        <p className="text-slate-200 text-sm">{warning.message}</p>
+                      </div>
+                    </div>
+                  ));
+                })()}
+              </CardContent>
+            </Card>
+
+            {/* Compliance Actions */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-slate-100 flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-blue-500" />
+                    Compliance Actions
+                  </CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Configure
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div>
+                        <p className="text-slate-200 text-sm font-medium">License Renewal Alerts</p>
+                        <p className="text-slate-400 text-xs">Email notifications: 30, 14, 2 days before expiry</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-green-600 text-white text-xs">Active</Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div>
+                        <p className="text-slate-200 text-sm font-medium">Bond Renewal Alerts</p>
+                        <p className="text-slate-400 text-xs">Email notifications: 30, 14, 2 days before expiry</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-green-600 text-white text-xs">Active</Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <div>
+                        <p className="text-slate-200 text-sm font-medium">CE Deadline Reminders</p>
+                        <p className="text-slate-400 text-xs">Monthly progress updates, final 60-day alert</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-yellow-500 text-white text-xs">Pending</Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
+                      <div>
+                        <p className="text-slate-200 text-sm font-medium">Document Upload Reminders</p>
+                        <p className="text-slate-400 text-xs">Weekly reminders for missing documents</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-slate-600 text-white text-xs">Inactive</Badge>
+                  </div>
+                </div>
+
+                <div className="pt-2 space-y-2">
+                  <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Action
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Edit Dialogs */}
           <Dialog open={editingLicense} onOpenChange={setEditingLicense}>
             <DialogContent className="bg-slate-800 border-slate-700 text-white">
