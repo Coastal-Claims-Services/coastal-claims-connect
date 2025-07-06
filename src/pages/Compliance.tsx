@@ -548,10 +548,20 @@ const Compliance = () => {
                     {/* Entity Licenses */}
                     <Card className="bg-slate-800 border-slate-700">
                       <CardHeader>
-                        <CardTitle className="text-white flex items-center">
-                          <Shield className="h-5 w-5 mr-2 text-blue-400" />
-                          Entity Licenses
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-white flex items-center">
+                            <Shield className="h-5 w-5 mr-2 text-blue-400" />
+                            Entity Licenses
+                          </CardTitle>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {getStateEntityDetails(selectedEntityState).entityLicenses.map((license) => (
@@ -582,10 +592,20 @@ const Compliance = () => {
                     {/* Entity Bonds */}
                     <Card className="bg-slate-800 border-slate-700">
                       <CardHeader>
-                        <CardTitle className="text-white flex items-center">
-                          <Shield className="h-5 w-5 mr-2 text-green-400" />
-                          Entity Bonds
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-white flex items-center">
+                            <Shield className="h-5 w-5 mr-2 text-green-400" />
+                            Entity Bonds
+                          </CardTitle>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {getStateEntityDetails(selectedEntityState).entityBonds.map((bond) => (
@@ -617,10 +637,20 @@ const Compliance = () => {
                     {/* Registered Agent */}
                     <Card className="bg-slate-800 border-slate-700">
                       <CardHeader>
-                        <CardTitle className="text-white flex items-center">
-                          <User className="h-5 w-5 mr-2 text-purple-400" />
-                          Registered Agent
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-white flex items-center">
+                            <User className="h-5 w-5 mr-2 text-purple-400" />
+                            Registered Agent
+                          </CardTitle>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        </div>
                       </CardHeader>
                       <CardContent>
                         <div className="p-4 bg-slate-700/30 rounded-lg">
@@ -649,10 +679,20 @@ const Compliance = () => {
                     {/* Remote Locations */}
                     <Card className="bg-slate-800 border-slate-700">
                       <CardHeader>
-                        <CardTitle className="text-white flex items-center">
-                          <MapPin className="h-5 w-5 mr-2 text-orange-400" />
-                          Remote Locations
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-white flex items-center">
+                            <MapPin className="h-5 w-5 mr-2 text-orange-400" />
+                            Remote Locations
+                          </CardTitle>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {getStateEntityDetails(selectedEntityState).remoteLocations.map((location) => (
@@ -683,10 +723,20 @@ const Compliance = () => {
                   {/* Regulatory Dates */}
                   <Card className="bg-slate-800 border-slate-700">
                     <CardHeader>
-                      <CardTitle className="text-white flex items-center">
-                        <Calendar className="h-5 w-5 mr-2 text-red-400" />
-                        Regulatory Dates & Moratoriums
-                      </CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-white flex items-center">
+                          <Calendar className="h-5 w-5 mr-2 text-red-400" />
+                          Regulatory Dates & Moratoriums
+                        </CardTitle>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
