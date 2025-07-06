@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Shield, 
   AlertTriangle, 
@@ -63,58 +67,58 @@ const stateCompliance = [
 
 // Entity management state data
 const entityStatesData = [
-  { name: 'Alabama', registrations: 8, licenses: 12, active: true },
-  { name: 'Alaska', registrations: 2, licenses: 3, active: true },
-  { name: 'Arizona', registrations: 11, licenses: 15, active: true },
-  { name: 'Arkansas', registrations: 5, licenses: 8, active: true },
-  { name: 'California', registrations: 32, licenses: 45, active: true },
-  { name: 'Colorado', registrations: 13, licenses: 18, active: true },
-  { name: 'Connecticut', registrations: 7, licenses: 9, active: true },
-  { name: 'Delaware', registrations: 3, licenses: 4, active: true },
-  { name: 'Florida', registrations: 28, licenses: 38, active: true },
-  { name: 'Georgia', registrations: 16, licenses: 22, active: true },
-  { name: 'Hawaii', registrations: 4, licenses: 5, active: true },
-  { name: 'Idaho', registrations: 5, licenses: 7, active: true },
-  { name: 'Illinois', registrations: 18, licenses: 25, active: true },
-  { name: 'Indiana', registrations: 12, licenses: 16, active: true },
-  { name: 'Iowa', registrations: 8, licenses: 11, active: true },
-  { name: 'Kansas', registrations: 7, licenses: 10, active: true },
-  { name: 'Kentucky', registrations: 9, licenses: 13, active: true },
-  { name: 'Louisiana', registrations: 10, licenses: 14, active: true },
-  { name: 'Maine', registrations: 4, licenses: 6, active: true },
-  { name: 'Maryland', registrations: 12, licenses: 17, active: true },
-  { name: 'Massachusetts', registrations: 14, licenses: 19, active: true },
-  { name: 'Michigan', registrations: 15, licenses: 21, active: true },
-  { name: 'Minnesota', registrations: 11, licenses: 16, active: true },
-  { name: 'Mississippi', registrations: 6, licenses: 9, active: true },
-  { name: 'Missouri', registrations: 13, licenses: 18, active: true },
-  { name: 'Montana', registrations: 3, licenses: 5, active: true },
-  { name: 'Nebraska', registrations: 6, licenses: 8, active: true },
-  { name: 'Nevada', registrations: 9, licenses: 12, active: true },
-  { name: 'New Hampshire', registrations: 5, licenses: 7, active: true },
-  { name: 'New Jersey', registrations: 17, licenses: 23, active: true },
-  { name: 'New Mexico', registrations: 6, licenses: 9, active: true },
-  { name: 'New York', registrations: 26, licenses: 35, active: true },
-  { name: 'North Carolina', registrations: 18, licenses: 24, active: true },
-  { name: 'North Dakota', registrations: 3, licenses: 4, active: true },
-  { name: 'Ohio', registrations: 19, licenses: 26, active: true },
-  { name: 'Oklahoma', registrations: 9, licenses: 13, active: true },
-  { name: 'Oregon', registrations: 10, licenses: 14, active: true },
-  { name: 'Pennsylvania', registrations: 21, licenses: 28, active: true },
-  { name: 'Rhode Island', registrations: 3, licenses: 4, active: true },
-  { name: 'South Carolina', registrations: 11, licenses: 15, active: true },
-  { name: 'South Dakota', registrations: 4, licenses: 5, active: true },
-  { name: 'Tennessee', registrations: 14, licenses: 19, active: true },
-  { name: 'Texas', registrations: 39, licenses: 52, active: true },
-  { name: 'Utah', registrations: 8, licenses: 11, active: true },
-  { name: 'Vermont', registrations: 2, licenses: 3, active: true },
-  { name: 'Virginia', registrations: 15, licenses: 20, active: true },
-  { name: 'Washington', registrations: 12, licenses: 17, active: true },
-  { name: 'West Virginia', registrations: 4, licenses: 6, active: true },
-  { name: 'Wisconsin', registrations: 12, licenses: 16, active: true },
-  { name: 'Wyoming', registrations: 2, licenses: 3, active: true },
-  { name: 'Puerto Rico', registrations: 5, licenses: 8, active: true },
-  { name: 'US Virgin Islands', registrations: 2, licenses: 3, active: true }
+  { name: 'Alabama', registrations: 8, licenses: 12, active: true, complianceStatus: 'restricted' },
+  { name: 'Alaska', registrations: 2, licenses: 3, active: true, complianceStatus: 'compliant' },
+  { name: 'Arizona', registrations: 11, licenses: 15, active: true, complianceStatus: 'compliant' },
+  { name: 'Arkansas', registrations: 5, licenses: 8, active: true, complianceStatus: 'compliant' },
+  { name: 'California', registrations: 32, licenses: 45, active: true, complianceStatus: 'compliant' },
+  { name: 'Colorado', registrations: 13, licenses: 18, active: true, complianceStatus: 'compliant' },
+  { name: 'Connecticut', registrations: 7, licenses: 9, active: true, complianceStatus: 'compliant' },
+  { name: 'Delaware', registrations: 3, licenses: 4, active: true, complianceStatus: 'compliant' },
+  { name: 'Florida', registrations: 28, licenses: 38, active: true, complianceStatus: 'compliant' },
+  { name: 'Georgia', registrations: 16, licenses: 22, active: true, complianceStatus: 'compliant' },
+  { name: 'Hawaii', registrations: 4, licenses: 5, active: true, complianceStatus: 'compliant' },
+  { name: 'Idaho', registrations: 5, licenses: 7, active: true, complianceStatus: 'compliant' },
+  { name: 'Illinois', registrations: 18, licenses: 25, active: true, complianceStatus: 'compliant' },
+  { name: 'Indiana', registrations: 12, licenses: 16, active: true, complianceStatus: 'compliant' },
+  { name: 'Iowa', registrations: 8, licenses: 11, active: true, complianceStatus: 'compliant' },
+  { name: 'Kansas', registrations: 7, licenses: 10, active: true, complianceStatus: 'compliant' },
+  { name: 'Kentucky', registrations: 9, licenses: 13, active: true, complianceStatus: 'compliant' },
+  { name: 'Louisiana', registrations: 10, licenses: 14, active: true, complianceStatus: 'warning' },
+  { name: 'Maine', registrations: 4, licenses: 6, active: true, complianceStatus: 'compliant' },
+  { name: 'Maryland', registrations: 12, licenses: 17, active: true, complianceStatus: 'compliant' },
+  { name: 'Massachusetts', registrations: 14, licenses: 19, active: true, complianceStatus: 'compliant' },
+  { name: 'Michigan', registrations: 15, licenses: 21, active: true, complianceStatus: 'compliant' },
+  { name: 'Minnesota', registrations: 11, licenses: 16, active: true, complianceStatus: 'compliant' },
+  { name: 'Mississippi', registrations: 6, licenses: 9, active: true, complianceStatus: 'compliant' },
+  { name: 'Missouri', registrations: 13, licenses: 18, active: true, complianceStatus: 'compliant' },
+  { name: 'Montana', registrations: 3, licenses: 5, active: true, complianceStatus: 'compliant' },
+  { name: 'Nebraska', registrations: 6, licenses: 8, active: true, complianceStatus: 'compliant' },
+  { name: 'Nevada', registrations: 9, licenses: 12, active: true, complianceStatus: 'warning' },
+  { name: 'New Hampshire', registrations: 5, licenses: 7, active: true, complianceStatus: 'compliant' },
+  { name: 'New Jersey', registrations: 17, licenses: 23, active: true, complianceStatus: 'compliant' },
+  { name: 'New Mexico', registrations: 6, licenses: 9, active: true, complianceStatus: 'compliant' },
+  { name: 'New York', registrations: 26, licenses: 35, active: true, complianceStatus: 'compliant' },
+  { name: 'North Carolina', registrations: 18, licenses: 24, active: true, complianceStatus: 'restricted' },
+  { name: 'North Dakota', registrations: 3, licenses: 4, active: true, complianceStatus: 'compliant' },
+  { name: 'Ohio', registrations: 19, licenses: 26, active: true, complianceStatus: 'compliant' },
+  { name: 'Oklahoma', registrations: 9, licenses: 13, active: true, complianceStatus: 'compliant' },
+  { name: 'Oregon', registrations: 10, licenses: 14, active: true, complianceStatus: 'compliant' },
+  { name: 'Pennsylvania', registrations: 21, licenses: 28, active: true, complianceStatus: 'compliant' },
+  { name: 'Rhode Island', registrations: 3, licenses: 4, active: true, complianceStatus: 'compliant' },
+  { name: 'South Carolina', registrations: 11, licenses: 15, active: true, complianceStatus: 'compliant' },
+  { name: 'South Dakota', registrations: 4, licenses: 5, active: true, complianceStatus: 'compliant' },
+  { name: 'Tennessee', registrations: 14, licenses: 19, active: true, complianceStatus: 'compliant' },
+  { name: 'Texas', registrations: 39, licenses: 52, active: true, complianceStatus: 'compliant' },
+  { name: 'Utah', registrations: 8, licenses: 11, active: true, complianceStatus: 'compliant' },
+  { name: 'Vermont', registrations: 2, licenses: 3, active: true, complianceStatus: 'compliant' },
+  { name: 'Virginia', registrations: 15, licenses: 20, active: true, complianceStatus: 'compliant' },
+  { name: 'Washington', registrations: 12, licenses: 17, active: true, complianceStatus: 'restricted' },
+  { name: 'West Virginia', registrations: 4, licenses: 6, active: true, complianceStatus: 'compliant' },
+  { name: 'Wisconsin', registrations: 12, licenses: 16, active: true, complianceStatus: 'compliant' },
+  { name: 'Wyoming', registrations: 2, licenses: 3, active: true, complianceStatus: 'compliant' },
+  { name: 'Puerto Rico', registrations: 5, licenses: 8, active: true, complianceStatus: 'compliant' },
+  { name: 'US Virgin Islands', registrations: 2, licenses: 3, active: true, complianceStatus: 'compliant' }
 ];
 
 // Mock data for state entity details
@@ -190,6 +194,9 @@ const getStateEntityDetails = (stateName: string) => ({
 const Compliance = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedEntityState, setSelectedEntityState] = useState<string | null>(null);
+  const [editingStatus, setEditingStatus] = useState(false);
+  const [tempStatus, setTempStatus] = useState<'compliant' | 'warning' | 'restricted'>('compliant');
+  const [statusNotes, setStatusNotes] = useState('');
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -221,9 +228,23 @@ const Compliance = () => {
     switch (status) {
       case 'compliant': return 'bg-green-500';
       case 'warning': return 'bg-yellow-500';
-      case 'critical': return 'bg-red-500';
+      case 'restricted': return 'bg-red-500';
       default: return 'bg-slate-500';
     }
+  };
+
+  const getCurrentStateStatus = () => {
+    if (!selectedEntityState) return 'compliant';
+    const state = entityStatesData.find(s => s.name === selectedEntityState);
+    return state?.complianceStatus || 'compliant';
+  };
+
+  const handleStatusChange = () => {
+    // In a real app, this would update the backend
+    console.log(`Updated ${selectedEntityState} status to: ${tempStatus}`);
+    console.log(`Notes: ${statusNotes}`);
+    setEditingStatus(false);
+    setStatusNotes('');
   };
 
   return (
@@ -429,7 +450,97 @@ const Compliance = () => {
                         <p className="text-slate-400">Manage licenses, bonds, and regulatory compliance</p>
                       </div>
                     </div>
-                    <div className={`w-4 h-4 rounded-full ${getStatusDot('compliant')}`}></div>
+                    <div className="flex items-center gap-4">
+                      <div className={`w-4 h-4 rounded-full ${getStatusDot(getCurrentStateStatus())}`}></div>
+                      <Dialog open={editingStatus} onOpenChange={setEditingStatus}>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-300 hover:bg-slate-700 hover:text-white"
+                            onClick={() => {
+                              setTempStatus(getCurrentStateStatus() as 'compliant' | 'warning' | 'restricted');
+                              setEditingStatus(true);
+                            }}
+                          >
+                            <Edit size={14} className="mr-1" />
+                            Edit Status
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-slate-800 border-slate-700">
+                          <DialogHeader>
+                            <DialogTitle className="text-white">Edit {selectedEntityState} Compliance Status</DialogTitle>
+                            <DialogDescription className="text-slate-400">
+                              Update the compliance status for this state's public adjusting regulations.
+                            </DialogDescription>
+                          </DialogHeader>
+                          
+                          <div className="space-y-6">
+                            <RadioGroup value={tempStatus} onValueChange={(value) => setTempStatus(value as 'compliant' | 'warning' | 'restricted')}>
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="compliant" id="compliant" />
+                                <Label htmlFor="compliant" className="flex items-center gap-3 text-white">
+                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                  <div>
+                                    <p className="font-medium">Fully Compliant</p>
+                                    <p className="text-sm text-slate-400">Public adjusting is allowed with proper licensing</p>
+                                  </div>
+                                </Label>
+                              </div>
+                              
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="warning" id="warning" />
+                                <Label htmlFor="warning" className="flex items-center gap-3 text-white">
+                                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                  <div>
+                                    <p className="font-medium">Questions/Warnings</p>
+                                    <p className="text-sm text-slate-400">Some compliance questions but likely legal to operate</p>
+                                  </div>
+                                </Label>
+                              </div>
+                              
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="restricted" id="restricted" />
+                                <Label htmlFor="restricted" className="flex items-center gap-3 text-white">
+                                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                  <div>
+                                    <p className="font-medium">Restricted/Prohibited</p>
+                                    <p className="text-sm text-slate-400">Public adjusting is not allowed in this state</p>
+                                  </div>
+                                </Label>
+                              </div>
+                            </RadioGroup>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="notes" className="text-white">Notes (Optional)</Label>
+                              <Textarea
+                                id="notes"
+                                placeholder="Add any additional notes about the compliance status..."
+                                value={statusNotes}
+                                onChange={(e) => setStatusNotes(e.target.value)}
+                                className="bg-slate-700 border-slate-600 text-white placeholder-slate-400"
+                              />
+                            </div>
+                          </div>
+                          
+                          <DialogFooter>
+                            <Button
+                              variant="outline"
+                              onClick={() => setEditingStatus(false)}
+                              className="text-slate-300 border-slate-600"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleStatusChange}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              Update Status
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                   </div>
 
                   {/* Entity Compliance Sections */}
@@ -623,7 +734,7 @@ const Compliance = () => {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <h3 className="text-lg font-semibold text-white">{state.name}</h3>
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                          <div className={`w-3 h-3 rounded-full ${getStatusDot(state.complianceStatus)}`}></div>
                         </div>
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
