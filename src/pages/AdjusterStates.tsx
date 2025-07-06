@@ -158,6 +158,15 @@ const AdjusterStates = () => {
                   {getStatusText(getComplianceStatus(selectedJurisdiction))}
                 </Badge>
               </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setEditingLicense(true)}
+                className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Status
+              </Button>
             </div>
           </div>
 
