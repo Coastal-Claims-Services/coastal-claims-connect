@@ -14,6 +14,7 @@ import { selectRules, generateRulePrompt } from '@/utils/ruleSelection';
 import { KnowledgeTree as KnowledgeTreeType, TreeNodeExpansion } from '@/types/knowledge';
 import { createDefaultKnowledgeTree } from '@/utils/knowledgeSelection';
 import { KnowledgeTree } from '@/components/knowledge/KnowledgeTree';
+import { ComplianceAutomation } from '@/components/compliance/ComplianceAutomation';
 
 // Department structure type
 interface Department {
@@ -345,7 +346,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="api-setup" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-slate-800">
+          <TabsList className="grid w-full grid-cols-3 bg-slate-800">
             <TabsTrigger value="api-setup" className="flex items-center gap-2">
               <Key className="w-4 h-4" />
               API Setup
@@ -353,6 +354,10 @@ const Admin = () => {
             <TabsTrigger value="departments" className="flex items-center gap-2">
               <Building2 className="w-4 h-4" />
               Knowledge Management
+            </TabsTrigger>
+            <TabsTrigger value="compliance" className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" />
+              Compliance Automation
             </TabsTrigger>
           </TabsList>
 
@@ -451,6 +456,10 @@ const Admin = () => {
               expansion={treeExpansion}
               onExpansionChange={setTreeExpansion}
             />
+          </TabsContent>
+
+          <TabsContent value="compliance">
+            <ComplianceAutomation departments={availableDepartments} />
           </TabsContent>
 
         </Tabs>
