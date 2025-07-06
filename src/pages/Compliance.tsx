@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -201,6 +202,7 @@ const getStateEntityDetails = (stateName: string) => ({
 });
 
 const Compliance = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedEntityState, setSelectedEntityState] = useState<string | null>(null);
   const [editingStatus, setEditingStatus] = useState(false);
@@ -564,8 +566,7 @@ const Compliance = () => {
   };
 
   const handleEmployeeClick = (employee: Employee) => {
-    setSelectedEmployee(employee);
-    setEmployeeDetailOpen(true);
+    navigate(`/adjuster-states/${employee.id}`);
   };
 
   const getUniqueLocations = () => {

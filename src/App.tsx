@@ -10,6 +10,7 @@ import Talent from "./pages/Talent";
 import Compliance from "./pages/Compliance";
 import PartnerRegistration from "./pages/PartnerRegistration";
 import Admin from "./pages/Admin";
+import AdjusterStates from "./pages/AdjusterStates";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/partner-registration" element={<PartnerRegistration />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/adjuster-states/:adjusterId" element={<AdjusterStates />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
