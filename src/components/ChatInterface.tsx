@@ -183,7 +183,12 @@ export const ChatInterface = () => {
 
     try {
       // Build system message with context
+      // Build system message with context and accurate timestamp
+      const now = new Date();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       let systemMessage = `You are ${targetAI}, a conversational AI assistant designed to help ${user.name}, who works as a ${user.role} in the ${user.department} department at their company.
+
+Current date and time: ${now.toLocaleString()} (${timezone}). If asked for today's date or time, use this provided timestamp. Do not guess the date.
 
 ${departmentRules ? `Department Rules for ${user.department}:\n${departmentRules}\n` : ''}
 
