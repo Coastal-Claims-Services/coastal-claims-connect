@@ -10,10 +10,9 @@ import { AIAssistant, aiAssistantsData } from '@/data/aiAssistants';
 import { MemoryManager } from '@/utils/memoryManager';
 import { 
   Message, 
-  mockUser, 
   initialMessages, 
   validateFile, 
-  simulateTrainingAssignment, 
+  assignTraining, 
   downloadPolicyReport 
 } from '@/utils/chatUtils';
 
@@ -224,8 +223,8 @@ Keep responses conversational, helpful, and concise. Don't provide lengthy corpo
       
       // Handle PDF-related training assignment
       if (isPdfRelated) {
-        aiResponseContent += `\n\n📚 I've assigned the "PDF Converter Training" course to your Coastal U account. This 15-minute course will teach you how to convert image-based PDFs to readable text format.`;
-        simulateTrainingAssignment('PDF Converter Training');
+        aiResponseContent += `\n\n📚 Training assignment functionality will be available when integrated with your learning management system.`;
+        // assignTraining('PDF Converter Training'); // Disabled until LMS integration
       }
 
       // Update memory based on AI response

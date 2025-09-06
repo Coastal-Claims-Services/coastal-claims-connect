@@ -80,34 +80,9 @@ export const ComplianceAutomation: React.FC<ComplianceAutomationProps> = ({ depa
         console.error('Failed to parse system alerts:', error);
       }
     } else {
-      // Generate sample alerts for demonstration
-      const sampleAlerts: SystemAlert[] = [
-        {
-          id: 'alert-1',
-          adjusterId: 'aaron-tuck',
-          adjusterName: 'Aaron Tuck',
-          type: 'license_expiry',
-          severity: 'high',
-          title: 'Florida License Expiring Soon',
-          message: 'Florida adjuster license expires in 15 days',
-          createdAt: new Date().toISOString(),
-          dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-          dismissed: false
-        },
-        {
-          id: 'alert-2',
-          adjusterId: 'sarah-chen',
-          adjusterName: 'Sarah Chen',
-          type: 'ce_credits',
-          severity: 'medium',
-          title: 'CE Credits Due',
-          message: 'Texas CE credits due in 45 days',
-          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          dueDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-          dismissed: false
-        }
-      ];
-      setSystemAlerts(sampleAlerts);
+      // TODO: Fetch real alerts from compliance monitoring system
+      // For now, start with empty alerts until real data source is connected
+      setSystemAlerts([]);
     }
   }, []);
 

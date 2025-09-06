@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { User } from '@/types/user';
-import { mockUser } from '@/utils/chatUtils';
 
 interface UserContextType {
   user: User;
@@ -25,7 +24,20 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>({
     id: 'john-smith',
-    ...mockUser
+    name: 'John Smith',
+    department: 'CAN program',
+    role: 'Public Adjuster',
+    accessLevel: 'Senior',
+    homeState: 'Florida',
+    userType: {
+      type: 'developer' as const,
+      permissions: {
+        manageUsers: false,
+        manageAIs: true,
+        editAIPrompts: true,
+        systemSettings: false
+      }
+    }
   });
 
   const updateHomeState = (homeState: string) => {
